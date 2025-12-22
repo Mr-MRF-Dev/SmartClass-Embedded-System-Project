@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
+    "@prisma/client": "^7.2.0",
     "@tabler/icons-react": "^3.36.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -28,6 +29,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
+    "prisma": "^7.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
