@@ -1,0 +1,94 @@
+// Prisma Schema for SmartClass Embedded Systems
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model EmbeddedSystem {
+  id          String   @id @default(cuid())
+  name        String
+  location    String
+  classroom   String?
+  description String?
+  status      String   @default("active")
+  ipAddress   String?
+  macAddress  String?  @unique
+  lastSeen    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  sensors     Sensor[]
+  powerUsage  PowerUsage[]
+  commands    Command[]
+  
+  @@map("embedded_systems")
+}
+
+model Sensor {
+  id               String   @id @default(cuid())
+  name             String
+  type             String
+  unit             String?
+  currentValue     Float?
+  minValue         Float?
+  maxValue         Float?
+  threshold        Float?
+  status           String   @default("online")
+  embeddedSystemId String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  readings         SensorReading[]
+  
+  @@map("sensors")
+  @@index([embeddedSystemId])
+  @@index([type])
+}
+
+model SensorReading {
+  id        String   @id @default(cuid())
+  sensorId  String
+  value     Float
+  timestamp DateTime @default(now())
+  
+  sensor    Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  
+  @@map("sensor_readings")
+  @@index([sensorId, timestamp(sort: Desc)])
+}
+
+model PowerUsage {
+  id               String   @id @default(cuid())
+  embeddedSystemId String
+  voltage          Float?
+  current          Float?
+  power            Float
+  energy           Float?
+  timestamp        DateTime @default(now())
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  
+  @@map("power_usage")
+  @@index([embeddedSystemId, timestamp(sort: Desc)])
+}
+
+model Command {
+  id               String   @id @default(cuid())
+  embeddedSystemId String
+  type             String
+  payload          Json
+  status           String   @default("pending")
+  sentAt           DateTime @default(now())
+  executedAt       DateTime?
+  response         Json?
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  
+  @@map("commands")
+  @@index([embeddedSystemId, status])
+  @@index([sentAt(sort: Desc)])
+}
