@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SmartClass Embedded System Project
 
-## Getting Started
+A Next.js dashboard for monitoring and managing classroom embedded systems with real-time sensor data, power usage tracking, and remote control capabilities.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Next.js 16** - React framework
+- **TypeScript** - Type safety
+- **Prisma 7** - ORM with PostgreSQL
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - UI components
+- **Tabler Icons** - Icon library
+- **Bun** - Fast package manager & runtime
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick Start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Install dependencies:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   bun install
+   ```
 
-## Learn More
+2. **Configure database:**
+   Edit `.env` and set your PostgreSQL connection:
 
-To learn more about Next.js, take a look at the following resources:
+   ```text
+   DATABASE_URL="postgresql://user:password@localhost:5432/smartclass_db"
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Setup database:**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   bun run db:push
+   bun run db:generate
+   ```
 
-## Deploy on Vercel
+4. **Start development server:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   bun run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open [http://localhost:3000](http://localhost:3000)
+
+## Features
+
+### Dashboard
+
+- Real-time monitoring of embedded systems
+- Sensor data visualization
+- Power usage tracking
+- System status indicators
+
+### Embedded Systems
+
+- Register and manage classroom devices
+- Track location and classroom assignment
+- Monitor connection status (last seen)
+- MAC address and IP tracking
+
+### Sensors
+
+- Multiple sensor types (temperature, humidity, light, power)
+- Real-time readings with history
+- Threshold monitoring
+- Status tracking (online/offline/error)
+
+### Data Ingestion API
+
+- Embedded devices send data via REST API
+- POST to `/api/ingest` with sensor readings
+- Automatic timestamp and tracking
+
+### Remote Commands
+
+- Send commands to embedded systems
+- GET `/api/commands?macAddress=XX:XX:XX:XX:XX:XX`
+- POST `/api/commands` to create commands
+
+## API Endpoints
+
+### For Dashboard
+
+- `GET /api/systems` - List all systems
+- `POST /api/systems` - Create system
+- `GET /api/sensors` - List all sensors
+- `POST /api/sensors` - Create sensor
+
+### For Embedded Devices
+
+- `POST /api/ingest` - Send sensor data
+- `GET /api/commands` - Retrieve pending commands
+
+## Database Schema
+
+- **EmbeddedSystem** - Classroom monitoring hardware
+- **Sensor** - Temperature, humidity, etc.
+- **SensorReading** - Historical sensor data
+- **PowerUsage** - Power consumption tracking
+- **Command** - Remote control commands
+
+## Scripts
+
+- `bun run dev` - Development server
+- `bun run build` - Production build
+- `bun run start` - Production server
+- `bun run db:push` - Push schema to database
+- `bun run db:studio` - Open Prisma Studio
+- `bun run db:generate` - Generate Prisma Client
