@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const macAddress = searchParams.get('macAddress');
+  const macAddress = searchParams.get("macAddress");
 
   if (!macAddress) {
     return NextResponse.json(
-      { error: 'macAddress is required' },
-      { status: 400 }
+      { error: "macAddress is required" },
+      { status: 400 },
     );
   }
 
@@ -16,34 +16,34 @@ export async function GET(request: Request) {
     const commands = await prisma.command.findMany({
       where: {
         embeddedSystem: {
-          macAddress
+          macAddress,
         },
-        status: 'pending'
+        status: "pending",
       },
       orderBy: {
-        sentAt: 'asc'
-      }
+        sentAt: "asc",
+      },
     });
 
-    const commandIds = commands.map(c => c.id);
-    
+    const commandIds = commands.map((c) => c.id);
+
     if (commandIds.length > 0) {
       await prisma.command.updateMany({
         where: {
-          id: { in: commandIds }
+          id: { in: commandIds },
         },
         data: {
-          status: 'sent'
-        }
+          status: "sent",
+        },
       });
     }
 
     return NextResponse.json(commands);
   } catch (error) {
-    console.error('Error fetching commands:', error);
+    console.error("Error fetching commands:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch commands' },
-      { status: 500 }
+      { error: "Failed to fetch commands" },
+      { status: 500 },
     );
   }
 }
@@ -55,8 +55,8 @@ export async function POST(request: Request) {
 
     if (!embeddedSystemId || !type || !payload) {
       return NextResponse.json(
-        { error: 'embeddedSystemId, type, and payload are required' },
-        { status: 400 }
+        { error: "embeddedSystemId, type, and payload are required" },
+        { status: 400 },
       );
     }
 
@@ -64,16 +64,16 @@ export async function POST(request: Request) {
       data: {
         embeddedSystemId,
         type,
-        payload
-      }
+        payload,
+      },
     });
 
     return NextResponse.json(command, { status: 201 });
   } catch (error) {
-    console.error('Error creating command:', error);
+    console.error("Error creating command:", error);
     return NextResponse.json(
-      { error: 'Failed to create command' },
-      { status: 500 }
+      { error: "Failed to create command" },
+      { status: 500 },
     );
   }
 }

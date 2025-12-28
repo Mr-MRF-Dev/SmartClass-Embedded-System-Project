@@ -29,6 +29,7 @@ This software is the frontend web application for the SmartClass Embedded System
    ```
 
    The app will be available at `http://localhost:3000`.
+
 3. **Build for Production:**
 
    ```bash

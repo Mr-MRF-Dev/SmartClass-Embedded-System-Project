@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SystemFormProps {
   onSuccess?: () => void;
@@ -14,43 +20,43 @@ interface SystemFormProps {
 
 export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    location: '',
-    classroom: '',
-    description: '',
-    status: 'active',
-    ipAddress: '',
-    macAddress: ''
+    name: "",
+    location: "",
+    classroom: "",
+    description: "",
+    status: "active",
+    ipAddress: "",
+    macAddress: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/systems', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      const response = await fetch("/api/systems", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error('Failed to create system');
+      if (!response.ok) throw new Error("Failed to create system");
 
-      setFormData({ 
-        name: '', 
-        location: '', 
-        classroom: '',
-        description: '', 
-        status: 'active',
-        ipAddress: '',
-        macAddress: ''
+      setFormData({
+        name: "",
+        location: "",
+        classroom: "",
+        description: "",
+        status: "active",
+        ipAddress: "",
+        macAddress: "",
       });
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +81,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
           <Input
             id="location"
             value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, location: e.target.value })
+            }
             placeholder="e.g., Building 1, Room 101"
             required
           />
@@ -86,7 +94,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
           <Input
             id="classroom"
             value={formData.classroom}
-            onChange={(e) => setFormData({ ...formData, classroom: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, classroom: e.target.value })
+            }
             placeholder="e.g., Room 101"
           />
         </div>
@@ -97,7 +107,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
         <Textarea
           id="description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
           placeholder="Optional description..."
         />
       </div>
@@ -108,7 +120,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
           <Input
             id="ipAddress"
             value={formData.ipAddress}
-            onChange={(e) => setFormData({ ...formData, ipAddress: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, ipAddress: e.target.value })
+            }
             placeholder="e.g., 192.168.1.100"
           />
         </div>
@@ -118,7 +132,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
           <Input
             id="macAddress"
             value={formData.macAddress}
-            onChange={(e) => setFormData({ ...formData, macAddress: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, macAddress: e.target.value })
+            }
             placeholder="e.g., AA:BB:CC:DD:EE:FF"
           />
         </div>
@@ -128,7 +144,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
         <Label htmlFor="status">Status</Label>
         <Select
           value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value || 'active' })}
+          onValueChange={(value) =>
+            setFormData({ ...formData, status: value || "active" })
+          }
         >
           <SelectTrigger>
             <SelectValue />
@@ -141,18 +159,16 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
         </Select>
       </div>
 
-      {error && (
-        <div className="text-sm text-red-500">{error}</div>
-      )}
+      {error && <div className="text-sm text-red-500">{error}</div>}
 
-      <div className="flex gap-2 justify-end">
+      <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Creating...' : 'Create System'}
+          {isLoading ? "Creating..." : "Create System"}
         </Button>
       </div>
     </form>

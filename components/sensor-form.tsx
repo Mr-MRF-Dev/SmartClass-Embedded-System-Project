@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface SensorFormProps {
   systems: Array<{ id: string; name: string }>;
@@ -14,39 +20,39 @@ interface SensorFormProps {
 
 export function SensorForm({ systems, onSuccess, onCancel }: SensorFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'temperature',
-    unit: '°C',
-    embeddedSystemId: '',
-    status: 'online'
+    name: "",
+    type: "temperature",
+    unit: "°C",
+    embeddedSystemId: "",
+    status: "online",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/sensors', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      const response = await fetch("/api/sensors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error('Failed to create sensor');
+      if (!response.ok) throw new Error("Failed to create sensor");
 
-      setFormData({ 
-        name: '', 
-        type: 'temperature', 
-        unit: '°C', 
-        embeddedSystemId: '', 
-        status: 'online' 
+      setFormData({
+        name: "",
+        type: "temperature",
+        unit: "°C",
+        embeddedSystemId: "",
+        status: "online",
       });
       onSuccess?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -71,15 +77,19 @@ export function SensorForm({ systems, onSuccess, onCancel }: SensorFormProps) {
           value={formData.type}
           onValueChange={(value) => {
             const units: Record<string, string> = {
-              temperature: '°C',
-              humidity: '%',
-              light: 'lux',
-              pressure: 'hPa',
-              power: 'W',
-              other: ''
+              temperature: "°C",
+              humidity: "%",
+              light: "lux",
+              pressure: "hPa",
+              power: "W",
+              other: "",
             };
             if (value) {
-              setFormData({ ...formData, type: value, unit: units[value] || '' });
+              setFormData({
+                ...formData,
+                type: value,
+                unit: units[value] || "",
+              });
             }
           }}
         >
@@ -111,7 +121,9 @@ export function SensorForm({ systems, onSuccess, onCancel }: SensorFormProps) {
         <Label htmlFor="system">Embedded System *</Label>
         <Select
           value={formData.embeddedSystemId}
-          onValueChange={(value) => setFormData({ ...formData, embeddedSystemId: value || '' })}
+          onValueChange={(value) =>
+            setFormData({ ...formData, embeddedSystemId: value || "" })
+          }
           required
         >
           <SelectTrigger>
@@ -131,7 +143,9 @@ export function SensorForm({ systems, onSuccess, onCancel }: SensorFormProps) {
         <Label htmlFor="sensor-status">Status</Label>
         <Select
           value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value || 'online' })}
+          onValueChange={(value) =>
+            setFormData({ ...formData, status: value || "online" })
+          }
         >
           <SelectTrigger>
             <SelectValue />
@@ -144,18 +158,16 @@ export function SensorForm({ systems, onSuccess, onCancel }: SensorFormProps) {
         </Select>
       </div>
 
-      {error && (
-        <div className="text-sm text-red-500">{error}</div>
-      )}
+      {error && <div className="text-sm text-red-500">{error}</div>}
 
-      <div className="flex gap-2 justify-end">
+      <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Creating...' : 'Create Sensor'}
+          {isLoading ? "Creating..." : "Create Sensor"}
         </Button>
       </div>
     </form>

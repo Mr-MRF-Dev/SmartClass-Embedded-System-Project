@@ -1,5 +1,11 @@
 // Type definitions for the database models
-import { EmbeddedSystem, Sensor, SensorReading, PowerUsage, Command } from '@prisma/client';
+import {
+  EmbeddedSystem,
+  Sensor,
+  SensorReading,
+  PowerUsage,
+  Command,
+} from "@prisma/client";
 
 export type SystemWithSensors = EmbeddedSystem & {
   sensors: Sensor[];

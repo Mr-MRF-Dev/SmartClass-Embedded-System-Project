@@ -105,7 +105,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-lg">Loading...</div>
       </div>
     );
@@ -113,8 +113,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="flex justify-between items-center">
+      <div className="container mx-auto space-y-6 p-6">
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">SmartClass Dashboard</h1>
             <p className="text-gray-600 dark:text-gray-400">
@@ -172,7 +172,7 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-4">Embedded Systems</h2>
+          <h2 className="mb-4 text-2xl font-bold">Embedded Systems</h2>
           {systems.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -186,7 +186,7 @@ export default function Dashboard() {
               {systems.map((system) => (
                 <Card key={system.id}>
                   <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex items-start justify-between">
                       <div>
                         <CardTitle>{system.name}</CardTitle>
                         <CardDescription>{system.location}</CardDescription>
@@ -197,7 +197,7 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
                       {system.description || "No description"}
                     </p>
                     <div className="flex items-center justify-between text-sm">
@@ -218,7 +218,7 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold mb-4">Sensors</h2>
+          <h2 className="mb-4 text-2xl font-bold">Sensors</h2>
           {sensors.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -232,7 +232,7 @@ export default function Dashboard() {
               {sensors.map((sensor) => (
                 <Card key={sensor.id}>
                   <CardHeader>
-                    <div className="flex justify-between items-start">
+                    <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
                         {getSensorIcon(sensor.type)}
                         <div>
@@ -259,10 +259,10 @@ export default function Dashboard() {
                         ? `${sensor.currentValue} ${sensor.unit || ""}`
                         : "N/A"}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="mt-1 text-xs text-gray-500">
                       {sensor.updatedAt
                         ? `Updated: ${new Date(
-                            sensor.updatedAt
+                            sensor.updatedAt,
                           ).toLocaleString()}`
                         : "No readings yet"}
                     </p>
