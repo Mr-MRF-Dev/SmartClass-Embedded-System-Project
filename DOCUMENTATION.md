@@ -30,14 +30,13 @@ To set up the development environment for the SmartClass Embedded System Project
 2. **Install Dependencies:**
 
    ```bash
-   cd software
-   npm install
+   bun i
    ```
 
 3. **Run the Development Server:**
 
    ```bash
-   npm run dev
+   bun dev
    ```
 
    The app will be available at `http://localhost:3000`.
@@ -45,8 +44,8 @@ To set up the development environment for the SmartClass Embedded System Project
 4. **Build for Production:**
 
    ```bash
-   npm run build
-   npm start
+   bun run build
+   bun start
    ```
 
 ## Project Structure

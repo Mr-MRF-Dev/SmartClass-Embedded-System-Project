@@ -5,7 +5,7 @@ Thank you for considering contributing to this project! Please follow these guid
 ## How to Contribute
 
 1. **Fork the repository** and create your branch from `master`.
-2. **Install dependencies** with `npm install` in the `software/` directory.
+2. **Install dependencies** with `bun install` in the `/` directory.
 3. **Make your changes** with clear, descriptive commit messages.
 4. **Test your changes** locally before submitting.
 5. **Open a Pull Request** with a detailed description of your changes.
@@ -13,7 +13,7 @@ Thank you for considering contributing to this project! Please follow these guid
 ## Code Style
 
 - Use TypeScript and follow the existing code style.
-- Run `npm run lint` to check for linting errors.
+- Run `bun run lint` to check for linting errors.
 - Use descriptive names for components, functions, and variables.
 
 ## Issues
