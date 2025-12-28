@@ -15,14 +15,26 @@ This software is the frontend web application for the SmartClass Embedded System
 
 ## Getting Started
 
-1. **Install Dependencies:**
+To set up the development environment for the SmartClass Embedded System Project, follow these steps:
+
+1. **Start the Development Database (Postgres):**
+
+   The project uses a local Postgres database for development, managed via Docker Compose. Make sure you have [Docker](https://www.docker.com/products/docker-desktop/) installed.
+
+   ```bash
+   docker compose up -d
+   ```
+
+   This will start a Postgres 18 database on port 5432 with default credentials (see `docker-compose.yml`).
+
+2. **Install Dependencies:**
 
    ```bash
    cd software
    npm install
    ```
 
-2. **Run the Development Server:**
+3. **Run the Development Server:**
 
    ```bash
    npm run dev
@@ -30,7 +42,7 @@ This software is the frontend web application for the SmartClass Embedded System
 
    The app will be available at `http://localhost:3000`.
 
-3. **Build for Production:**
+4. **Build for Production:**
 
    ```bash
    npm run build
