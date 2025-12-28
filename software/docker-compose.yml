@@ -1,14 +1,21 @@
 services:
-  db:
+  postgres:
     image: postgres:18
+    container_name: smart-class-postgres
     restart: always
     environment:
-      POSTGRES_USER: smartclass
-      POSTGRES_PASSWORD: smartclasspassword
       POSTGRES_DB: smartclassdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 volumes:
-  db_data:
+  postgres_data:
