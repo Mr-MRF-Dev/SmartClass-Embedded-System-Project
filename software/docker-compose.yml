@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_USER: smartclass
+      POSTGRES_PASSWORD: smartclasspassword
+      POSTGRES_DB: smartclassdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:
