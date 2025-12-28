@@ -1,6 +1,6 @@
 {
-  "name": "software",
-  "version": "0.1.0",
+  "name": "smart-class-embedded-system-project",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

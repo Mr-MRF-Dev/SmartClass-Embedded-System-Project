@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "software",
+      "name": "smart-class-embedded-system-project",
       "dependencies": {
         "@base-ui/react": "^1.0.0",
         "@prisma/adapter-pg": "^7.2.0",
