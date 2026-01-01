@@ -4,11 +4,12 @@ import { prisma } from "@/lib/prisma";
 // GET single system
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const system = await prisma.embeddedSystem.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         sensors: true,
         powerUsage: {
@@ -39,14 +40,15 @@ export async function GET(
 // PUT update system
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const { name, location, description, status } = body;
 
     const system = await prisma.embeddedSystem.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         location,
@@ -68,11 +70,12 @@ export async function PUT(
 // DELETE system
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     await prisma.embeddedSystem.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

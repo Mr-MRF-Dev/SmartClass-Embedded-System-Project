@@ -1,0 +1,12 @@
+# Start Docker containers
+docker-compose up -d
+
+# Setup database (if schema changes)
+bunx prisma db push --url="postgresql://postgres:postgres@localhost:5432/smartclassdb?schema=public"
+bun run db:generate
+
+# Start development server
+bun run dev
+
+# Stop Docker containers
+docker-compose down

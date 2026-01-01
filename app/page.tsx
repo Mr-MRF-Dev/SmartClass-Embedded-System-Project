@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,6 +28,8 @@ import {
   IconDevices,
   IconServer,
   IconBolt,
+  IconSettings,
+  IconArrowRight,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -36,6 +39,7 @@ interface EmbeddedSystem {
   classroom?: string;
   description?: string;
   status: string;
+  deviceId?: string;
   lastSeen?: string;
   createdAt: string;
   sensors: Sensor[];
@@ -55,6 +59,7 @@ interface Sensor {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const [systems, setSystems] = useState<EmbeddedSystem[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -106,7 +111,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-lg">در حال بارگذاری...</div>
       </div>
     );
   }
@@ -116,19 +121,19 @@ export default function Dashboard() {
       <div className="container mx-auto space-y-6 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">SmartClass Dashboard</h1>
+            <h1 className="text-3xl font-bold">پنل مدیریت SmartClass</h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Monitor and manage embedded systems
+              مدیریت و برنامه‌ریزی سیستم‌های تعبیه‌شده
             </p>
           </div>
           <div className="flex gap-2">
             <Button onClick={() => setShowSystemForm(true)}>
               <IconPlus size={16} className="mr-2" />
-              Add System
+              افزودن دیوایس
             </Button>
             <Button onClick={() => setShowSensorForm(true)} variant="outline">
               <IconPlus size={16} className="mr-2" />
-              Add Sensor
+              افزودن سنسور
             </Button>
           </div>
         </div>
@@ -137,7 +142,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Systems
+                تعداد کل دیوایس‌ها
               </CardTitle>
               <IconServer size={20} className="text-gray-500" />
             </CardHeader>
@@ -148,7 +153,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Sensors
+                تعداد کل سنسورها
               </CardTitle>
               <IconDevices size={20} className="text-gray-500" />
             </CardHeader>
@@ -159,7 +164,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
-                Online Sensors
+                سنسورهای آنلاین
               </CardTitle>
               <IconActivity size={20} className="text-green-500" />
             </CardHeader>
@@ -172,24 +177,33 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h2 className="mb-4 text-2xl font-bold">Embedded Systems</h2>
+          <h2 className="mb-4 text-2xl font-bold">دیوایس‌ها</h2>
           {systems.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-gray-500">
-                  No systems found. Add your first system!
+                  دیوایسی یافت نشد. اولین دیوایس را اضافه کنید!
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {systems.map((system) => (
-                <Card key={system.id}>
+                <Card
+                  key={system.id}
+                  className="cursor-pointer transition-shadow hover:shadow-lg"
+                  onClick={() => router.push(`/devices/${system.id}`)}
+                >
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div>
+                      <div className="flex-1">
                         <CardTitle>{system.name}</CardTitle>
                         <CardDescription>{system.location}</CardDescription>
+                        {system.deviceId && (
+                          <div className="mt-1 text-xs text-gray-500">
+                            شناسه: {system.deviceId}
+                          </div>
+                        )}
                       </div>
                       <Badge className={getStatusColor(system.status)}>
                         {system.status}
@@ -197,12 +211,12 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="mb-2 text-sm text-gray-600 dark:text-gray-400">
-                      {system.description || "No description"}
+                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                      {system.description || "بدون توضیحات"}
                     </p>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="mb-3 flex items-center justify-between text-sm">
                       <span className="font-medium">
-                        {system.sensors?.length || 0} sensor(s)
+                        {system.sensors?.length || 0} سنسور
                       </span>
                       {system.lastSeen && (
                         <span className="text-xs text-gray-500">
@@ -210,6 +224,19 @@ export default function Dashboard() {
                         </span>
                       )}
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/devices/${system.id}`);
+                      }}
+                    >
+                      <IconSettings size={16} className="mr-2" />
+                      مدیریت و برنامه‌ریزی
+                      <IconArrowRight size={16} className="mr-2" />
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
@@ -218,12 +245,12 @@ export default function Dashboard() {
         </div>
 
         <div>
-          <h2 className="mb-4 text-2xl font-bold">Sensors</h2>
+          <h2 className="mb-4 text-2xl font-bold">سنسورها</h2>
           {sensors.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <p className="text-gray-500">
-                  No sensors found. Add your first sensor!
+                  سنسوری یافت نشد. اولین سنسور را اضافه کنید!
                 </p>
               </CardContent>
             </Card>
@@ -261,10 +288,10 @@ export default function Dashboard() {
                     </div>
                     <p className="mt-1 text-xs text-gray-500">
                       {sensor.updatedAt
-                        ? `Updated: ${new Date(
+                        ? `آخرین بروزرسانی: ${new Date(
                             sensor.updatedAt,
-                          ).toLocaleString()}`
-                        : "No readings yet"}
+                          ).toLocaleString("fa-IR")}`
+                        : "هنوز داده‌ای ثبت نشده"}
                     </p>
                   </CardContent>
                 </Card>
@@ -277,7 +304,7 @@ export default function Dashboard() {
       <AlertDialog open={showSystemForm} onOpenChange={setShowSystemForm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add New Embedded System</AlertDialogTitle>
+            <AlertDialogTitle>افزودن دیوایس جدید</AlertDialogTitle>
           </AlertDialogHeader>
           <SystemForm
             onSuccess={() => {
@@ -292,7 +319,7 @@ export default function Dashboard() {
       <AlertDialog open={showSensorForm} onOpenChange={setShowSensorForm}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Add New Sensor</AlertDialogTitle>
+            <AlertDialogTitle>افزودن سنسور جدید</AlertDialogTitle>
           </AlertDialogHeader>
           <SensorForm
             systems={systems}
