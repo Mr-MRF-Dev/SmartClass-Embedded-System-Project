@@ -100,7 +100,8 @@ model HeatingSchedule {
   embeddedSystemId String
   season           String   // spring, summer, fall, winter
   month            Int?     // 1-12 (optional, for monthly override)
-  startTime        String   // HH:mm format
+  startTime        String   // HH:mm format - زمان شروع
+  endTime          String   // HH:mm format - زمان پایان
   targetTemperature Float   // دمای مطلوب
   enabled          Boolean  @default(true)
   createdAt        DateTime @default(now())

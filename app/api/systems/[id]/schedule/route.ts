@@ -33,11 +33,15 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { season, month, startTime, targetTemperature, enabled } = body;
+    const { season, month, startTime, endTime, targetTemperature, enabled } =
+      body;
 
-    if (!season || !startTime || targetTemperature === undefined) {
+    if (!season || !startTime || !endTime || targetTemperature === undefined) {
       return NextResponse.json(
-        { error: "Season, startTime, and targetTemperature are required" },
+        {
+          error:
+            "Season, startTime, endTime, and targetTemperature are required",
+        },
         { status: 400 },
       );
     }
@@ -58,6 +62,7 @@ export async function POST(
         where: { id: existing.id },
         data: {
           startTime,
+          endTime,
           targetTemperature,
           enabled: enabled !== undefined ? enabled : true,
         },
@@ -70,6 +75,7 @@ export async function POST(
           season,
           month: month || null,
           startTime,
+          endTime,
           targetTemperature,
           enabled: enabled !== undefined ? enabled : true,
         },
@@ -85,6 +91,7 @@ export async function POST(
           season,
           month,
           startTime,
+          endTime,
           targetTemperature,
           enabled,
         },

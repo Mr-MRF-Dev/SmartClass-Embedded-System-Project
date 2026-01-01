@@ -26,6 +26,7 @@ interface HeatingSchedule {
   season: string;
   month: number | null;
   startTime: string;
+  endTime: string;
   targetTemperature: number;
   enabled: boolean;
 }
@@ -63,9 +64,10 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const [newSchedule, setNewSchedule] = useState({
-    season: "",
+    season: "spring",
     month: null as number | null,
     startTime: "08:00",
+    endTime: "18:00",
     targetTemperature: 22,
     enabled: true,
   });
@@ -94,6 +96,16 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
       return;
     }
 
+    if (!newSchedule.startTime || !newSchedule.endTime) {
+      setError("لطفا زمان شروع و پایان را مشخص کنید");
+      return;
+    }
+
+    if (newSchedule.startTime >= newSchedule.endTime) {
+      setError("زمان شروع باید قبل از زمان پایان باشد");
+      return;
+    }
+
     setIsSaving(true);
     setError("");
 
@@ -107,9 +119,10 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
       if (!response.ok) throw new Error("Failed to save schedule");
 
       setNewSchedule({
-        season: "",
+        season: "spring",
         month: null,
         startTime: "08:00",
+        endTime: "18:00",
         targetTemperature: 22,
         enabled: true,
       });
@@ -214,13 +227,25 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="startTime">زمان شروع گرمایش *</Label>
+              <Label htmlFor="startTime">زمان شروع *</Label>
               <Input
                 id="startTime"
                 type="time"
                 value={newSchedule.startTime}
                 onChange={(e) =>
                   setNewSchedule({ ...newSchedule, startTime: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="endTime">زمان پایان *</Label>
+              <Input
+                id="endTime"
+                type="time"
+                value={newSchedule.endTime}
+                onChange={(e) =>
+                  setNewSchedule({ ...newSchedule, endTime: e.target.value })
                 }
               />
             </div>
@@ -305,9 +330,11 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">
-                        زمان شروع:
+                        بازه زمانی:
                       </span>
-                      <span className="font-medium">{schedule.startTime}</span>
+                      <span className="font-medium">
+                        {schedule.startTime} - {schedule.endTime}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm text-gray-600 dark:text-gray-400">
