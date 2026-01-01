@@ -19,7 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { IconTrash, IconCheck } from "@tabler/icons-react";
+import { IconTrash, IconCheck, IconTemperature } from "@tabler/icons-react";
 
 interface HeatingSchedule {
   id: string;
@@ -169,14 +169,16 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>افزودن برنامه گرمایش جدید</CardTitle>
-          <CardDescription>
+      <Card className="border-2 border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <CardHeader className="border-b border-gray-200 pb-4 dark:border-gray-700">
+          <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+            افزودن برنامه گرمایش جدید
+          </CardTitle>
+          <CardDescription className="mt-1 text-gray-600 dark:text-gray-400">
             برنامه‌ریزی گرمایش بر اساس فصل و ماه سال
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="season">فصل *</Label>
@@ -272,46 +274,60 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
           </div>
 
           {error && (
-            <div className="rounded bg-red-50 p-3 text-sm text-red-500 dark:bg-red-900/20">
+            <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
               {error}
             </div>
           )}
 
-          <Button onClick={handleSave} disabled={isSaving} className="w-full">
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 py-6 font-semibold text-white shadow-lg transition-all hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
+          >
             {isSaving ? "در حال ذخیره..." : "ذخیره برنامه"}
           </Button>
         </CardContent>
       </Card>
 
       <div>
-        <h3 className="mb-4 text-xl font-bold">برنامه‌های تنظیم شده</h3>
+        <h3 className="mb-6 text-2xl font-bold text-gray-800 dark:text-gray-100">
+          برنامه‌های تنظیم شده
+        </h3>
         {schedules.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center text-gray-500">
-              هنوز برنامه‌ای تنظیم نشده است
+          <Card className="border-2 border-dashed border-gray-300 dark:border-gray-700">
+            <CardContent className="py-12 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                <IconTemperature size={32} className="text-gray-400" />
+              </div>
+              <p className="text-lg text-gray-500 dark:text-gray-400">
+                هنوز برنامه‌ای تنظیم نشده است
+              </p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {schedules.map((schedule) => (
-              <Card key={schedule.id}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg">
+              <Card
+                key={schedule.id}
+                className="border-2 border-gray-200 bg-white shadow-md transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-800"
+              >
+                <CardHeader className="border-b border-gray-200 pb-4 dark:border-gray-700">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-100">
                         {getSeasonLabel(schedule.season)}
                       </CardTitle>
-                      <CardDescription>
+                      <CardDescription className="mt-1 text-gray-600 dark:text-gray-400">
                         {schedule.month
                           ? `ماه: ${getMonthLabel(schedule.month)}`
                           : "کل فصل"}
                       </CardDescription>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex shrink-0 gap-2">
                       <Badge
-                        className={
+                        className={`${
                           schedule.enabled ? "bg-green-500" : "bg-gray-500"
-                        }
+                        } px-3 py-1 text-xs font-semibold text-white`}
                       >
                         {schedule.enabled ? "فعال" : "غیرفعال"}
                       </Badge>
@@ -319,31 +335,29 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDelete(schedule.id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="border-red-200 text-red-600 transition-all hover:border-red-400 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950"
                       >
                         <IconTrash size={16} />
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        بازه زمانی:
-                      </span>
-                      <span className="font-medium">
-                        {schedule.startTime} - {schedule.endTime}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">
-                        دمای مطلوب:
-                      </span>
-                      <span className="font-medium">
-                        {schedule.targetTemperature}°C
-                      </span>
-                    </div>
+                <CardContent className="space-y-3 pt-6">
+                  <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3 dark:bg-blue-950">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      بازه زمانی:
+                    </span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                      {schedule.startTime} - {schedule.endTime}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-purple-50 p-3 dark:bg-purple-950">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      دمای مطلوب:
+                    </span>
+                    <span className="font-bold text-purple-600 dark:text-purple-400">
+                      {schedule.targetTemperature}°C
+                    </span>
                   </div>
                 </CardContent>
               </Card>
