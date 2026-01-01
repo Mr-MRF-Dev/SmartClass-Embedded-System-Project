@@ -104,103 +104,142 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto space-y-6 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">پنل مدیریت SmartClass</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="container mx-auto space-y-8 p-6 md:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <h1 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent">
+              پنل مدیریت SmartClass
+            </h1>
+            <p className="text-lg text-gray-600 dark:text-gray-400">
               مدیریت و برنامه‌ریزی سیستم‌های تعبیه‌شده
             </p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={() => setShowSystemForm(true)}>
-              <IconPlus size={16} className="mr-2" />
+            <Button
+              onClick={() => setShowSystemForm(true)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
+            >
+              <IconPlus size={18} className="ml-2" />
               افزودن دیوایس
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-1">
-          <Card>
+        <div className="grid gap-6 md:grid-cols-1">
+          <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg transition-shadow hover:shadow-xl dark:border-blue-800 dark:from-blue-950 dark:to-purple-950">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                 تعداد کل دیوایس‌ها
               </CardTitle>
-              <IconServer size={20} className="text-gray-500" />
+              <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                <IconServer
+                  size={24}
+                  className="text-blue-600 dark:text-blue-400"
+                />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{systems.length}</div>
+              <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+                {systems.length}
+              </div>
             </CardContent>
           </Card>
         </div>
 
         <div>
-          <h2 className="mb-4 text-2xl font-bold">دیوایس‌ها</h2>
+          <h2 className="mb-6 text-3xl font-bold text-gray-800 dark:text-gray-200">
+            دیوایس‌ها
+          </h2>
           {systems.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-gray-500">
+            <Card className="border-2 border-dashed border-gray-300 dark:border-gray-700">
+              <CardContent className="py-16 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                  <IconServer size={32} className="text-gray-400" />
+                </div>
+                <p className="text-lg text-gray-500 dark:text-gray-400">
                   دیوایسی یافت نشد. اولین دیوایس را اضافه کنید!
                 </p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {systems.map((system) => (
                 <Card
                   key={system.id}
-                  className="cursor-pointer transition-shadow hover:shadow-lg"
+                  className="group cursor-pointer border-2 border-gray-200 bg-white transition-all duration-300 hover:border-blue-400 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
                   onClick={() => router.push(`/devices/${system.id}`)}
                 >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle>{system.name}</CardTitle>
-                        <CardDescription>{system.location}</CardDescription>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <CardTitle className="mb-1 text-xl font-bold text-gray-800 dark:text-gray-100">
+                          {system.name}
+                        </CardTitle>
+                        <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+                          {system.location}
+                        </CardDescription>
                         {system.deviceId && (
-                          <div className="mt-1 text-xs text-gray-500">
-                            شناسه: {system.deviceId}
+                          <div className="mt-2 inline-block rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                            {system.deviceId}
                           </div>
                         )}
                       </div>
-                      <Badge className={getStatusColor(system.status)}>
-                        {system.status}
+                      <Badge
+                        className={`${getStatusColor(system.status)} shrink-0 px-3 py-1 text-xs font-semibold text-white`}
+                      >
+                        {system.status === "active"
+                          ? "فعال"
+                          : system.status === "inactive"
+                            ? "غیرفعال"
+                            : system.status === "maintenance"
+                              ? "تعمیر"
+                              : system.status}
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                  <CardContent className="space-y-4">
+                    <p className="line-clamp-2 min-h-[2.5rem] text-sm text-gray-600 dark:text-gray-400">
                       {system.description || "بدون توضیحات"}
                     </p>
-                    <div className="mb-3 flex items-center justify-between text-sm">
-                      <span className="font-medium">
-                        {system._count?.heatingSchedules || 0} برنامه گرمایش
-                      </span>
+                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-3 dark:from-blue-950 dark:to-purple-950">
+                      <div className="flex items-center gap-2">
+                        <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+                          <IconSettings
+                            size={16}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
+                        </div>
+                        <span className="font-semibold text-gray-700 dark:text-gray-300">
+                          {system._count?.heatingSchedules || 0} برنامه
+                        </span>
+                      </div>
                       {system.lastSeen && (
-                        <span className="text-xs text-gray-500">
-                          {new Date(system.lastSeen).toLocaleTimeString()}
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          {new Date(system.lastSeen).toLocaleTimeString(
+                            "fa-IR",
+                          )}
                         </span>
                       )}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 pt-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
+                        className="flex-1 border-blue-200 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-800 dark:hover:border-blue-600 dark:hover:bg-blue-950"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/devices/${system.id}`);
                         }}
                       >
-                        <IconSettings size={16} className="mr-2" />
-                        مدیریت و برنامه‌ریزی
-                        <IconArrowRight size={16} className="mr-2" />
+                        <IconSettings size={16} className="ml-2" />
+                        مدیریت
+                        <IconArrowRight size={16} className="ml-2" />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                        className="border-red-200 text-red-600 transition-all hover:border-red-400 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteDevice(system.id, system.name);
