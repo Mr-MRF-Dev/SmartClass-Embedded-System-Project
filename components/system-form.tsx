@@ -27,8 +27,6 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
     classroom: "",
     description: "",
     status: "active",
-    ipAddress: "",
-    macAddress: "",
     deviceId: "",
   });
 
@@ -52,8 +50,6 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
         classroom: "",
         description: "",
         status: "active",
-        ipAddress: "",
-        macAddress: "",
         deviceId: "",
       });
       onSuccess?.();
@@ -124,38 +120,12 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
           onChange={(e) =>
             setFormData({ ...formData, deviceId: e.target.value })
           }
-          placeholder="e.g., DEVICE-001"
+          placeholder="مثال: DEVICE-001"
           required
         />
         <p className="text-xs text-gray-500">
           شناسه یکتای دیوایس برای شناسایی و کنترل
         </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="ipAddress">آدرس IP</Label>
-          <Input
-            id="ipAddress"
-            value={formData.ipAddress}
-            onChange={(e) =>
-              setFormData({ ...formData, ipAddress: e.target.value })
-            }
-            placeholder="مثال: 192.168.1.100"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="macAddress">آدرس MAC</Label>
-          <Input
-            id="macAddress"
-            value={formData.macAddress}
-            onChange={(e) =>
-              setFormData({ ...formData, macAddress: e.target.value })
-            }
-            placeholder="مثال: AA:BB:CC:DD:EE:FF"
-          />
-        </div>
       </div>
 
       <div className="space-y-2">

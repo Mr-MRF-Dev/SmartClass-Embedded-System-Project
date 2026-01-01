@@ -4,17 +4,17 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { macAddress, sensors, powerUsage } = body;
+    const { deviceId, sensors, powerUsage } = body;
 
-    if (!macAddress) {
+    if (!deviceId) {
       return NextResponse.json(
-        { error: "macAddress is required" },
+        { error: "deviceId is required" },
         { status: 400 },
       );
     }
 
     const system = await prisma.embeddedSystem.findUnique({
-      where: { macAddress },
+      where: { deviceId },
       include: { sensors: true },
     });
 

@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SystemForm } from "@/components/system-form";
-import { SensorForm } from "@/components/sensor-form";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -64,7 +63,6 @@ export default function Dashboard() {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSystemForm, setShowSystemForm] = useState(false);
-  const [showSensorForm, setShowSensorForm] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -130,10 +128,6 @@ export default function Dashboard() {
             <Button onClick={() => setShowSystemForm(true)}>
               <IconPlus size={16} className="mr-2" />
               افزودن دیوایس
-            </Button>
-            <Button onClick={() => setShowSensorForm(true)} variant="outline">
-              <IconPlus size={16} className="mr-2" />
-              افزودن سنسور
             </Button>
           </div>
         </div>
@@ -312,22 +306,6 @@ export default function Dashboard() {
               fetchData();
             }}
             onCancel={() => setShowSystemForm(false)}
-          />
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog open={showSensorForm} onOpenChange={setShowSensorForm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>افزودن سنسور جدید</AlertDialogTitle>
-          </AlertDialogHeader>
-          <SensorForm
-            systems={systems}
-            onSuccess={() => {
-              setShowSensorForm(false);
-              fetchData();
-            }}
-            onCancel={() => setShowSensorForm(false)}
           />
         </AlertDialogContent>
       </AlertDialog>

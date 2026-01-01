@@ -29,8 +29,6 @@ interface EmbeddedSystem {
   description?: string;
   status: string;
   deviceId?: string;
-  ipAddress?: string;
-  macAddress?: string;
   lastSeen?: string;
   createdAt: string;
 }
@@ -167,32 +165,6 @@ export default function DeviceDetailPage() {
                         توضیحات
                       </div>
                       <div className="text-sm">{device.description}</div>
-                    </div>
-                  </div>
-                )}
-
-                {device.ipAddress && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        آدرس IP
-                      </div>
-                      <div className="font-mono text-sm">
-                        {device.ipAddress}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {device.macAddress && (
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        آدرس MAC
-                      </div>
-                      <div className="font-mono text-sm">
-                        {device.macAddress}
-                      </div>
                     </div>
                   </div>
                 )}

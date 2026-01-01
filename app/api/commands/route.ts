@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const macAddress = searchParams.get("macAddress");
+  const deviceId = searchParams.get("deviceId");
 
-  if (!macAddress) {
+  if (!deviceId) {
     return NextResponse.json(
-      { error: "macAddress is required" },
+      { error: "deviceId is required" },
       { status: 400 },
     );
   }
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const commands = await prisma.command.findMany({
       where: {
         embeddedSystem: {
-          macAddress,
+          deviceId,
         },
         status: "pending",
       },

@@ -38,16 +38,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      name,
-      location,
-      classroom,
-      description,
-      status,
-      ipAddress,
-      macAddress,
-      deviceId,
-    } = body;
+    const { name, location, classroom, description, status, deviceId } = body;
 
     if (!name || !location || !deviceId) {
       return NextResponse.json(
@@ -63,8 +54,6 @@ export async function POST(request: Request) {
         classroom,
         description,
         status: status || "active",
-        ipAddress,
-        macAddress,
         deviceId,
         lastSeen: new Date(),
       },
