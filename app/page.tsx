@@ -19,14 +19,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  IconTemperature,
-  IconDroplet,
-  IconSun,
-  IconActivity,
   IconPlus,
-  IconDevices,
   IconServer,
-  IconBolt,
   IconSettings,
   IconArrowRight,
   IconTrash,
@@ -42,38 +36,19 @@ interface EmbeddedSystem {
   deviceId?: string;
   lastSeen?: string;
   createdAt: string;
-  sensors: Sensor[];
-  _count?: { sensors: number };
-}
-
-interface Sensor {
-  id: string;
-  name: string;
-  type: string;
-  unit?: string;
-  currentValue?: number;
-  status: string;
-  embeddedSystemId: string;
-  embeddedSystem?: { name: string };
-  updatedAt: string;
+  _count?: { heatingSchedules: number };
 }
 
 export default function Dashboard() {
   const router = useRouter();
   const [systems, setSystems] = useState<EmbeddedSystem[]>([]);
-  const [sensors, setSensors] = useState<Sensor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showSystemForm, setShowSystemForm] = useState(false);
 
   const fetchData = async () => {
     try {
-      const [systemsRes, sensorsRes] = await Promise.all([
-        fetch("/api/systems"),
-        fetch("/api/sensors"),
-      ]);
-
+      const systemsRes = await fetch("/api/systems");
       if (systemsRes.ok) setSystems(await systemsRes.json());
-      if (sensorsRes.ok) setSensors(await sensorsRes.json());
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -106,16 +81,6 @@ export default function Dashboard() {
       console.error("Error deleting device:", error);
       alert("خطا در حذف دیوایس. لطفا دوباره تلاش کنید.");
     }
-  };
-
-  const getSensorIcon = (type: string) => {
-    const icons: Record<string, React.ReactNode> = {
-      temperature: <IconTemperature size={20} />,
-      humidity: <IconDroplet size={20} />,
-      light: <IconSun size={20} />,
-      power: <IconBolt size={20} />,
-    };
-    return icons[type] || <IconActivity size={20} />;
   };
 
   const getStatusColor = (status: string) => {
@@ -156,7 +121,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-1">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">
@@ -166,30 +131,6 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{systems.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                تعداد کل سنسورها
-              </CardTitle>
-              <IconDevices size={20} className="text-gray-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{sensors.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                سنسورهای آنلاین
-              </CardTitle>
-              <IconActivity size={20} className="text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {sensors.filter((d) => d.status === "online").length}
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -234,7 +175,7 @@ export default function Dashboard() {
                     </p>
                     <div className="mb-3 flex items-center justify-between text-sm">
                       <span className="font-medium">
-                        {system.sensors?.length || 0} سنسور
+                        {system._count?.heatingSchedules || 0} برنامه گرمایش
                       </span>
                       {system.lastSeen && (
                         <span className="text-xs text-gray-500">
@@ -268,62 +209,6 @@ export default function Dashboard() {
                         <IconTrash size={16} />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <h2 className="mb-4 text-2xl font-bold">سنسورها</h2>
-          {sensors.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-gray-500">
-                  سنسوری یافت نشد. اولین سنسور را اضافه کنید!
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {sensors.map((sensor) => (
-                <Card key={sensor.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        {getSensorIcon(sensor.type)}
-                        <div>
-                          <CardTitle className="text-base">
-                            {sensor.name}
-                          </CardTitle>
-                          <CardDescription className="text-xs">
-                            {sensor.embeddedSystem?.name}
-                          </CardDescription>
-                        </div>
-                      </div>
-                      <Badge
-                        className={getStatusColor(sensor.status)}
-                        variant="outline"
-                      >
-                        {sensor.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {sensor.currentValue !== null &&
-                      sensor.currentValue !== undefined
-                        ? `${sensor.currentValue} ${sensor.unit || ""}`
-                        : "N/A"}
-                    </div>
-                    <p className="mt-1 text-xs text-gray-500">
-                      {sensor.updatedAt
-                        ? `آخرین بروزرسانی: ${new Date(
-                            sensor.updatedAt,
-                          ).toLocaleString("fa-IR")}`
-                        : "هنوز داده‌ای ثبت نشده"}
-                    </p>
                   </CardContent>
                 </Card>
               ))}

@@ -6,9 +6,8 @@ export async function GET() {
   try {
     const systems = await prisma.embeddedSystem.findMany({
       include: {
-        sensors: true,
         _count: {
-          select: { sensors: true },
+          select: { heatingSchedules: true },
         },
       },
       orderBy: {
