@@ -29,6 +29,7 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
     status: "active",
     ipAddress: "",
     macAddress: "",
+    deviceId: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +54,7 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
         status: "active",
         ipAddress: "",
         macAddress: "",
+        deviceId: "",
       });
       onSuccess?.();
     } catch (err) {
@@ -65,83 +67,99 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">System Name *</Label>
+        <Label htmlFor="name">نام دیوایس *</Label>
         <Input
           id="name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="e.g., Classroom A Monitor"
+          placeholder="مثال: سیستم گرمایش کلاس A"
           required
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="location">Location *</Label>
+          <Label htmlFor="location">موقعیت *</Label>
           <Input
             id="location"
             value={formData.location}
             onChange={(e) =>
               setFormData({ ...formData, location: e.target.value })
             }
-            placeholder="e.g., Building 1, Room 101"
+            placeholder="مثال: ساختمان 1، اتاق 101"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="classroom">Classroom</Label>
+          <Label htmlFor="classroom">کلاس</Label>
           <Input
             id="classroom"
             value={formData.classroom}
             onChange={(e) =>
               setFormData({ ...formData, classroom: e.target.value })
             }
-            placeholder="e.g., Room 101"
+            placeholder="مثال: اتاق 101"
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">توضیحات</Label>
         <Textarea
           id="description"
           value={formData.description}
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
-          placeholder="Optional description..."
+          placeholder="توضیحات اختیاری..."
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="deviceId">شناسه یکتای دیوایس *</Label>
+        <Input
+          id="deviceId"
+          value={formData.deviceId}
+          onChange={(e) =>
+            setFormData({ ...formData, deviceId: e.target.value })
+          }
+          placeholder="e.g., DEVICE-001"
+          required
+        />
+        <p className="text-xs text-gray-500">
+          شناسه یکتای دیوایس برای شناسایی و کنترل
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="ipAddress">IP Address</Label>
+          <Label htmlFor="ipAddress">آدرس IP</Label>
           <Input
             id="ipAddress"
             value={formData.ipAddress}
             onChange={(e) =>
               setFormData({ ...formData, ipAddress: e.target.value })
             }
-            placeholder="e.g., 192.168.1.100"
+            placeholder="مثال: 192.168.1.100"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="macAddress">MAC Address</Label>
+          <Label htmlFor="macAddress">آدرس MAC</Label>
           <Input
             id="macAddress"
             value={formData.macAddress}
             onChange={(e) =>
               setFormData({ ...formData, macAddress: e.target.value })
             }
-            placeholder="e.g., AA:BB:CC:DD:EE:FF"
+            placeholder="مثال: AA:BB:CC:DD:EE:FF"
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="status">Status</Label>
+        <Label htmlFor="status">وضعیت</Label>
         <Select
           value={formData.status}
           onValueChange={(value) =>
@@ -152,9 +170,9 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-            <SelectItem value="maintenance">Maintenance</SelectItem>
+            <SelectItem value="active">فعال</SelectItem>
+            <SelectItem value="inactive">غیرفعال</SelectItem>
+            <SelectItem value="maintenance">در حال تعمیر</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -164,11 +182,11 @@ export function SystemForm({ onSuccess, onCancel }: SystemFormProps) {
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
+            انصراف
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Creating..." : "Create System"}
+          {isLoading ? "در حال ایجاد..." : "ایجاد دیوایس"}
         </Button>
       </div>
     </form>

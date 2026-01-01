@@ -46,11 +46,12 @@ export async function POST(request: Request) {
       status,
       ipAddress,
       macAddress,
+      deviceId,
     } = body;
 
-    if (!name || !location) {
+    if (!name || !location || !deviceId) {
       return NextResponse.json(
-        { error: "Name and location are required" },
+        { error: "Name, location, and deviceId are required" },
         { status: 400 },
       );
     }
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
         status: status || "active",
         ipAddress,
         macAddress,
+        deviceId,
         lastSeen: new Date(),
       },
     });

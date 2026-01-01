@@ -16,6 +16,7 @@ model EmbeddedSystem {
   status      String   @default("active")
   ipAddress   String?
   macAddress  String?  @unique
+  deviceId    String?  @unique
   lastSeen    DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -23,6 +24,7 @@ model EmbeddedSystem {
   sensors     Sensor[]
   powerUsage  PowerUsage[]
   commands    Command[]
+  heatingSchedules HeatingSchedule[]
   
   @@map("embedded_systems")
 }
@@ -91,4 +93,22 @@ model Command {
   @@map("commands")
   @@index([embeddedSystemId, status])
   @@index([sentAt(sort: Desc)])
+}
+
+model HeatingSchedule {
+  id               String   @id @default(cuid())
+  embeddedSystemId String
+  season           String   // spring, summer, fall, winter
+  month            Int?     // 1-12 (optional, for monthly override)
+  startTime        String   // HH:mm format
+  targetTemperature Float   // دمای مطلوب
+  enabled          Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  
+  @@map("heating_schedules")
+  @@index([embeddedSystemId, season, month])
+  @@unique([embeddedSystemId, season, month])
 }
