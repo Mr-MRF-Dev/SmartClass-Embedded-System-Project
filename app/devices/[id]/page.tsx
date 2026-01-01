@@ -19,6 +19,7 @@ import {
   IconCalendar,
   IconTemperature,
   IconClock,
+  IconTrash,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -56,6 +57,29 @@ export default function DeviceDetailPage() {
       setError(err instanceof Error ? err.message : "خطا در بارگذاری");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (
+      !confirm(
+        `آیا مطمئن هستید که می‌خواهید دیوایس "${device?.name}" را حذف کنید؟\nاین عمل غیرقابل بازگشت است و تمام برنامه‌های مرتبط نیز حذف خواهند شد.`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/systems/${params.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete device");
+
+      router.push("/");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "خطا در حذف دیوایس");
+      alert("خطا در حذف دیوایس. لطفا دوباره تلاش کنید.");
     }
   };
 
@@ -115,9 +139,19 @@ export default function DeviceDetailPage() {
               </p>
             </div>
           </div>
-          <Badge className={getStatusColor(device.status)}>
-            {device.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge className={getStatusColor(device.status)}>
+              {device.status}
+            </Badge>
+            <Button
+              variant="outline"
+              onClick={handleDelete}
+              className="flex items-center gap-2 text-red-500 hover:bg-red-50 hover:text-red-700"
+            >
+              <IconTrash size={16} />
+              حذف دیوایس
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

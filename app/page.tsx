@@ -29,6 +29,7 @@ import {
   IconBolt,
   IconSettings,
   IconArrowRight,
+  IconTrash,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -83,6 +84,29 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleDeleteDevice = async (deviceId: string, deviceName: string) => {
+    if (
+      !confirm(
+        `آیا مطمئن هستید که می‌خواهید دیوایس "${deviceName}" را حذف کنید؟\nاین عمل غیرقابل بازگشت است.`,
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/systems/${deviceId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete device");
+
+      await fetchData();
+    } catch (error) {
+      console.error("Error deleting device:", error);
+      alert("خطا در حذف دیوایس. لطفا دوباره تلاش کنید.");
+    }
+  };
 
   const getSensorIcon = (type: string) => {
     const icons: Record<string, React.ReactNode> = {
@@ -218,19 +242,32 @@ export default function Dashboard() {
                         </span>
                       )}
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/devices/${system.id}`);
-                      }}
-                    >
-                      <IconSettings size={16} className="mr-2" />
-                      مدیریت و برنامه‌ریزی
-                      <IconArrowRight size={16} className="mr-2" />
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/devices/${system.id}`);
+                        }}
+                      >
+                        <IconSettings size={16} className="mr-2" />
+                        مدیریت و برنامه‌ریزی
+                        <IconArrowRight size={16} className="mr-2" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteDevice(system.id, system.name);
+                        }}
+                      >
+                        <IconTrash size={16} />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

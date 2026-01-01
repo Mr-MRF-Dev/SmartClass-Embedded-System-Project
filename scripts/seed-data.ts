@@ -163,7 +163,6 @@ async function seedData() {
   await ingestData({
     macAddress: "AA:BB:CC:DD:EE:01",
     sensors: [
-      { id: "temp-1", value: 22.5 },
       { id: "hum-1", value: 45.3 },
       { id: "light-1", value: 650 },
     ],
