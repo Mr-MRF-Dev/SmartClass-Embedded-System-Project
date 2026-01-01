@@ -1,6 +1,7 @@
 // Prisma Schema for SmartClass Embedded Systems
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
