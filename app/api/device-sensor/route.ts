@@ -44,6 +44,22 @@ export async function POST(request: Request) {
 
     const timestamp = new Date();
 
+    // Store all sensor readings
+    await prisma.deviceReading.create({
+      data: {
+        embeddedSystemId: system.id,
+        temperature: temp !== null && temp !== undefined ? temp : null,
+        humidity: humidity !== null && humidity !== undefined ? humidity : null,
+        light: light !== null && light !== undefined ? light : null,
+        presence: presence !== null && presence !== undefined ? presence : null,
+        currentConsumption:
+          currentConsumption !== null && currentConsumption !== undefined
+            ? currentConsumption
+            : null,
+        timestamp,
+      },
+    });
+
     // Store power consumption data
     if (currentConsumption !== null && currentConsumption !== undefined) {
       await prisma.powerUsage.create({

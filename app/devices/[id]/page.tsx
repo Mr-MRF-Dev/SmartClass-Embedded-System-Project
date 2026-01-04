@@ -20,7 +20,21 @@ import {
   IconTemperature,
   IconClock,
   IconTrash,
+  IconDroplet,
+  IconSun,
+  IconUser,
+  IconBolt,
 } from "@tabler/icons-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 interface EmbeddedSystem {
   id: string;
@@ -34,16 +48,33 @@ interface EmbeddedSystem {
   createdAt: string;
 }
 
+interface DeviceReading {
+  id: string;
+  temperature: number | null;
+  humidity: number | null;
+  light: number | null;
+  presence: number | null;
+  currentConsumption: number | null;
+  timestamp: string;
+}
+
 export default function DeviceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [device, setDevice] = useState<EmbeddedSystem | null>(null);
+  const [readings, setReadings] = useState<DeviceReading[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (params.id) {
       fetchDevice();
+      fetchReadings();
+      // Refresh readings every 30 seconds
+      const interval = setInterval(() => {
+        fetchReadings();
+      }, 30000);
+      return () => clearInterval(interval);
     }
   }, [params.id]);
 
@@ -59,6 +90,36 @@ export default function DeviceDetailPage() {
       setIsLoading(false);
     }
   };
+
+  const fetchReadings = async () => {
+    try {
+      const response = await fetch(
+        `/api/device-readings/${params.id}?hours=24&limit=200`,
+      );
+      if (!response.ok) throw new Error("Failed to fetch readings");
+      const data = await response.json();
+      setReadings(data);
+    } catch (err) {
+      console.error("Error fetching readings:", err);
+    }
+  };
+
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString("fa-IR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const chartData = readings.map((reading) => ({
+    time: formatTime(reading.timestamp),
+    timestamp: reading.timestamp,
+    temperature: reading.temperature,
+    humidity: reading.humidity,
+    light: reading.light,
+    presence: reading.presence,
+    currentConsumption: reading.currentConsumption,
+  }));
 
   const handleDelete = async () => {
     if (
@@ -270,6 +331,185 @@ export default function DeviceDetailPage() {
             </CardHeader>
             <CardContent className="pt-6">
               <HeatingScheduleForm systemId={device.id} />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sensor Charts Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            نمودارهای سنسورها
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Temperature Chart */}
+            <Card className="border-2 border-red-200 bg-white shadow-lg dark:border-red-800 dark:bg-gray-800">
+              <CardHeader className="border-b border-red-200 pb-4 dark:border-red-800">
+                <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="rounded-full bg-red-100 p-2 dark:bg-red-900">
+                    <IconTemperature
+                      size={24}
+                      className="text-red-600 dark:text-red-400"
+                    />
+                  </div>
+                  دما (°C)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="temperature"
+                      stroke="#ef4444"
+                      strokeWidth={2}
+                      dot={false}
+                      name="دما (°C)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Humidity Chart */}
+            <Card className="border-2 border-blue-200 bg-white shadow-lg dark:border-blue-800 dark:bg-gray-800">
+              <CardHeader className="border-b border-blue-200 pb-4 dark:border-blue-800">
+                <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+                    <IconDroplet
+                      size={24}
+                      className="text-blue-600 dark:text-blue-400"
+                    />
+                  </div>
+                  رطوبت (%)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="humidity"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      dot={false}
+                      name="رطوبت (%)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Light Chart */}
+            <Card className="border-2 border-yellow-200 bg-white shadow-lg dark:border-yellow-800 dark:bg-gray-800">
+              <CardHeader className="border-b border-yellow-200 pb-4 dark:border-yellow-800">
+                <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="rounded-full bg-yellow-100 p-2 dark:bg-yellow-900">
+                    <IconSun
+                      size={24}
+                      className="text-yellow-600 dark:text-yellow-400"
+                    />
+                  </div>
+                  نور
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="light"
+                      stroke="#eab308"
+                      strokeWidth={2}
+                      dot={false}
+                      name="نور"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Presence Chart */}
+            <Card className="border-2 border-green-200 bg-white shadow-lg dark:border-green-800 dark:bg-gray-800">
+              <CardHeader className="border-b border-green-200 pb-4 dark:border-green-800">
+                <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
+                  <div className="rounded-full bg-green-100 p-2 dark:bg-green-900">
+                    <IconUser
+                      size={24}
+                      className="text-green-600 dark:text-green-400"
+                    />
+                  </div>
+                  حضور
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="presence"
+                      stroke="#22c55e"
+                      strokeWidth={2}
+                      dot={false}
+                      name="حضور"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Current Consumption Chart - Full Width */}
+          <Card className="border-2 border-purple-200 bg-white shadow-lg dark:border-purple-800 dark:bg-gray-800">
+            <CardHeader className="border-b border-purple-200 pb-4 dark:border-purple-800">
+              <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
+                <div className="rounded-full bg-purple-100 p-2 dark:bg-purple-900">
+                  <IconBolt
+                    size={24}
+                    className="text-purple-600 dark:text-purple-400"
+                  />
+                </div>
+                مصرف جریان (A)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="time" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="currentConsumption"
+                    stroke="#a855f7"
+                    strokeWidth={2}
+                    dot={false}
+                    name="مصرف جریان (A)"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>

@@ -22,11 +22,28 @@ model EmbeddedSystem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  deviceReadings DeviceReading[]
   powerUsage  PowerUsage[]
   commands    Command[]
   heatingSchedules HeatingSchedule[]
 
   @@map("embedded_systems")
+}
+
+model DeviceReading {
+  id               String   @id @default(cuid())
+  embeddedSystemId String
+  temperature      Float?
+  humidity         Float?
+  light            Float?
+  presence         Float?
+  currentConsumption Float?
+  timestamp        DateTime @default(now())
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  
+  @@map("device_readings")
+  @@index([embeddedSystemId, timestamp(sort: Desc)])
 }
 
 model PowerUsage {

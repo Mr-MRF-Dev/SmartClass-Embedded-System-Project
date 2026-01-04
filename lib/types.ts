@@ -1,5 +1,5 @@
 // Type definitions for the database models
-import { EmbeddedSystem, PowerUsage, Command } from "@prisma/client";
+import { EmbeddedSystem, PowerUsage, Command } from "@/generated/prisma/client";
 
 export type SystemWithRelations = EmbeddedSystem & {
   powerUsage: PowerUsage[];
