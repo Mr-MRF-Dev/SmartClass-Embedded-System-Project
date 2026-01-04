@@ -11,7 +11,6 @@ export async function GET(
     const system = await prisma.embeddedSystem.findUnique({
       where: { id },
       include: {
-        sensors: true,
         powerUsage: {
           take: 10,
           orderBy: { timestamp: "desc" },

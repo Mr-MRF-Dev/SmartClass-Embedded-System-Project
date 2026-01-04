@@ -1,0 +1,70 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+
+    // Expect an array: [deviceId, temp, humidity, light, presence, current_consumption]
+    if (!Array.isArray(body) || body.length !== 6) {
+      return NextResponse.json(
+        {
+          error:
+            "Expected array of 6 values: [deviceId, temp, humidity, light, presence, current_consumption]",
+        },
+        { status: 400 },
+      );
+    }
+
+    const [deviceId, temp, humidity, light, presence, currentConsumption] =
+      body;
+
+    // Validate deviceId
+    if (!deviceId || typeof deviceId !== "string") {
+      return NextResponse.json(
+        { error: "First element must be a valid deviceId string" },
+        { status: 400 },
+      );
+    }
+
+    // Find the embedded system by deviceId
+    const system = await prisma.embeddedSystem.findUnique({
+      where: { deviceId },
+    });
+
+    if (!system) {
+      return NextResponse.json({ error: "Device not found" }, { status: 404 });
+    }
+
+    // Update last seen timestamp
+    await prisma.embeddedSystem.update({
+      where: { id: system.id },
+      data: { lastSeen: new Date() },
+    });
+
+    const timestamp = new Date();
+
+    // Store power consumption data
+    if (currentConsumption !== null && currentConsumption !== undefined) {
+      await prisma.powerUsage.create({
+        data: {
+          embeddedSystemId: system.id,
+          current: currentConsumption,
+          power: currentConsumption * 220, // Assuming 220V, calculate power
+          timestamp,
+        },
+      });
+    }
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("Error processing device sensor data:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to process device sensor data",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
+    );
+  }
+}

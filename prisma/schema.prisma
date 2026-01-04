@@ -21,47 +21,12 @@ model EmbeddedSystem {
   lastSeen    DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
-  sensors     Sensor[]
+
   powerUsage  PowerUsage[]
   commands    Command[]
   heatingSchedules HeatingSchedule[]
-  
+
   @@map("embedded_systems")
-}
-
-model Sensor {
-  id               String   @id @default(cuid())
-  name             String
-  type             String
-  unit             String?
-  currentValue     Float?
-  minValue         Float?
-  maxValue         Float?
-  threshold        Float?
-  status           String   @default("online")
-  embeddedSystemId String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  
-  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
-  readings         SensorReading[]
-  
-  @@map("sensors")
-  @@index([embeddedSystemId])
-  @@index([type])
-}
-
-model SensorReading {
-  id        String   @id @default(cuid())
-  sensorId  String
-  value     Float
-  timestamp DateTime @default(now())
-  
-  sensor    Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
-  
-  @@map("sensor_readings")
-  @@index([sensorId, timestamp(sort: Desc)])
 }
 
 model PowerUsage {
