@@ -16,7 +16,6 @@ import {
   IconArrowLeft,
   IconDeviceDesktop,
   IconMapPin,
-  IconCalendar,
   IconTemperature,
   IconClock,
   IconTrash,
@@ -76,6 +75,7 @@ export default function DeviceDetailPage() {
       }, 30000);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   const fetchDevice = async () => {
@@ -158,9 +158,9 @@ export default function DeviceDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600 dark:border-blue-800 dark:border-t-blue-400"></div>
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-transparent border-t-blue-600 dark:border-t-blue-400"></div>
           <div className="text-xl font-semibold text-gray-700 dark:text-gray-300">
             در حال بارگذاری اطلاعات...
           </div>
@@ -171,7 +171,7 @@ export default function DeviceDetailPage() {
 
   if (error || !device) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
         <Card className="max-w-md border-2 border-red-200 dark:border-red-800">
           <CardContent className="pt-6 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
@@ -189,7 +189,7 @@ export default function DeviceDetailPage() {
             <Button
               onClick={() => router.push("/")}
               size="lg"
-              className="bg-gradient-to-r from-blue-600 to-purple-600"
+              className="bg-linear-to-r from-blue-600 to-purple-600"
             >
               <IconArrowLeft size={18} className="ml-2" />
               بازگشت به صفحه اصلی
@@ -201,10 +201,10 @@ export default function DeviceDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
       <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
         {/* Enhanced Header */}
-        <div className="animate-in fade-in slide-in-from-top flex flex-col gap-6 duration-700 sm:flex-row sm:items-center sm:justify-between">
+        <div className="animate-in slide-in-from-top flex flex-col gap-6 border-none! shadow-none! duration-700 outline-none sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
             <Button
               variant="outline"
@@ -220,7 +220,7 @@ export default function DeviceDetailPage() {
             </Button>
             <div>
               <div className="flex items-center gap-4">
-                <div className="rounded-2xl bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 p-4 shadow-lg dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
+                <div className="rounded-2xl bg-linear-to-br from-blue-100 via-indigo-100 to-purple-100 p-4 shadow-lg dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
                   <IconDeviceDesktop
                     size={40}
                     className="text-blue-600 dark:text-blue-400"
@@ -271,7 +271,7 @@ export default function DeviceDetailPage() {
             <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
             <CardHeader className="relative z-10 border-b-2 border-gray-200 pb-4 dark:border-gray-700">
               <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
-                <div className="rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-md dark:from-blue-900 dark:to-indigo-900">
+                <div className="rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 p-2.5 shadow-md dark:from-blue-900 dark:to-indigo-900">
                   <IconDeviceDesktop
                     size={24}
                     className="text-blue-600 dark:text-blue-400"

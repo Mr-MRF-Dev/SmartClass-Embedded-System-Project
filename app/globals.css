@@ -259,7 +259,7 @@ html {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border focus:ring-0 focus:outline-none;
   }
   body {
     @apply bg-background text-foreground;
