@@ -158,56 +158,89 @@ export default function DeviceDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">در حال بارگذاری...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+        <div className="text-center">
+          <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600 dark:border-blue-800 dark:border-t-blue-400"></div>
+          <div className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            در حال بارگذاری اطلاعات...
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error || !device) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 text-lg text-red-500">
-            {error || "دیوایس یافت نشد"}
-          </div>
-          <Button onClick={() => router.push("/")}>بازگشت به صفحه اصلی</Button>
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+        <Card className="max-w-md border-2 border-red-200 dark:border-red-800">
+          <CardContent className="pt-6 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
+              <IconDeviceDesktop
+                size={32}
+                className="text-red-600 dark:text-red-400"
+              />
+            </div>
+            <h2 className="mb-2 text-xl font-bold text-gray-800 dark:text-gray-200">
+              خطا در بارگذاری
+            </h2>
+            <p className="mb-6 text-red-600 dark:text-red-400">
+              {error || "دیوایس یافت نشد"}
+            </p>
+            <Button
+              onClick={() => router.push("/")}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600"
+            >
+              <IconArrowLeft size={18} className="ml-2" />
+              بازگشت به صفحه اصلی
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto space-y-8 p-6 md:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
+        {/* Enhanced Header */}
+        <div className="animate-in fade-in slide-in-from-top flex flex-col gap-6 duration-700 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-4">
             <Button
               variant="outline"
+              size="lg"
               onClick={() => router.push("/")}
-              className="flex items-center gap-2 border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+              className="group border-2 border-gray-300 bg-white/80 backdrop-blur-sm transition-all hover:border-blue-400 hover:bg-blue-50 hover:shadow-md dark:border-gray-700 dark:bg-gray-800/80 dark:hover:border-blue-600 dark:hover:bg-blue-950"
             >
-              <IconArrowLeft size={18} className="ml-2" />
+              <IconArrowLeft
+                size={20}
+                className="ml-2 transition-transform group-hover:-translate-x-1"
+              />
               بازگشت
             </Button>
             <div>
-              <h1 className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent">
-                <div className="rounded-full bg-gradient-to-r from-blue-100 to-purple-100 p-3 dark:from-blue-900 dark:to-purple-900">
+              <div className="flex items-center gap-4">
+                <div className="rounded-2xl bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 p-4 shadow-lg dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
                   <IconDeviceDesktop
-                    size={32}
+                    size={40}
                     className="text-blue-600 dark:text-blue-400"
                   />
                 </div>
-                {device.name}
-              </h1>
-              <p className="mt-2 text-lg text-gray-600 dark:text-gray-400">
-                مدیریت و برنامه‌ریزی گرمایش
-              </p>
+                <div>
+                  <h1 className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-sm">
+                    {device.name}
+                  </h1>
+                  <p className="mt-2 flex items-center gap-2 text-lg text-gray-600 dark:text-gray-300">
+                    <IconMapPin size={18} />
+                    {device.location}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Badge
-              className={`${getStatusColor(device.status)} px-4 py-2 text-sm font-semibold text-white`}
+              className={`${getStatusColor(device.status)} px-5 py-2.5 text-sm font-bold text-white shadow-md transition-transform hover:scale-105`}
             >
               {device.status === "active"
                 ? "فعال"
@@ -219,60 +252,72 @@ export default function DeviceDetailPage() {
             </Badge>
             <Button
               variant="outline"
+              size="lg"
               onClick={handleDelete}
-              className="flex items-center gap-2 border-red-200 text-red-600 transition-all hover:border-red-400 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950"
+              className="group border-2 border-red-200 bg-red-50 text-red-600 transition-all hover:border-red-400 hover:bg-red-100 hover:shadow-md dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-900"
             >
-              <IconTrash size={18} className="ml-2" />
+              <IconTrash
+                size={20}
+                className="ml-2 transition-transform group-hover:scale-110"
+              />
               حذف دیوایس
             </Button>
           </div>
         </div>
 
+        {/* Info and Schedule Cards */}
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="border-2 border-gray-200 bg-white shadow-lg transition-shadow hover:shadow-xl dark:border-gray-700 dark:bg-gray-800">
-            <CardHeader className="border-b border-gray-200 pb-4 dark:border-gray-700">
-              <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          <Card className="group animate-in fade-in slide-in-from-left relative overflow-hidden border-2 border-gray-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all duration-700 hover:scale-[1.02] hover:shadow-2xl dark:border-gray-700 dark:bg-gray-800/80">
+            <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
+            <CardHeader className="relative z-10 border-b-2 border-gray-200 pb-4 dark:border-gray-700">
+              <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
+                <div className="rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-md dark:from-blue-900 dark:to-indigo-900">
+                  <IconDeviceDesktop
+                    size={24}
+                    className="text-blue-600 dark:text-blue-400"
+                  />
+                </div>
                 اطلاعات دیوایس
               </CardTitle>
-              <CardDescription className="mt-1 text-gray-600 dark:text-gray-400">
-                مشخصات و اطلاعات کلی دیوایس
+              <CardDescription className="mt-2 text-base text-gray-600 dark:text-gray-400">
+                مشخصات و اطلاعات کامل دیوایس
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 pt-6">
+            <CardContent className="relative z-10 space-y-4 pt-6">
               <div className="space-y-4">
-                <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
-                  <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all hover:shadow-md dark:from-blue-950 dark:to-indigo-950">
+                  <div className="rounded-xl bg-blue-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-blue-900">
                     <IconDeviceDesktop
-                      size={20}
+                      size={22}
                       className="text-blue-600 dark:text-blue-400"
                     />
                   </div>
                   <div className="flex-1">
-                    <div className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
-                      شناسه یکتا
+                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                      شناسه یکتا دستگاه
                     </div>
-                    <div className="font-semibold text-gray-800 dark:text-gray-200">
+                    <div className="font-mono text-base font-bold text-gray-800 dark:text-gray-200">
                       {device.deviceId || "تعریف نشده"}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
-                  <div className="rounded-full bg-green-100 p-2 dark:bg-green-900">
+                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:from-green-950 dark:to-emerald-950">
+                  <div className="rounded-xl bg-green-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-green-900">
                     <IconMapPin
-                      size={20}
+                      size={22}
                       className="text-green-600 dark:text-green-400"
                     />
                   </div>
                   <div className="flex-1">
-                    <div className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
-                      موقعیت
+                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                      موقعیت مکانی
                     </div>
-                    <div className="font-semibold text-gray-800 dark:text-gray-200">
+                    <div className="text-base font-bold text-gray-800 dark:text-gray-200">
                       {device.location}
                     </div>
                     {device.classroom && (
-                      <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                      <div className="mt-2 inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
                         کلاس: {device.classroom}
                       </div>
                     )}
@@ -280,12 +325,12 @@ export default function DeviceDetailPage() {
                 </div>
 
                 {device.description && (
-                  <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+                  <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 p-4 transition-all hover:shadow-md dark:from-purple-950 dark:to-pink-950">
                     <div className="flex-1">
-                      <div className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
                         توضیحات
                       </div>
-                      <div className="text-sm text-gray-800 dark:text-gray-200">
+                      <div className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
                         {device.description}
                       </div>
                     </div>
@@ -293,18 +338,18 @@ export default function DeviceDetailPage() {
                 )}
 
                 {device.lastSeen && (
-                  <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
-                    <div className="rounded-full bg-purple-100 p-2 dark:bg-purple-900">
+                  <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:shadow-md dark:from-amber-950 dark:to-orange-950">
+                    <div className="rounded-xl bg-amber-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-amber-900">
                       <IconClock
-                        size={20}
-                        className="text-purple-600 dark:text-purple-400"
+                        size={22}
+                        className="text-amber-600 dark:text-amber-400"
                       />
                     </div>
                     <div className="flex-1">
-                      <div className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
+                      <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
                         آخرین مشاهده
                       </div>
-                      <div className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                      <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
                         {new Date(device.lastSeen).toLocaleString("fa-IR")}
                       </div>
                     </div>
@@ -314,61 +359,87 @@ export default function DeviceDetailPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg transition-shadow hover:shadow-xl dark:border-blue-800 dark:from-blue-950 dark:to-purple-950">
-            <CardHeader className="border-b border-blue-200 pb-4 dark:border-blue-800">
-              <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+          <Card className="group animate-in fade-in slide-in-from-right relative overflow-hidden border-2 border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 shadow-xl transition-all duration-700 hover:scale-[1.02] hover:shadow-2xl dark:border-blue-800 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+            <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-purple-300 opacity-20 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
+            <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-4 dark:border-blue-800">
+              <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
+                <div className="rounded-xl bg-gradient-to-br from-blue-100 to-purple-100 p-2.5 shadow-md dark:from-blue-900 dark:to-purple-900">
                   <IconTemperature
-                    size={24}
+                    size={28}
                     className="text-blue-600 dark:text-blue-400"
                   />
                 </div>
                 برنامه‌ریزی گرمایش
               </CardTitle>
-              <CardDescription className="mt-1 text-gray-600 dark:text-gray-400">
+              <CardDescription className="mt-2 text-base text-gray-700 dark:text-gray-300">
                 تنظیم زمان شروع و دمای مطلوب بر اساس فصل و ماه
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6">
+            <CardContent className="relative z-10 pt-6">
               <HeatingScheduleForm systemId={device.id} />
             </CardContent>
           </Card>
         </div>
 
         {/* Sensor Charts Section */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            نمودارهای سنسورها
-          </h2>
+        <div className="animate-in fade-in slide-in-from-bottom space-y-6 duration-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
+                نمودارهای سنسورها
+              </h2>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                نمایش داده‌های لحظه‌ای سنسورها در 24 ساعت گذشته
+              </p>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-blue-100 px-4 py-2 dark:bg-blue-900">
+              <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                زنده
+              </span>
+            </div>
+          </div>
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* Temperature Chart */}
-            <Card className="border-2 border-red-200 bg-white shadow-lg dark:border-red-800 dark:bg-gray-800">
-              <CardHeader className="border-b border-red-200 pb-4 dark:border-red-800">
+            <Card className="group relative overflow-hidden border-2 border-red-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-2xl dark:border-red-800 dark:bg-gray-800/80">
+              <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-red-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-red-800"></div>
+              <CardHeader className="relative z-10 border-b-2 border-red-200 pb-4 dark:border-red-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-full bg-red-100 p-2 dark:bg-red-900">
+                  <div className="rounded-xl bg-gradient-to-br from-red-100 to-orange-100 p-2.5 shadow-md dark:from-red-900 dark:to-orange-900">
                     <IconTemperature
                       size={24}
                       className="text-red-600 dark:text-red-400"
                     />
                   </div>
-                  دما (°C)
+                  دمای محیط
                 </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+                  بر حسب درجه سانتیگراد (°C)
+                </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="relative z-10 pt-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="time" style={{ fontSize: "12px" }} />
+                    <YAxis style={{ fontSize: "12px" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        border: "2px solid #ef4444",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="temperature"
                       stroke="#ef4444"
-                      strokeWidth={2}
-                      dot={false}
+                      strokeWidth={3}
+                      dot={{ fill: "#ef4444", r: 4 }}
+                      activeDot={{ r: 6 }}
                       name="دما (°C)"
                     />
                   </LineChart>
@@ -377,32 +448,44 @@ export default function DeviceDetailPage() {
             </Card>
 
             {/* Humidity Chart */}
-            <Card className="border-2 border-blue-200 bg-white shadow-lg dark:border-blue-800 dark:bg-gray-800">
-              <CardHeader className="border-b border-blue-200 pb-4 dark:border-blue-800">
+            <Card className="group relative overflow-hidden border-2 border-blue-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-2xl dark:border-blue-800 dark:bg-gray-800/80">
+              <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
+              <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-4 dark:border-blue-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+                  <div className="rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 p-2.5 shadow-md dark:from-blue-900 dark:to-cyan-900">
                     <IconDroplet
                       size={24}
                       className="text-blue-600 dark:text-blue-400"
                     />
                   </div>
-                  رطوبت (%)
+                  رطوبت نسبی
                 </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+                  بر حسب درصد (%)
+                </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="relative z-10 pt-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="time" style={{ fontSize: "12px" }} />
+                    <YAxis style={{ fontSize: "12px" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        border: "2px solid #3b82f6",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="humidity"
                       stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={false}
+                      strokeWidth={3}
+                      dot={{ fill: "#3b82f6", r: 4 }}
+                      activeDot={{ r: 6 }}
                       name="رطوبت (%)"
                     />
                   </LineChart>
@@ -411,32 +494,44 @@ export default function DeviceDetailPage() {
             </Card>
 
             {/* Light Chart */}
-            <Card className="border-2 border-yellow-200 bg-white shadow-lg dark:border-yellow-800 dark:bg-gray-800">
-              <CardHeader className="border-b border-yellow-200 pb-4 dark:border-yellow-800">
+            <Card className="group relative overflow-hidden border-2 border-yellow-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-2xl dark:border-yellow-800 dark:bg-gray-800/80">
+              <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-yellow-800"></div>
+              <CardHeader className="relative z-10 border-b-2 border-yellow-200 pb-4 dark:border-yellow-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-full bg-yellow-100 p-2 dark:bg-yellow-900">
+                  <div className="rounded-xl bg-gradient-to-br from-yellow-100 to-amber-100 p-2.5 shadow-md dark:from-yellow-900 dark:to-amber-900">
                     <IconSun
                       size={24}
                       className="text-yellow-600 dark:text-yellow-400"
                     />
                   </div>
-                  نور
+                  شدت نور
                 </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+                  سنجش میزان روشنایی محیط
+                </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="relative z-10 pt-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="time" style={{ fontSize: "12px" }} />
+                    <YAxis style={{ fontSize: "12px" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        border: "2px solid #eab308",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="light"
                       stroke="#eab308"
-                      strokeWidth={2}
-                      dot={false}
+                      strokeWidth={3}
+                      dot={{ fill: "#eab308", r: 4 }}
+                      activeDot={{ r: 6 }}
                       name="نور"
                     />
                   </LineChart>
@@ -445,32 +540,44 @@ export default function DeviceDetailPage() {
             </Card>
 
             {/* Presence Chart */}
-            <Card className="border-2 border-green-200 bg-white shadow-lg dark:border-green-800 dark:bg-gray-800">
-              <CardHeader className="border-b border-green-200 pb-4 dark:border-green-800">
+            <Card className="group relative overflow-hidden border-2 border-green-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all hover:scale-[1.02] hover:shadow-2xl dark:border-green-800 dark:bg-gray-800/80">
+              <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-green-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-green-800"></div>
+              <CardHeader className="relative z-10 border-b-2 border-green-200 pb-4 dark:border-green-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-full bg-green-100 p-2 dark:bg-green-900">
+                  <div className="rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 p-2.5 shadow-md dark:from-green-900 dark:to-emerald-900">
                     <IconUser
                       size={24}
                       className="text-green-600 dark:text-green-400"
                     />
                   </div>
-                  حضور
+                  سنسور حضور
                 </CardTitle>
+                <CardDescription className="text-sm text-gray-600 dark:text-gray-400">
+                  تشخیص حضور افراد در محیط
+                </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="relative z-10 pt-6">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="time" style={{ fontSize: "12px" }} />
+                    <YAxis style={{ fontSize: "12px" }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        border: "2px solid #22c55e",
+                        borderRadius: "12px",
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="presence"
                       stroke="#22c55e"
-                      strokeWidth={2}
-                      dot={false}
+                      strokeWidth={3}
+                      dot={{ fill: "#22c55e", r: 4 }}
+                      activeDot={{ r: 6 }}
                       name="حضور"
                     />
                   </LineChart>
@@ -480,32 +587,44 @@ export default function DeviceDetailPage() {
           </div>
 
           {/* Current Consumption Chart - Full Width */}
-          <Card className="border-2 border-purple-200 bg-white shadow-lg dark:border-purple-800 dark:bg-gray-800">
-            <CardHeader className="border-b border-purple-200 pb-4 dark:border-purple-800">
-              <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                <div className="rounded-full bg-purple-100 p-2 dark:bg-purple-900">
+          <Card className="group relative overflow-hidden border-2 border-purple-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all hover:scale-[1.01] hover:shadow-2xl dark:border-purple-800 dark:bg-gray-800/80">
+            <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-purple-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
+            <CardHeader className="relative z-10 border-b-2 border-purple-200 pb-4 dark:border-purple-800">
+              <CardTitle className="flex items-center gap-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+                <div className="rounded-xl bg-gradient-to-br from-purple-100 to-fuchsia-100 p-3 shadow-md dark:from-purple-900 dark:to-fuchsia-900">
                   <IconBolt
-                    size={24}
+                    size={28}
                     className="text-purple-600 dark:text-purple-400"
                   />
                 </div>
-                مصرف جریان (A)
+                مصرف جریان الکتریکی
               </CardTitle>
+              <CardDescription className="mt-2 text-base text-gray-600 dark:text-gray-400">
+                میزان جریان مصرفی بر حسب آمپر (A)
+              </CardDescription>
             </CardHeader>
-            <CardContent className="pt-6">
-              <ResponsiveContainer width="100%" height={300}>
+            <CardContent className="relative z-10 pt-6">
+              <ResponsiveContainer width="100%" height={350}>
                 <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
-                  <Tooltip />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="time" style={{ fontSize: "12px" }} />
+                  <YAxis style={{ fontSize: "12px" }} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "2px solid #a855f7",
+                      borderRadius: "12px",
+                      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                    }}
+                  />
                   <Legend />
                   <Line
                     type="monotone"
                     dataKey="currentConsumption"
                     stroke="#a855f7"
-                    strokeWidth={2}
-                    dot={false}
+                    strokeWidth={3}
+                    dot={{ fill: "#a855f7", r: 4 }}
+                    activeDot={{ r: 7 }}
                     name="مصرف جریان (A)"
                   />
                 </LineChart>

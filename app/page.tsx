@@ -24,6 +24,8 @@ import {
   IconSettings,
   IconArrowRight,
   IconTrash,
+  IconCalendar,
+  IconMapPin,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -104,89 +106,204 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto space-y-8 p-6 md:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <h1 className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-4xl font-bold text-transparent">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
+        {/* Header Section with Enhanced Animation */}
+        <div className="animate-in fade-in slide-in-from-top flex flex-col gap-6 duration-700 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-3">
+            <h1 className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-sm">
               پنل مدیریت SmartClass
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              مدیریت و برنامه‌ریزی سیستم‌های تعبیه‌شده
+            <p className="flex items-center gap-2 text-xl text-gray-600 dark:text-gray-300">
+              <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
+              مدیریت هوشمند و برنامه‌ریزی سیستم‌های تعبیه‌شده
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
               onClick={() => setShowSystemForm(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg transition-all hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
+              size="lg"
+              className="group bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl transition-all hover:scale-105 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 hover:shadow-2xl active:scale-95"
             >
-              <IconPlus size={18} className="ml-2" />
-              افزودن دیوایس
+              <IconPlus
+                size={20}
+                className="ml-2 transition-transform group-hover:rotate-90"
+              />
+              افزودن دیوایس جدید
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-1">
-          <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50 shadow-lg transition-shadow hover:shadow-xl dark:border-blue-800 dark:from-blue-950 dark:to-purple-950">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        {/* Stats Cards Section */}
+        <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
+          <Card className="group relative overflow-hidden border-2 border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-blue-900 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
+            <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                 تعداد کل دیوایس‌ها
               </CardTitle>
-              <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+              <div className="rounded-full bg-blue-100 p-3 shadow-md transition-transform group-hover:rotate-12 dark:bg-blue-900">
                 <IconServer
                   size={24}
                   className="text-blue-600 dark:text-blue-400"
                 />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-extrabold text-blue-600 dark:text-blue-400">
                 {systems.length}
               </div>
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                سیستم ثبت‌شده
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="group relative overflow-hidden border-2 border-green-200 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-green-900 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-green-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-green-800"></div>
+            <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                دیوایس‌های فعال
+              </CardTitle>
+              <div className="rounded-full bg-green-100 p-3 shadow-md transition-transform group-hover:rotate-12 dark:bg-green-900">
+                <IconSettings
+                  size={24}
+                  className="animate-spin-slow text-green-600 dark:text-green-400"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-extrabold text-green-600 dark:text-green-400">
+                {
+                  systems.filter(
+                    (s) => s.status === "active" || s.status === "online",
+                  ).length
+                }
+              </div>
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                آنلاین و در دسترس
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="group relative overflow-hidden border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-pink-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-purple-900 dark:from-purple-950 dark:via-fuchsia-950 dark:to-pink-950">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-purple-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
+            <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                برنامه‌های فعال
+              </CardTitle>
+              <div className="rounded-full bg-purple-100 p-3 shadow-md transition-transform group-hover:rotate-12 dark:bg-purple-900">
+                <IconCalendar
+                  size={24}
+                  className="text-purple-600 dark:text-purple-400"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-4xl font-extrabold text-purple-600 dark:text-purple-400">
+                {systems.reduce(
+                  (sum, s) => sum + (s._count?.heatingSchedules || 0),
+                  0,
+                )}
+              </div>
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                برنامه زمان‌بندی
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="group relative overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-amber-900 dark:from-amber-950 dark:via-orange-950 dark:to-yellow-950">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-amber-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-amber-800"></div>
+            <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                وضعیت سیستم
+              </CardTitle>
+              <div className="rounded-full bg-amber-100 p-3 shadow-md transition-transform group-hover:rotate-12 dark:bg-amber-900">
+                <IconServer
+                  size={24}
+                  className="text-amber-600 dark:text-amber-400"
+                />
+              </div>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400">
+                عملیاتی
+              </div>
+              <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                همه سیستم‌ها آماده
+              </p>
             </CardContent>
           </Card>
         </div>
 
-        <div>
-          <h2 className="mb-6 text-3xl font-bold text-gray-800 dark:text-gray-200">
-            دیوایس‌ها
-          </h2>
+        {/* Devices Section with Enhanced Cards */}
+        <div className="animate-in fade-in slide-in-from-bottom duration-700">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
+                دیوایس‌های من
+              </h2>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                مدیریت و کنترل تمامی دستگاه‌های هوشمند
+              </p>
+            </div>
+          </div>
+
           {systems.length === 0 ? (
-            <Card className="border-2 border-dashed border-gray-300 dark:border-gray-700">
-              <CardContent className="py-16 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                  <IconServer size={32} className="text-gray-400" />
+            <Card className="border-2 border-dashed border-gray-300 bg-white/50 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
+              <CardContent className="py-20 text-center">
+                <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
+                  <IconServer
+                    size={48}
+                    className="text-gray-400 dark:text-gray-500"
+                  />
                 </div>
-                <p className="text-lg text-gray-500 dark:text-gray-400">
-                  دیوایسی یافت نشد. اولین دیوایس را اضافه کنید!
+                <h3 className="mb-2 text-xl font-bold text-gray-700 dark:text-gray-300">
+                  هنوز دیوایسی وجود ندارد
+                </h3>
+                <p className="mb-6 text-gray-500 dark:text-gray-400">
+                  اولین دیوایس خود را اضافه کنید و شروع به مدیریت کنید
                 </p>
+                <Button
+                  onClick={() => setShowSystemForm(true)}
+                  size="lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:from-blue-700 hover:to-purple-700"
+                >
+                  <IconPlus size={20} className="ml-2" />
+                  افزودن اولین دیوایس
+                </Button>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {systems.map((system) => (
+              {systems.map((system, index) => (
                 <Card
                   key={system.id}
-                  className="group cursor-pointer border-2 border-gray-200 bg-white transition-all duration-300 hover:border-blue-400 hover:shadow-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:border-blue-600"
+                  className="group animate-in fade-in slide-in-from-bottom relative cursor-pointer overflow-hidden border-2 border-gray-200 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-blue-400 hover:shadow-2xl dark:border-gray-700 dark:bg-gray-800/80 dark:hover:border-blue-600"
+                  style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => router.push(`/devices/${system.id}`)}
                 >
-                  <CardHeader className="pb-3">
+                  {/* Gradient Overlay on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/5 group-hover:to-purple-500/5"></div>
+
+                  <CardHeader className="relative z-10 pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="mb-1 text-xl font-bold text-gray-800 dark:text-gray-100">
+                        <CardTitle className="mb-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
                           {system.name}
                         </CardTitle>
-                        <CardDescription className="text-base text-gray-600 dark:text-gray-400">
+                        <CardDescription className="flex items-center gap-2 text-base text-gray-600 dark:text-gray-400">
+                          <IconMapPin size={16} />
                           {system.location}
                         </CardDescription>
                         {system.deviceId && (
-                          <div className="mt-2 inline-block rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                            {system.deviceId}
+                          <div className="mt-3 inline-block rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 font-mono text-xs font-medium text-gray-700 shadow-sm dark:from-gray-700 dark:to-gray-600 dark:text-gray-300">
+                            ID: {system.deviceId}
                           </div>
                         )}
                       </div>
                       <Badge
-                        className={`${getStatusColor(system.status)} shrink-0 px-3 py-1 text-xs font-semibold text-white`}
+                        className={`${getStatusColor(system.status)} shrink-0 px-3 py-1.5 text-xs font-bold text-white shadow-md transition-transform group-hover:scale-110`}
                       >
                         {system.status === "active"
                           ? "فعال"
@@ -198,54 +315,78 @@ export default function Dashboard() {
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="line-clamp-2 min-h-[2.5rem] text-sm text-gray-600 dark:text-gray-400">
-                      {system.description || "بدون توضیحات"}
+
+                  <CardContent className="relative z-10 space-y-4">
+                    <p className="line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                      {system.description || "بدون توضیحات اضافی"}
                     </p>
-                    <div className="flex items-center justify-between rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 p-3 dark:from-blue-950 dark:to-purple-950">
-                      <div className="flex items-center gap-2">
-                        <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
+
+                    {/* Stats Bar */}
+                    <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
                           <IconSettings
-                            size={16}
+                            size={18}
                             className="text-blue-600 dark:text-blue-400"
                           />
                         </div>
-                        <span className="font-semibold text-gray-700 dark:text-gray-300">
-                          {system._count?.heatingSchedules || 0} برنامه
-                        </span>
+                        <div>
+                          <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                            {system._count?.heatingSchedules || 0}
+                          </div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
+                            برنامه فعال
+                          </div>
+                        </div>
                       </div>
                       {system.lastSeen && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {new Date(system.lastSeen).toLocaleTimeString(
-                            "fa-IR",
-                          )}
-                        </span>
+                        <div className="text-left">
+                          <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                            آخرین بروزرسانی
+                          </div>
+                          <div className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                            {new Date(system.lastSeen).toLocaleTimeString(
+                              "fa-IR",
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
+
+                    {/* Action Buttons */}
                     <div className="flex gap-2 pt-2">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 border-blue-200 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-800 dark:hover:border-blue-600 dark:hover:bg-blue-950"
+                        className="group/btn flex-1 border-blue-200 bg-blue-50 font-semibold transition-all hover:border-blue-400 hover:bg-blue-100 hover:shadow-md dark:border-blue-800 dark:bg-blue-950 dark:hover:border-blue-600 dark:hover:bg-blue-900"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/devices/${system.id}`);
                         }}
                       >
-                        <IconSettings size={16} className="ml-2" />
+                        <IconSettings
+                          size={16}
+                          className="ml-2 transition-transform group-hover/btn:rotate-90"
+                        />
                         مدیریت
-                        <IconArrowRight size={16} className="ml-2" />
+                        <IconArrowRight
+                          size={16}
+                          className="mr-2 transition-transform group-hover/btn:-translate-x-1"
+                        />
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-red-200 text-red-600 transition-all hover:border-red-400 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-950"
+                        className="group/delete border-red-200 bg-red-50 text-red-600 transition-all hover:border-red-400 hover:bg-red-100 hover:shadow-md dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-900"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteDevice(system.id, system.name);
                         }}
                       >
-                        <IconTrash size={16} />
+                        <IconTrash
+                          size={16}
+                          className="transition-transform group-hover/delete:scale-110"
+                        />
                       </Button>
                     </div>
                   </CardContent>

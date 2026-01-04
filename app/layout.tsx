@@ -86,7 +86,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-vazir antialiased`}
       >
-        {children}
+        <div className="relative min-h-screen">
+          {/* Animated Background */}
+          <div className="fixed inset-0 -z-10 overflow-hidden">
+            <div className="animate-blob absolute -top-40 -right-40 h-80 w-80 rounded-full bg-blue-300 opacity-20 mix-blend-multiply blur-3xl filter dark:bg-blue-900"></div>
+            <div className="animation-delay-2000 animate-blob absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-purple-300 opacity-20 mix-blend-multiply blur-3xl filter dark:bg-purple-900"></div>
+            <div className="animation-delay-4000 animate-blob absolute top-1/2 left-1/2 h-80 w-80 rounded-full bg-indigo-300 opacity-20 mix-blend-multiply blur-3xl filter dark:bg-indigo-900"></div>
+          </div>
+
+          {children}
+        </div>
       </body>
     </html>
   );
