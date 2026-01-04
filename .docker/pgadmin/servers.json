@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "SmartClass Development",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "smartclassdb",
+      "Username": "postgres",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}
