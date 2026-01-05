@@ -29,7 +29,7 @@ import {
 interface HeatingSchedule {
   id: string;
   season: string;
-  month: number | null;
+  month: number;
   weekdays: string;
   startTime: string;
   endTime: string;
@@ -50,19 +50,18 @@ const SEASONS = [
 ];
 
 const MONTHS = [
-  { value: null, label: "کل فصل" },
-  { value: 1, label: "فروردین" },
-  { value: 2, label: "اردیبهشت" },
-  { value: 3, label: "خرداد" },
-  { value: 4, label: "تیر" },
-  { value: 5, label: "مرداد" },
-  { value: 6, label: "شهریور" },
-  { value: 7, label: "مهر" },
-  { value: 8, label: "آبان" },
-  { value: 9, label: "آذر" },
-  { value: 10, label: "دی" },
-  { value: 11, label: "بهمن" },
-  { value: 12, label: "اسفند" },
+  { value: 1, label: "فروردین", season: "spring" },
+  { value: 2, label: "اردیبهشت", season: "spring" },
+  { value: 3, label: "خرداد", season: "spring" },
+  { value: 4, label: "تیر", season: "summer" },
+  { value: 5, label: "مرداد", season: "summer" },
+  { value: 6, label: "شهریور", season: "summer" },
+  { value: 7, label: "مهر", season: "fall" },
+  { value: 8, label: "آبان", season: "fall" },
+  { value: 9, label: "آذر", season: "fall" },
+  { value: 10, label: "دی", season: "winter" },
+  { value: 11, label: "بهمن", season: "winter" },
+  { value: 12, label: "اسفند", season: "winter" },
 ];
 
 const WEEKDAYS = [
@@ -85,7 +84,7 @@ export function HeatingScheduleForm({
   const [error, setError] = useState("");
   const [newSchedule, setNewSchedule] = useState({
     season: "spring",
-    month: null as number | null,
+    month: 1,
     weekdays: [0, 1, 2, 3, 4, 5, 6] as number[],
     startTime: "08:00",
     endTime: "18:00",
@@ -154,7 +153,7 @@ export function HeatingScheduleForm({
       setNewSchedule({
         season: "spring",
         weekdays: [0, 1, 2, 3, 4, 5, 6],
-        month: null,
+        month: 1,
         startTime: "08:00",
         endTime: "18:00",
         targetTemperature: 22,
@@ -248,9 +247,15 @@ export function HeatingScheduleForm({
               <Label htmlFor="season">فصل *</Label>
               <Select
                 value={newSchedule.season}
-                onValueChange={(value) =>
-                  setNewSchedule({ ...newSchedule, season: value || "" })
-                }
+                onValueChange={(value) => {
+                  const firstMonthOfSeason =
+                    MONTHS.find((m) => m.season === value)?.value || 1;
+                  setNewSchedule({
+                    ...newSchedule,
+                    season: value || "",
+                    month: firstMonthOfSeason,
+                  });
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -266,24 +271,28 @@ export function HeatingScheduleForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="month">ماه (اختیاری)</Label>
+              <Label htmlFor="month">ماه *</Label>
               <Select
-                value={newSchedule.month?.toString() || ""}
-                onValueChange={(value) =>
-                  setNewSchedule({
-                    ...newSchedule,
-                    month: value ? parseInt(value) : null,
-                  })
-                }
+                value={newSchedule.month.toString()}
+                onValueChange={(value) => {
+                  if (value) {
+                    setNewSchedule({
+                      ...newSchedule,
+                      month: parseInt(value),
+                    });
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {MONTHS.map((month) => (
+                  {MONTHS.filter(
+                    (month) => month.season === newSchedule.season,
+                  ).map((month) => (
                     <SelectItem
-                      key={month.value || "all"}
-                      value={month.value?.toString() || ""}
+                      key={month.value}
+                      value={month.value.toString()}
                     >
                       {month.label}
                     </SelectItem>

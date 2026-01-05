@@ -159,6 +159,7 @@ async function seedData() {
       data: {
         embeddedSystemId: system1.id,
         season: "winter",
+        month: 10,
         startTime: "06:00",
         endTime: "22:00",
         targetTemperature: 22.0,
@@ -170,6 +171,7 @@ async function seedData() {
       data: {
         embeddedSystemId: system1.id,
         season: "summer",
+        month: 4,
         startTime: "08:00",
         endTime: "20:00",
         targetTemperature: 24.0,
@@ -182,6 +184,7 @@ async function seedData() {
       data: {
         embeddedSystemId: system2.id,
         season: "winter",
+        month: 11,
         startTime: "06:00",
         endTime: "22:00",
         targetTemperature: 21.5,
@@ -193,6 +196,7 @@ async function seedData() {
       data: {
         embeddedSystemId: system2.id,
         season: "summer",
+        month: 5,
         startTime: "08:00",
         endTime: "20:00",
         targetTemperature: 23.5,
@@ -205,9 +209,22 @@ async function seedData() {
       data: {
         embeddedSystemId: system3.id,
         season: "winter",
+        month: 12,
         startTime: "07:00",
         endTime: "18:00",
         targetTemperature: 20.0,
+        enabled: true,
+      },
+    });
+
+    await prisma.heatingSchedule.create({
+      data: {
+        embeddedSystemId: system3.id,
+        season: "spring",
+        month: 1,
+        startTime: "07:00",
+        endTime: "18:00",
+        targetTemperature: 21.0,
         enabled: true,
       },
     });

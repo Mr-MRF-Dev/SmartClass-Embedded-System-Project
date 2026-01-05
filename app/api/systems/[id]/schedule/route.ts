@@ -33,14 +33,27 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { season, month, startTime, endTime, targetTemperature, enabled } =
-      body;
+    const {
+      season,
+      month,
+      weekdays,
+      startTime,
+      endTime,
+      targetTemperature,
+      enabled,
+    } = body;
 
-    if (!season || !startTime || !endTime || targetTemperature === undefined) {
+    if (
+      !season ||
+      !month ||
+      !startTime ||
+      !endTime ||
+      targetTemperature === undefined
+    ) {
       return NextResponse.json(
         {
           error:
-            "Season, startTime, endTime, and targetTemperature are required",
+            "Season, month, startTime, endTime, and targetTemperature are required",
         },
         { status: 400 },
       );
@@ -51,7 +64,7 @@ export async function POST(
       where: {
         embeddedSystemId: id,
         season,
-        month: month || null,
+        month: month,
       },
     });
 
@@ -61,6 +74,7 @@ export async function POST(
       schedule = await prisma.heatingSchedule.update({
         where: { id: existing.id },
         data: {
+          weekdays: weekdays || "0,1,2,3,4,5,6",
           startTime,
           endTime,
           targetTemperature,
@@ -73,7 +87,8 @@ export async function POST(
         data: {
           embeddedSystemId: id,
           season,
-          month: month || null,
+          month: month,
+          weekdays: weekdays || "0,1,2,3,4,5,6",
           startTime,
           endTime,
           targetTemperature,
@@ -90,6 +105,7 @@ export async function POST(
         payload: {
           season,
           month,
+          weekdays,
           startTime,
           endTime,
           targetTemperature,
