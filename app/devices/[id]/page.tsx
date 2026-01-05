@@ -66,12 +66,23 @@ interface AlarmHistory {
   resolvedAt: string | null;
 }
 
+interface HeatingSchedule {
+  id: string;
+  season: string;
+  month: number | null;
+  startTime: string;
+  endTime: string;
+  targetTemperature: number;
+  enabled: boolean;
+}
+
 export default function DeviceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [device, setDevice] = useState<EmbeddedSystem | null>(null);
   const [readings, setReadings] = useState<DeviceReading[]>([]);
   const [alarmHistory, setAlarmHistory] = useState<AlarmHistory[]>([]);
+  const [schedules, setSchedules] = useState<HeatingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -80,6 +91,7 @@ export default function DeviceDetailPage() {
       fetchDevice();
       fetchReadings();
       fetchAlarmHistory();
+      fetchSchedules();
       // Refresh readings every 30 seconds
       const interval = setInterval(() => {
         fetchReadings();
@@ -140,11 +152,59 @@ export default function DeviceDetailPage() {
     }
   };
 
+  const fetchSchedules = async () => {
+    try {
+      const response = await fetch(`/api/systems/${params.id}/schedule`);
+      if (response.ok) {
+        const data = await response.json();
+        setSchedules(data);
+      }
+    } catch (err) {
+      console.error("Error fetching schedules:", err);
+    }
+  };
+
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString("fa-IR", {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const getSeasonLabel = (season: string) => {
+    const labels: Record<string, string> = {
+      spring: "بهار",
+      summer: "تابستان",
+      fall: "پاییز",
+      winter: "زمستان",
+    };
+    return labels[season] || season;
+  };
+
+  const getMonthLabel = (month: number | null) => {
+    if (month === null) return "کل فصل";
+    const months = [
+      "فروردین",
+      "اردیبهشت",
+      "خرداد",
+      "تیر",
+      "مرداد",
+      "شهریور",
+      "مهر",
+      "آبان",
+      "آذر",
+      "دی",
+      "بهمن",
+      "اسفند",
+    ];
+    return months[month - 1] || "";
+  };
+
+  const getCurrentMonthSchedule = () => {
+    const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+    return schedules.find(
+      (s) => s.enabled && (s.month === currentMonth || s.month === null),
+    );
   };
 
   const chartData = readings.map((reading) => ({
@@ -328,197 +388,358 @@ export default function DeviceDetailPage() {
           </div>
         </div>
 
-        {/* Info and Schedule Cards */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="group animate-in fade-in slide-in-from-left relative overflow-hidden border-2 border-gray-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all duration-700 hover:scale-[1.02] hover:shadow-2xl dark:border-gray-700 dark:bg-gray-800/80">
-            <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
-            <CardHeader className="relative z-10 border-b-2 border-gray-200 pb-4 dark:border-gray-700">
-              <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
-                <div className="rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 p-2.5 shadow-md dark:from-blue-900 dark:to-indigo-900">
+        {/* Device Info Card */}
+        <Card className="group animate-in fade-in slide-in-from-left relative overflow-hidden border-2 border-gray-200 bg-white/80 shadow-xl backdrop-blur-sm transition-all duration-700 hover:scale-[1.02] hover:shadow-2xl dark:border-gray-700 dark:bg-gray-800/80">
+          <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
+          <CardHeader className="relative z-10 border-b-2 border-gray-200 pb-4 dark:border-gray-700">
+            <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
+              <div className="rounded-xl bg-linear-to-br from-blue-100 to-indigo-100 p-2.5 shadow-md dark:from-blue-900 dark:to-indigo-900">
+                <IconDeviceDesktop
+                  size={24}
+                  className="text-blue-600 dark:text-blue-400"
+                />
+              </div>
+              اطلاعات دیوایس
+            </CardTitle>
+            <CardDescription className="mt-2 text-base text-gray-600 dark:text-gray-400">
+              مشخصات و اطلاعات کامل دیوایس
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="relative z-10 space-y-4 pt-6">
+            <div className="space-y-4">
+              <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all hover:shadow-md dark:from-blue-950 dark:to-indigo-950">
+                <div className="rounded-xl bg-blue-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-blue-900">
                   <IconDeviceDesktop
-                    size={24}
+                    size={22}
                     className="text-blue-600 dark:text-blue-400"
                   />
                 </div>
-                اطلاعات دیوایس
-              </CardTitle>
-              <CardDescription className="mt-2 text-base text-gray-600 dark:text-gray-400">
-                مشخصات و اطلاعات کامل دیوایس
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="relative z-10 space-y-4 pt-6">
-              <div className="space-y-4">
-                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all hover:shadow-md dark:from-blue-950 dark:to-indigo-950">
-                  <div className="rounded-xl bg-blue-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-blue-900">
-                    <IconDeviceDesktop
-                      size={22}
-                      className="text-blue-600 dark:text-blue-400"
-                    />
+                <div className="flex-1">
+                  <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                    شناسه یکتا دستگاه
                   </div>
-                  <div className="flex-1">
-                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                      شناسه یکتا دستگاه
-                    </div>
-                    <div className="font-mono text-base font-bold text-gray-800 dark:text-gray-200">
-                      {device.deviceId || "تعریف نشده"}
-                    </div>
+                  <div className="font-mono text-base font-bold text-gray-800 dark:text-gray-200">
+                    {device.deviceId || "تعریف نشده"}
                   </div>
                 </div>
+              </div>
 
-                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:from-green-950 dark:to-emerald-950">
-                  <div className="rounded-xl bg-green-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-green-900">
-                    <IconMapPin
-                      size={22}
-                      className="text-green-600 dark:text-green-400"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                      موقعیت مکانی
-                    </div>
-                    <div className="text-base font-bold text-gray-800 dark:text-gray-200">
-                      {device.location}
-                    </div>
-                    {device.classroom && (
-                      <div className="mt-2 inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
-                        کلاس: {device.classroom}
-                      </div>
-                    )}
-                  </div>
+              <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:from-green-950 dark:to-emerald-950">
+                <div className="rounded-xl bg-green-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-green-900">
+                  <IconMapPin
+                    size={22}
+                    className="text-green-600 dark:text-green-400"
+                  />
                 </div>
-
-                {device.description && (
-                  <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 p-4 transition-all hover:shadow-md dark:from-purple-950 dark:to-pink-950">
-                    <div className="flex-1">
-                      <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                        توضیحات
-                      </div>
-                      <div className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
-                        {device.description}
-                      </div>
-                    </div>
+                <div className="flex-1">
+                  <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                    موقعیت مکانی
                   </div>
-                )}
-
-                {device.lastSeen && (
-                  <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:shadow-md dark:from-amber-950 dark:to-orange-950">
-                    <div className="rounded-xl bg-amber-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-amber-900">
-                      <IconClock
-                        size={22}
-                        className="text-amber-600 dark:text-amber-400"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
-                        آخرین مشاهده
-                      </div>
-                      <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                        {new Date(device.lastSeen).toLocaleString("fa-IR")}
-                      </div>
-                    </div>
+                  <div className="text-base font-bold text-gray-800 dark:text-gray-200">
+                    {device.location}
                   </div>
-                )}
-
-                {/* Alarm History Section */}
-                <div className="mt-6 rounded-xl border-2 border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 dark:border-red-800 dark:from-red-950 dark:to-pink-950">
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="rounded-xl bg-red-100 p-2 shadow-sm dark:bg-red-900">
-                      <IconAlertTriangle
-                        size={20}
-                        className="text-red-600 dark:text-red-400"
-                      />
-                    </div>
-                    <div>
-                      <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                        تاریخچه وضعیت‌های بحرانی
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {alarmHistory.length > 0
-                          ? `${alarmHistory.length} رویداد ثبت شده`
-                          : "هیچ رویداد بحرانی ثبت نشده"}
-                      </div>
-                    </div>
-                  </div>
-                  {alarmHistory.length > 0 ? (
-                    <div className="max-h-64 space-y-2 overflow-y-auto">
-                      {alarmHistory.map((alarm) => (
-                        <div
-                          key={alarm.id}
-                          className="rounded-lg border border-red-200 bg-white p-3 shadow-sm dark:border-red-800 dark:bg-gray-800"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                                زمان شروع:
-                              </div>
-                              <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                                {new Date(alarm.triggeredAt).toLocaleString(
-                                  "fa-IR",
-                                )}
-                              </div>
-                              {alarm.resolvedAt && (
-                                <>
-                                  <div className="mt-2 text-xs font-semibold text-green-600 dark:text-green-400">
-                                    زمان رفع:
-                                  </div>
-                                  <div className="text-sm font-bold text-green-700 dark:text-green-300">
-                                    {new Date(alarm.resolvedAt).toLocaleString(
-                                      "fa-IR",
-                                    )}
-                                  </div>
-                                  <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    مدت زمان:{" "}
-                                    {Math.round(
-                                      (new Date(alarm.resolvedAt).getTime() -
-                                        new Date(alarm.triggeredAt).getTime()) /
-                                        1000 /
-                                        60,
-                                    )}{" "}
-                                    دقیقه
-                                  </div>
-                                </>
-                              )}
-                              {!alarm.resolvedAt && (
-                                <div className="mt-2 inline-block rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-700 dark:bg-red-900 dark:text-red-300">
-                                  در حال انجام
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                      هیچ رویداد بحرانی ثبت نشده است
+                  {device.classroom && (
+                    <div className="mt-2 inline-block rounded-lg bg-green-100 px-3 py-1 text-sm font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
+                      کلاس: {device.classroom}
                     </div>
                   )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
 
-          <Card className="group animate-in fade-in slide-in-from-right relative overflow-hidden border-2 border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 shadow-xl transition-all duration-700 hover:scale-[1.02] hover:shadow-2xl dark:border-blue-800 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
-            <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-purple-300 opacity-20 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
-            <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-4 dark:border-blue-800">
-              <CardTitle className="flex items-center gap-3 text-2xl font-extrabold text-gray-800 dark:text-gray-100">
-                <div className="rounded-xl bg-gradient-to-br from-blue-100 to-purple-100 p-2.5 shadow-md dark:from-blue-900 dark:to-purple-900">
+              {device.description && (
+                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 p-4 transition-all hover:shadow-md dark:from-purple-950 dark:to-pink-950">
+                  <div className="flex-1">
+                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                      توضیحات
+                    </div>
+                    <div className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
+                      {device.description}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {device.lastSeen && (
+                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:shadow-md dark:from-amber-950 dark:to-orange-950">
+                  <div className="rounded-xl bg-amber-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-amber-900">
+                    <IconClock
+                      size={22}
+                      className="text-amber-600 dark:text-amber-400"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+                      آخرین مشاهده
+                    </div>
+                    <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                      {new Date(device.lastSeen).toLocaleString("fa-IR")}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Alarm History Section */}
+              <div className="mt-6 rounded-xl border-2 border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 dark:border-red-800 dark:from-red-950 dark:to-pink-950">
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="rounded-xl bg-red-100 p-2 shadow-sm dark:bg-red-900">
+                    <IconAlertTriangle
+                      size={20}
+                      className="text-red-600 dark:text-red-400"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                      تاریخچه وضعیت‌های بحرانی
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {alarmHistory.length > 0
+                        ? `${alarmHistory.length} رویداد ثبت شده`
+                        : "هیچ رویداد بحرانی ثبت نشده"}
+                    </div>
+                  </div>
+                </div>
+                {alarmHistory.length > 0 ? (
+                  <div className="max-h-64 space-y-2 overflow-y-auto">
+                    {alarmHistory.map((alarm) => (
+                      <div
+                        key={alarm.id}
+                        className="rounded-lg border border-red-200 bg-white p-3 shadow-sm dark:border-red-800 dark:bg-gray-800"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                              زمان شروع:
+                            </div>
+                            <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                              {new Date(alarm.triggeredAt).toLocaleString(
+                                "fa-IR",
+                              )}
+                            </div>
+                            {alarm.resolvedAt && (
+                              <>
+                                <div className="mt-2 text-xs font-semibold text-green-600 dark:text-green-400">
+                                  زمان رفع:
+                                </div>
+                                <div className="text-sm font-bold text-green-700 dark:text-green-300">
+                                  {new Date(alarm.resolvedAt).toLocaleString(
+                                    "fa-IR",
+                                  )}
+                                </div>
+                                <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                  مدت زمان:{" "}
+                                  {Math.round(
+                                    (new Date(alarm.resolvedAt).getTime() -
+                                      new Date(alarm.triggeredAt).getTime()) /
+                                      1000 /
+                                      60,
+                                  )}{" "}
+                                  دقیقه
+                                </div>
+                              </>
+                            )}
+                            {!alarm.resolvedAt && (
+                              <div className="mt-2 inline-block rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-700 dark:bg-red-900 dark:text-red-300">
+                                در حال انجام
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                    هیچ رویداد بحرانی ثبت نشده است
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Schedule Summary Section */}
+        <Card className="animate-in fade-in slide-in-from-bottom group relative overflow-hidden border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 shadow-xl transition-all duration-700 hover:shadow-2xl dark:border-indigo-800 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950">
+          <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-indigo-300 opacity-20 transition-transform group-hover:scale-150 dark:bg-indigo-800"></div>
+          <CardHeader className="relative z-10 border-b-2 border-indigo-200 pb-4 dark:border-indigo-800">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 p-2.5 shadow-md dark:from-indigo-900 dark:to-purple-900">
                   <IconTemperature
-                    size={28}
-                    className="text-blue-600 dark:text-blue-400"
+                    size={24}
+                    className="text-indigo-600 dark:text-indigo-400"
                   />
                 </div>
-                برنامه‌ریزی گرمایش
-              </CardTitle>
-              <CardDescription className="mt-2 text-base text-gray-700 dark:text-gray-300">
-                تنظیم زمان شروع و دمای مطلوب بر اساس فصل و ماه
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="relative z-10 pt-6">
-              <HeatingScheduleForm systemId={device.id} />
-            </CardContent>
-          </Card>
-        </div>
+                <div>
+                  <CardTitle className="text-2xl font-extrabold text-gray-800 dark:text-gray-100">
+                    خلاصه برنامه‌های حرارتی
+                  </CardTitle>
+                  <CardDescription className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {schedules.length > 0
+                      ? `${schedules.filter((s) => s.enabled).length} برنامه فعال از ${schedules.length} برنامه`
+                      : "هیچ برنامه‌ای تعریف نشده"}
+                  </CardDescription>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push(`/devices/${device.id}/schedule`)}
+                className="group/btn border-2 border-indigo-300 bg-white/80 text-indigo-700 transition-all hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md dark:border-indigo-700 dark:bg-gray-800/80 dark:text-indigo-300 dark:hover:border-indigo-500 dark:hover:bg-indigo-950"
+              >
+                <IconClock size={16} className="ml-2" />
+                مدیریت برنامه‌ها
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="relative z-10 pt-6">
+            {schedules.length > 0 ? (
+              <div>
+                {/* Current Month Schedule */}
+                {(() => {
+                  const currentSchedule = getCurrentMonthSchedule();
+                  return currentSchedule ? (
+                    <div className="mb-6 rounded-xl border-2 border-indigo-300 bg-white/90 p-4 shadow-lg dark:border-indigo-700 dark:bg-gray-800/90">
+                      <div className="mb-3 flex items-center gap-2">
+                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1 text-white shadow-md">
+                          برنامه فعال فعلی
+                        </Badge>
+                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          {getMonthLabel(currentSchedule.month)}
+                        </span>
+                      </div>
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <div className="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-3 dark:from-blue-950 dark:to-indigo-950">
+                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            دمای هدف
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconTemperature
+                              size={20}
+                              className="text-red-600 dark:text-red-400"
+                            />
+                            <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                              {currentSchedule.targetTemperature}°C
+                            </span>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-3 dark:from-green-950 dark:to-emerald-950">
+                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            زمان شروع
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconClock
+                              size={20}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                            <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                              {currentSchedule.startTime}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-3 dark:from-purple-950 dark:to-pink-950">
+                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            زمان پایان
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconClock
+                              size={20}
+                              className="text-purple-600 dark:text-purple-400"
+                            />
+                            <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                              {currentSchedule.endTime}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-6 rounded-xl border-2 border-yellow-300 bg-yellow-50 p-4 dark:border-yellow-700 dark:bg-yellow-950">
+                      <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
+                        <IconAlertTriangle size={20} />
+                        <span className="font-semibold">
+                          هیچ برنامه فعالی برای ماه جاری تعریف نشده است
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* All Schedules */}
+                <div className="space-y-3">
+                  <h4 className="mb-3 text-sm font-bold text-gray-700 dark:text-gray-300">
+                    تمام برنامه‌های تعریف شده ({schedules.length})
+                  </h4>
+                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    {schedules.map((schedule) => (
+                      <div
+                        key={schedule.id}
+                        className={`rounded-lg border-2 p-3 shadow-sm transition-all hover:shadow-md ${
+                          schedule.enabled
+                            ? "border-green-200 bg-white dark:border-green-800 dark:bg-gray-800"
+                            : "border-gray-200 bg-gray-50 opacity-60 dark:border-gray-700 dark:bg-gray-900"
+                        }`}
+                      >
+                        <div className="mb-2 flex items-center justify-between">
+                          <Badge
+                            className={`text-xs ${
+                              schedule.enabled ? "bg-green-500" : "bg-gray-400"
+                            }`}
+                          >
+                            {getSeasonLabel(schedule.season)}
+                          </Badge>
+                          <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            {getMonthLabel(schedule.month)}
+                          </span>
+                        </div>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              دما:
+                            </span>
+                            <span className="font-bold text-gray-800 dark:text-gray-200">
+                              {schedule.targetTemperature}°C
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              زمان:
+                            </span>
+                            <span className="font-bold text-gray-800 dark:text-gray-200">
+                              {schedule.startTime} - {schedule.endTime}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="py-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                  <IconTemperature
+                    size={32}
+                    className="text-gray-400 dark:text-gray-600"
+                  />
+                </div>
+                <h3 className="mb-2 text-lg font-bold text-gray-800 dark:text-gray-200">
+                  هیچ برنامه حرارتی تعریف نشده
+                </h3>
+                <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                  برای شروع، برنامه‌های گرمایش را برای ماه‌های مختلف سال تنظیم
+                  کنید
+                </p>
+                <Button
+                  onClick={() => router.push(`/devices/${device.id}/schedule`)}
+                  className="bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg transition-all hover:scale-105 hover:shadow-xl"
+                >
+                  <IconClock size={18} className="ml-2" />
+                  ایجاد برنامه جدید
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Sensor Charts Section */}
         <div className="animate-in fade-in slide-in-from-bottom space-y-6 duration-700">
