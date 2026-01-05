@@ -40,13 +40,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Device not found" }, { status: 404 });
     }
 
-    // Update last seen timestamp
+    const timestamp = new Date();
+
+    // Check if all sensor values are 0 (critical situation)
+    const isCritical =
+      (temp === 0 || temp === null) &&
+      (humidity === 0 || humidity === null) &&
+      (light === 0 || light === null) &&
+      (presence === 0 || presence === null) &&
+      (currentConsumption === 0 || currentConsumption === null);
+
+    // Update last seen timestamp and alarm status
     await prisma.embeddedSystem.update({
       where: { id: system.id },
-      data: { lastSeen: new Date() },
+      data: {
+        lastSeen: timestamp,
+        alarmActive: isCritical,
+        alarmTriggeredAt: isCritical
+          ? timestamp
+          : (system.alarmTriggeredAt ?? null),
+      },
     });
-
-    const timestamp = new Date();
 
     // Store all sensor readings
     await prisma.deviceReading.create({

@@ -26,6 +26,7 @@ import {
   IconTrash,
   IconCalendar,
   IconMapPin,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -41,9 +42,22 @@ interface EmbeddedSystem {
   _count?: { heatingSchedules: number };
 }
 
+interface AlarmInfo {
+  hasAlarms: boolean;
+  alarms: Array<{
+    id: string;
+    name: string;
+    deviceId: string | null;
+    location: string;
+    alarmTriggeredAt: string | null;
+  }>;
+  count: number;
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [systems, setSystems] = useState<EmbeddedSystem[]>([]);
+  const [alarmInfo, setAlarmInfo] = useState<AlarmInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSystemForm, setShowSystemForm] = useState(false);
 
@@ -51,6 +65,9 @@ export default function Dashboard() {
     try {
       const systemsRes = await fetch("/api/systems");
       if (systemsRes.ok) setSystems(await systemsRes.json());
+
+      const alarmsRes = await fetch("/api/alarms");
+      if (alarmsRes.ok) setAlarmInfo(await alarmsRes.json());
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -60,6 +77,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
+    // Refresh alarms every 5 seconds
+    const interval = setInterval(() => {
+      fetch("/api/alarms")
+        .then((res) => res.json())
+        .then((data) => setAlarmInfo(data))
+        .catch(console.error);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleDeleteDevice = async (deviceId: string, deviceName: string) => {
@@ -107,6 +132,37 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      {/* Critical Alarm Banner */}
+      {alarmInfo?.hasAlarms && (
+        <div className="animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+          <div className="container mx-auto flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-4">
+              <IconAlertTriangle size={32} className="animate-bounce" />
+              <div>
+                <div className="text-xl font-bold">
+                  ⚠️ وضعیت بحرانی شناسایی شد!
+                </div>
+                <div className="text-sm opacity-90">
+                  {alarmInfo.count} دیوایس در وضعیت بحرانی:{" "}
+                  {alarmInfo.alarms.map((a) => a.name).join("، ")}
+                </div>
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              className="border-white/30 bg-white/20 text-white hover:bg-white/30"
+              onClick={() => {
+                if (alarmInfo.alarms.length > 0) {
+                  router.push(`/devices/${alarmInfo.alarms[0].id}`);
+                }
+              }}
+            >
+              مشاهده جزئیات
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
         {/* Header Section with Enhanced Animation */}
         <div className="animate-in fade-in slide-in-from-top flex flex-col gap-6 duration-700 sm:flex-row sm:items-center sm:justify-between">
