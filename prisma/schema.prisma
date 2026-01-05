@@ -28,6 +28,7 @@ model EmbeddedSystem {
   powerUsage  PowerUsage[]
   commands    Command[]
   heatingSchedules HeatingSchedule[]
+  alarmHistory AlarmHistory[]
 
   @@map("embedded_systems")
 }
@@ -97,4 +98,16 @@ model HeatingSchedule {
   @@map("heating_schedules")
   @@index([embeddedSystemId, season, month])
   @@unique([embeddedSystemId, season, month])
+}
+
+model AlarmHistory {
+  id               String   @id @default(cuid())
+  embeddedSystemId String
+  triggeredAt      DateTime @default(now())
+  resolvedAt       DateTime?
+  
+  embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
+  
+  @@map("alarm_history")
+  @@index([embeddedSystemId, triggeredAt(sort: Desc)])
 }

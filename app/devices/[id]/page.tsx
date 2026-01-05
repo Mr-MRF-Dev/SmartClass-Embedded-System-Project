@@ -60,11 +60,18 @@ interface DeviceReading {
   timestamp: string;
 }
 
+interface AlarmHistory {
+  id: string;
+  triggeredAt: string;
+  resolvedAt: string | null;
+}
+
 export default function DeviceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [device, setDevice] = useState<EmbeddedSystem | null>(null);
   const [readings, setReadings] = useState<DeviceReading[]>([]);
+  const [alarmHistory, setAlarmHistory] = useState<AlarmHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -72,6 +79,7 @@ export default function DeviceDetailPage() {
     if (params.id) {
       fetchDevice();
       fetchReadings();
+      fetchAlarmHistory();
       // Refresh readings every 30 seconds
       const interval = setInterval(() => {
         fetchReadings();
@@ -97,9 +105,11 @@ export default function DeviceDetailPage() {
   useEffect(() => {
     if (params.id) {
       fetchDevice();
+      fetchAlarmHistory();
       // Refresh device status every 5 seconds to check for alarms
       const deviceInterval = setInterval(() => {
         fetchDevice();
+        fetchAlarmHistory();
       }, 5000);
       return () => clearInterval(deviceInterval);
     }
@@ -116,6 +126,17 @@ export default function DeviceDetailPage() {
       setReadings(data);
     } catch (err) {
       console.error("Error fetching readings:", err);
+    }
+  };
+
+  const fetchAlarmHistory = async () => {
+    try {
+      const response = await fetch(`/api/alarm-history/${params.id}?limit=50`);
+      if (!response.ok) throw new Error("Failed to fetch alarm history");
+      const data = await response.json();
+      setAlarmHistory(data);
+    } catch (err) {
+      console.error("Error fetching alarm history:", err);
     }
   };
 
@@ -217,9 +238,9 @@ export default function DeviceDetailPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
-      {/* Critical Alarm Banner */}
+      {/* Critical Alarm Banner - Sticky */}
       {device?.alarmActive && (
-        <div className="animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+        <div className="sticky top-0 z-50 animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
           <div className="container mx-auto flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <IconAlertTriangle size={32} className="animate-bounce" />
@@ -397,6 +418,82 @@ export default function DeviceDetailPage() {
                     </div>
                   </div>
                 )}
+
+                {/* Alarm History Section */}
+                <div className="mt-6 rounded-xl border-2 border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 dark:border-red-800 dark:from-red-950 dark:to-pink-950">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="rounded-xl bg-red-100 p-2 shadow-sm dark:bg-red-900">
+                      <IconAlertTriangle
+                        size={20}
+                        className="text-red-600 dark:text-red-400"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                        تاریخچه وضعیت‌های بحرانی
+                      </div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        {alarmHistory.length > 0
+                          ? `${alarmHistory.length} رویداد ثبت شده`
+                          : "هیچ رویداد بحرانی ثبت نشده"}
+                      </div>
+                    </div>
+                  </div>
+                  {alarmHistory.length > 0 ? (
+                    <div className="max-h-64 space-y-2 overflow-y-auto">
+                      {alarmHistory.map((alarm) => (
+                        <div
+                          key={alarm.id}
+                          className="rounded-lg border border-red-200 bg-white p-3 shadow-sm dark:border-red-800 dark:bg-gray-800"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                                زمان شروع:
+                              </div>
+                              <div className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                                {new Date(alarm.triggeredAt).toLocaleString(
+                                  "fa-IR",
+                                )}
+                              </div>
+                              {alarm.resolvedAt && (
+                                <>
+                                  <div className="mt-2 text-xs font-semibold text-green-600 dark:text-green-400">
+                                    زمان رفع:
+                                  </div>
+                                  <div className="text-sm font-bold text-green-700 dark:text-green-300">
+                                    {new Date(alarm.resolvedAt).toLocaleString(
+                                      "fa-IR",
+                                    )}
+                                  </div>
+                                  <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    مدت زمان:{" "}
+                                    {Math.round(
+                                      (new Date(alarm.resolvedAt).getTime() -
+                                        new Date(alarm.triggeredAt).getTime()) /
+                                        1000 /
+                                        60,
+                                    )}{" "}
+                                    دقیقه
+                                  </div>
+                                </>
+                              )}
+                              {!alarm.resolvedAt && (
+                                <div className="mt-2 inline-block rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-700 dark:bg-red-900 dark:text-red-300">
+                                  در حال انجام
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                      هیچ رویداد بحرانی ثبت نشده است
+                    </div>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

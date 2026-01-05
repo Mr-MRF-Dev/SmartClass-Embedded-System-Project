@@ -50,6 +50,39 @@ export async function POST(request: Request) {
       (presence === 0 || presence === null) &&
       (currentConsumption === 0 || currentConsumption === null);
 
+    // Track alarm state changes
+    const wasAlarmActive = system.alarmActive || false;
+
+    // If alarm just triggered, create alarm history record
+    if (isCritical && !wasAlarmActive) {
+      await prisma.alarmHistory.create({
+        data: {
+          embeddedSystemId: system.id,
+          triggeredAt: timestamp,
+        },
+      });
+    }
+
+    // If alarm just resolved, update the latest unresolved alarm history
+    if (!isCritical && wasAlarmActive) {
+      const latestUnresolvedAlarm = await prisma.alarmHistory.findFirst({
+        where: {
+          embeddedSystemId: system.id,
+          resolvedAt: null,
+        },
+        orderBy: {
+          triggeredAt: "desc",
+        },
+      });
+
+      if (latestUnresolvedAlarm) {
+        await prisma.alarmHistory.update({
+          where: { id: latestUnresolvedAlarm.id },
+          data: { resolvedAt: timestamp },
+        });
+      }
+    }
+
     // Update last seen timestamp and alarm status
     await prisma.embeddedSystem.update({
       where: { id: system.id },

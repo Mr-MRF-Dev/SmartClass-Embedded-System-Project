@@ -132,9 +132,9 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
-      {/* Critical Alarm Banner */}
+      {/* Critical Alarm Banner - Sticky */}
       {alarmInfo?.hasAlarms && (
-        <div className="animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+        <div className="sticky top-0 z-50 animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
           <div className="container mx-auto flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <IconAlertTriangle size={32} className="animate-bounce" />
