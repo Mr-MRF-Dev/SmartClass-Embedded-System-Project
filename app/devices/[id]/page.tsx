@@ -329,7 +329,7 @@ export default function DeviceDetailPage() {
               <IconAlertTriangle size={32} className="animate-bounce" />
               <div>
                 <div className="text-xl font-bold">
-                  ⚠️ وضعیت بحرانی: تمامی سنسورها صفر هستند!
+                  ⚠️ دیوایس در وضعیت بحرانی قرار دارد!
                 </div>
                 <div className="text-sm opacity-90">
                   دیوایس {device.name} در وضعیت بحرانی قرار دارد
