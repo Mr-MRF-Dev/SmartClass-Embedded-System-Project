@@ -12,7 +12,7 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get("limit") || "50");
 
-    const alarmHistory = await prisma.alarmHistory.findMany({
+    const alarmHistory = await prisma.alarm.findMany({
       where: {
         embeddedSystemId: id,
       },

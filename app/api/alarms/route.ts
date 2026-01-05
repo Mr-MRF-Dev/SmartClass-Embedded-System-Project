@@ -3,22 +3,33 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // Get all systems with active alarms
-    const systemsWithAlarms = await prisma.embeddedSystem.findMany({
+    // Get all active alarms
+    const activeAlarms = await prisma.alarm.findMany({
       where: {
-        alarmActive: true,
+        resolvedAt: null,
       },
-      select: {
-        id: true,
-        name: true,
-        deviceId: true,
-        location: true,
-        alarmTriggeredAt: true,
+      include: {
+        embeddedSystem: {
+          select: {
+            id: true,
+            name: true,
+            deviceId: true,
+            location: true,
+          },
+        },
       },
       orderBy: {
-        alarmTriggeredAt: "desc",
+        triggeredAt: "desc",
       },
     });
+
+    const systemsWithAlarms = activeAlarms.map((alarm) => ({
+      id: alarm.embeddedSystem.id,
+      name: alarm.embeddedSystem.name,
+      deviceId: alarm.embeddedSystem.deviceId,
+      location: alarm.embeddedSystem.location,
+      alarmTriggeredAt: alarm.triggeredAt.toISOString(),
+    }));
 
     return NextResponse.json({
       hasAlarms: systemsWithAlarms.length > 0,

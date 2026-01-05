@@ -9,13 +9,29 @@ export async function GET() {
         _count: {
           select: { heatingSchedules: true },
         },
+        alarms: {
+          where: {
+            resolvedAt: null,
+          },
+          take: 1,
+          orderBy: {
+            triggeredAt: "desc",
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return NextResponse.json(systems);
+    // Add alarmActive flag based on active alarms
+    const systemsWithAlarmStatus = systems.map((system) => ({
+      ...system,
+      alarmActive: system.alarms.length > 0,
+      alarmTriggeredAt: system.alarms[0]?.triggeredAt || null,
+    }));
+
+    return NextResponse.json(systemsWithAlarmStatus);
   } catch (error) {
     console.error("Error fetching systems:", error);
     console.error("Error details:", {

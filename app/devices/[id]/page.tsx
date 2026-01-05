@@ -61,7 +61,7 @@ interface DeviceReading {
   timestamp: string;
 }
 
-interface AlarmHistory {
+interface Alarm {
   id: string;
   triggeredAt: string;
   resolvedAt: string | null;
@@ -83,7 +83,7 @@ export default function DeviceDetailPage() {
   const router = useRouter();
   const [device, setDevice] = useState<EmbeddedSystem | null>(null);
   const [readings, setReadings] = useState<DeviceReading[]>([]);
-  const [alarmHistory, setAlarmHistory] = useState<AlarmHistory[]>([]);
+  const [alarmHistory, setAlarmHistory] = useState<Alarm[]>([]);
   const [schedules, setSchedules] = useState<HeatingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
