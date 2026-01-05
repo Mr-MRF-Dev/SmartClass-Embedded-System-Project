@@ -26,6 +26,7 @@ import {
   IconTrash,
   IconCalendar,
   IconMapPin,
+  IconLogout,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -61,6 +62,21 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleLogout = async () => {
+    if (!confirm("آیا مطمئن هستید که می‌خواهید از سیستم خارج شوید؟")) {
+      return;
+    }
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("خطا در خروج از سیستم");
+    }
+  };
 
   const handleDeleteDevice = async (deviceId: string, deviceName: string) => {
     if (
@@ -120,6 +136,18 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex gap-3">
+            <Button
+              onClick={handleLogout}
+              size="lg"
+              variant="outline"
+              className="group border-2 border-red-300 bg-white text-red-600 shadow-lg transition-all hover:scale-105 hover:border-red-500 hover:bg-red-50 hover:text-red-700 hover:shadow-xl active:scale-95"
+            >
+              <IconLogout
+                size={20}
+                className="ml-2 transition-transform group-hover:-translate-x-1"
+              />
+              خروج
+            </Button>
             <Button
               onClick={() => setShowSystemForm(true)}
               size="lg"

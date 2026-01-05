@@ -1,5 +1,6 @@
 // Script to seed fake data for SmartClass project using Prisma
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 async function seedData() {
   console.log("🌱 Starting database seeding...\n");
@@ -12,7 +13,21 @@ async function seedData() {
     await prisma.powerUsage.deleteMany();
     await prisma.heatingSchedule.deleteMany();
     await prisma.embeddedSystem.deleteMany();
+    await prisma.user.deleteMany();
     console.log("✓ Database cleared\n");
+
+    // Create user
+    console.log("👤 Creating user...");
+    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const user = await prisma.user.create({
+      data: {
+        email: "admin@smartclass.com",
+        password: hashedPassword,
+        name: "Admin User",
+        role: "admin",
+      },
+    });
+    console.log(`✓ Created user: ${user.email}\n`);
 
     // Create embedded systems
     console.log("📦 Creating embedded systems...");
@@ -243,6 +258,7 @@ async function seedData() {
 
     console.log("✅ Database seeding completed successfully!");
     console.log("📊 Summary:");
+    console.log("  • 1 User (admin@smartclass.com / admin123)");
     console.log("  • 3 Embedded Systems");
     console.log("  • 3 Power Usage Records");
     console.log("  • 3 Device Readings");
