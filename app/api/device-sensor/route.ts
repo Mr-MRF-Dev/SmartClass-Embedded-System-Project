@@ -5,19 +5,23 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Expect an array: [deviceId, temp, humidity, light, presence, current_consumption]
-    if (!Array.isArray(body) || body.length !== 6) {
+    // Expect JSON format: { "values": [deviceId, temp, humidity, light, presence, current_consumption] }
+    if (
+      !body.values ||
+      !Array.isArray(body.values) ||
+      body.values.length !== 6
+    ) {
       return NextResponse.json(
         {
           error:
-            "Expected array of 6 values: [deviceId, temp, humidity, light, presence, current_consumption]",
+            'Expected JSON format: { "values": [deviceId, temp, humidity, light, presence, current_consumption] }',
         },
         { status: 400 },
       );
     }
 
     const [deviceId, temp, humidity, light, presence, currentConsumption] =
-      body;
+      body.values;
 
     // Validate deviceId
     if (!deviceId || typeof deviceId !== "string") {
