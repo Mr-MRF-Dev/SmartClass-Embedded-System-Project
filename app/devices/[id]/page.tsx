@@ -23,6 +23,7 @@ import {
   IconSun,
   IconUser,
   IconBolt,
+  IconAlertTriangle,
 } from "@tabler/icons-react";
 import {
   LineChart,
@@ -44,6 +45,8 @@ interface EmbeddedSystem {
   status: string;
   deviceId?: string;
   lastSeen?: string;
+  alarmActive?: boolean;
+  alarmTriggeredAt?: string | null;
   createdAt: string;
 }
 
@@ -90,6 +93,18 @@ export default function DeviceDetailPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      fetchDevice();
+      // Refresh device status every 5 seconds to check for alarms
+      const deviceInterval = setInterval(() => {
+        fetchDevice();
+      }, 5000);
+      return () => clearInterval(deviceInterval);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
 
   const fetchReadings = async () => {
     try {
@@ -202,6 +217,33 @@ export default function DeviceDetailPage() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+      {/* Critical Alarm Banner */}
+      {device?.alarmActive && (
+        <div className="animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+          <div className="container mx-auto flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-4">
+              <IconAlertTriangle size={32} className="animate-bounce" />
+              <div>
+                <div className="text-xl font-bold">
+                  ⚠️ وضعیت بحرانی: تمامی سنسورها صفر هستند!
+                </div>
+                <div className="text-sm opacity-90">
+                  دیوایس {device.name} در وضعیت بحرانی قرار دارد
+                  {device.alarmTriggeredAt && (
+                    <span className="mr-2">
+                      - زمان شروع:{" "}
+                      {new Date(device.alarmTriggeredAt).toLocaleString(
+                        "fa-IR",
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
         {/* Enhanced Header */}
         <div className="animate-in slide-in-from-top flex flex-col gap-6 border-none! shadow-none! duration-700 outline-none sm:flex-row sm:items-center sm:justify-between">
