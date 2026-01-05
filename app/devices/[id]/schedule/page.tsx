@@ -23,6 +23,8 @@ import {
   IconSun,
   IconLeaf,
   IconFlower,
+  IconEdit,
+  IconTrash,
 } from "@tabler/icons-react";
 
 interface EmbeddedSystem {
@@ -33,16 +35,55 @@ interface EmbeddedSystem {
   status: string;
 }
 
+interface HeatingSchedule {
+  id: string;
+  season: string;
+  month: number | null;
+  weekdays: string;
+  startTime: string;
+  endTime: string;
+  targetTemperature: number;
+  enabled: boolean;
+}
+
+const MONTHS = [
+  { value: 1, label: "فروردین", season: "spring" },
+  { value: 2, label: "اردیبهشت", season: "spring" },
+  { value: 3, label: "خرداد", season: "spring" },
+  { value: 4, label: "تیر", season: "summer" },
+  { value: 5, label: "مرداد", season: "summer" },
+  { value: 6, label: "شهریور", season: "summer" },
+  { value: 7, label: "مهر", season: "fall" },
+  { value: 8, label: "آبان", season: "fall" },
+  { value: 9, label: "آذر", season: "fall" },
+  { value: 10, label: "دی", season: "winter" },
+  { value: 11, label: "بهمن", season: "winter" },
+  { value: 12, label: "اسفند", season: "winter" },
+];
+
+const WEEKDAYS = [
+  { value: 6, label: "شنبه", abbr: "ش" },
+  { value: 0, label: "یکشنبه", abbr: "ی" },
+  { value: 1, label: "دوشنبه", abbr: "د" },
+  { value: 2, label: "سه‌شنبه", abbr: "س" },
+  { value: 3, label: "چهارشنبه", abbr: "چ" },
+  { value: 4, label: "پنج‌شنبه", abbr: "پ" },
+  { value: 5, label: "جمعه", abbr: "ج" },
+];
+
 export default function DeviceSchedulePage() {
   const params = useParams();
   const router = useRouter();
   const [device, setDevice] = useState<EmbeddedSystem | null>(null);
+  const [schedules, setSchedules] = useState<HeatingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     if (params.id) {
       fetchDevice();
+      fetchSchedules();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
@@ -57,6 +98,90 @@ export default function DeviceSchedulePage() {
       setError(err instanceof Error ? err.message : "خطا در بارگذاری");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchSchedules = async () => {
+    try {
+      const response = await fetch(`/api/systems/${params.id}/schedule`);
+      if (response.ok) {
+        const data = await response.json();
+        setSchedules(data);
+      }
+    } catch (err) {
+      console.error("Error fetching schedules:", err);
+    }
+  };
+
+  const getSeasonIcon = (season: string) => {
+    switch (season) {
+      case "spring":
+        return (
+          <IconFlower
+            size={20}
+            className="text-green-600 dark:text-green-400"
+          />
+        );
+      case "summer":
+        return (
+          <IconSun size={20} className="text-yellow-600 dark:text-yellow-400" />
+        );
+      case "fall":
+        return (
+          <IconLeaf
+            size={20}
+            className="text-orange-600 dark:text-orange-400"
+          />
+        );
+      case "winter":
+        return (
+          <IconSnowflake
+            size={20}
+            className="text-blue-600 dark:text-blue-400"
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const getWeekdaysLabel = (weekdaysStr: string) => {
+    // Handle undefined or null weekdays (for old data)
+    if (!weekdaysStr) return "همه روزها";
+
+    const days = weekdaysStr.split(",").map(Number);
+    if (days.length === 7) return "همه روزها";
+    return WEEKDAYS.filter((w) => days.includes(w.value))
+      .map((w) => w.abbr)
+      .join("، ");
+  };
+
+  const getSchedulesForMonth = (monthNum: number) => {
+    return schedules.filter(
+      (s) =>
+        s.month === monthNum ||
+        (s.month === null &&
+          s.season === MONTHS.find((m) => m.value === monthNum)?.season),
+    );
+  };
+
+  const handleDelete = async (scheduleId: string) => {
+    if (!confirm("آیا مطمئن هستید که می‌خواهید این برنامه را حذف کنید؟")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/systems/${params.id}/schedule?scheduleId=${scheduleId}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (!response.ok) throw new Error("Failed to delete schedule");
+      await fetchSchedules();
+    } catch (err) {
+      console.error("Error deleting schedule:", err);
     }
   };
 
@@ -117,7 +242,7 @@ export default function DeviceSchedulePage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen border-none! bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
       <div className="container mx-auto space-y-8 p-6 md:p-8 lg:p-10">
         {/* Enhanced Header */}
         <div className="animate-in slide-in-from-top duration-700">
@@ -198,7 +323,7 @@ export default function DeviceSchedulePage() {
         </div>
 
         {/* Seasonal Overview Cards */}
-        <div className="animate-in fade-in slide-in-from-bottom grid gap-6 duration-700 md:grid-cols-2 lg:grid-cols-4">
+        {/* <div className="animate-in fade-in slide-in-from-bottom grid gap-6 duration-700 md:grid-cols-2 lg:grid-cols-4">
           <Card className="group relative overflow-hidden border-2 border-blue-200 bg-white/80 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-blue-800 dark:bg-gray-800/80">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
             <CardContent className="relative z-10 py-6 text-center">
@@ -270,31 +395,157 @@ export default function DeviceSchedulePage() {
               </p>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         {/* Main Schedule Form */}
         <Card className="group animate-in fade-in slide-in-from-bottom relative overflow-hidden border-2 border-blue-200 bg-white/80 shadow-2xl backdrop-blur-sm transition-all duration-700 dark:border-blue-800 dark:bg-gray-800/80">
           <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-gradient-to-br from-orange-200 to-pink-200 opacity-10 transition-transform group-hover:scale-125 dark:from-orange-800 dark:to-pink-800"></div>
           <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-6 dark:border-blue-800">
-            <div className="flex items-center gap-4">
-              <div className="rounded-2xl bg-gradient-to-br from-red-100 via-orange-100 to-pink-100 p-3 shadow-lg dark:from-red-900 dark:via-orange-900 dark:to-pink-900">
-                <IconClock
-                  size={32}
-                  className="text-red-600 dark:text-red-400"
-                />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="rounded-2xl bg-gradient-to-br from-red-100 via-orange-100 to-pink-100 p-3 shadow-lg dark:from-red-900 dark:via-orange-900 dark:to-pink-900">
+                  <IconClock
+                    size={32}
+                    className="text-red-600 dark:text-red-400"
+                  />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
+                    {showForm ? "افزودن برنامه جدید" : "برنامه‌های حرارتی"}
+                  </CardTitle>
+                  <CardDescription className="mt-2 text-base text-gray-700 dark:text-gray-300">
+                    {showForm
+                      ? "برای هر ماه، روزهای هفته و بازه زمانی مشخص کنید"
+                      : "مشاهده و مدیریت برنامه‌های ماهانه"}
+                  </CardDescription>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="text-3xl font-extrabold text-gray-800 dark:text-gray-100">
-                  تنظیمات برنامه حرارتی
-                </CardTitle>
-                <CardDescription className="mt-2 text-base text-gray-700 dark:text-gray-300">
-                  برای هر ماه از سال، زمان شروع گرمایش و دمای مطلوب را مشخص کنید
-                </CardDescription>
-              </div>
+              <Button
+                onClick={() => setShowForm(!showForm)}
+                size="lg"
+                variant={showForm ? "outline" : "default"}
+                className={
+                  showForm
+                    ? "border-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400"
+                    : "bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg hover:shadow-xl"
+                }
+              >
+                {showForm ? "لغو" : "افزودن برنامه جدید"}
+              </Button>
             </div>
           </CardHeader>
           <CardContent className="relative z-10 pt-6">
-            <HeatingScheduleForm systemId={device.id} />
+            {showForm ? (
+              <HeatingScheduleForm
+                key="schedule-form"
+                systemId={device.id}
+                onScheduleSaved={() => {
+                  fetchSchedules();
+                  setShowForm(false);
+                }}
+              />
+            ) : (
+              <div className="space-y-6">
+                {/* Month-based Schedule View */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {MONTHS.map((month) => {
+                    const monthSchedules = getSchedulesForMonth(month.value);
+                    const hasSchedules = monthSchedules.length > 0;
+
+                    return (
+                      <Card
+                        key={month.value}
+                        className={`group relative overflow-hidden border-2 transition-all hover:shadow-lg ${
+                          hasSchedules
+                            ? "border-green-200 bg-white dark:border-green-800 dark:bg-gray-800"
+                            : "border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+                        }`}
+                      >
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {getSeasonIcon(month.season)}
+                              <CardTitle className="text-lg font-bold text-gray-800 dark:text-gray-100">
+                                {month.label}
+                              </CardTitle>
+                            </div>
+                            {hasSchedules && (
+                              <Badge className="bg-green-500 text-white">
+                                {monthSchedules.length} برنامه
+                              </Badge>
+                            )}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          {hasSchedules ? (
+                            monthSchedules.map((schedule) => (
+                              <div
+                                key={schedule.id}
+                                className="rounded-lg border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 shadow-sm dark:border-gray-700 dark:from-blue-950 dark:to-indigo-950"
+                              >
+                                <div className="mb-2 flex items-center justify-between">
+                                  <Badge
+                                    variant={
+                                      schedule.enabled ? "default" : "outline"
+                                    }
+                                    className={
+                                      schedule.enabled
+                                        ? "bg-green-500"
+                                        : "bg-gray-400"
+                                    }
+                                  >
+                                    {schedule.enabled ? "فعال" : "غیرفعال"}
+                                  </Badge>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDelete(schedule.id)}
+                                    className="h-7 w-7 p-0 text-red-600 hover:bg-red-100 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950"
+                                  >
+                                    <IconTrash size={14} />
+                                  </Button>
+                                </div>
+                                <div className="space-y-1.5 text-xs">
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-gray-600 dark:text-gray-400">
+                                      روزها:
+                                    </span>
+                                    <span className="font-bold text-gray-800 dark:text-gray-200">
+                                      {getWeekdaysLabel(schedule.weekdays)}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-gray-600 dark:text-gray-400">
+                                      زمان:
+                                    </span>
+                                    <span className="font-bold text-gray-800 dark:text-gray-200">
+                                      {schedule.startTime} - {schedule.endTime}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-gray-600 dark:text-gray-400">
+                                      دما:
+                                    </span>
+                                    <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
+                                      <IconTemperature size={14} />
+                                      {schedule.targetTemperature}°C
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="py-4 text-center text-xs text-gray-500 dark:text-gray-400">
+                              هیچ برنامه‌ای تعریف نشده
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -24,6 +24,7 @@ import {
   IconUser,
   IconBolt,
   IconAlertTriangle,
+  IconCalendar,
 } from "@tabler/icons-react";
 import {
   LineChart,
@@ -70,6 +71,7 @@ interface HeatingSchedule {
   id: string;
   season: string;
   month: number | null;
+  weekdays: string;
   startTime: string;
   endTime: string;
   targetTemperature: number;
@@ -198,6 +200,27 @@ export default function DeviceDetailPage() {
       "اسفند",
     ];
     return months[month - 1] || "";
+  };
+
+  const getWeekdaysLabel = (weekdaysStr: string) => {
+    // Handle undefined or null weekdays (for old data)
+    if (!weekdaysStr) return "همه روزها";
+
+    const WEEKDAYS = [
+      { value: 6, abbr: "ش" },
+      { value: 0, abbr: "ی" },
+      { value: 1, abbr: "د" },
+      { value: 2, abbr: "س" },
+      { value: 3, abbr: "چ" },
+      { value: 4, abbr: "پ" },
+      { value: 5, abbr: "ج" },
+    ];
+
+    const days = weekdaysStr.split(",").map(Number);
+    if (days.length === 7) return "همه روزها";
+    return WEEKDAYS.filter((w) => days.includes(w.value))
+      .map((w) => w.abbr)
+      .join("، ");
   };
 
   const getCurrentMonthSchedule = () => {
@@ -607,7 +630,21 @@ export default function DeviceDetailPage() {
                           {getMonthLabel(currentSchedule.month)}
                         </span>
                       </div>
-                      <div className="grid gap-4 md:grid-cols-3">
+                      <div className="grid gap-4 md:grid-cols-4">
+                        <div className="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-3 dark:from-green-950 dark:to-emerald-950">
+                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            روزهای هفته
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <IconCalendar
+                              size={20}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                            <span className="text-sm font-bold text-gray-800 dark:text-gray-100">
+                              {getWeekdaysLabel(currentSchedule.weekdays)}
+                            </span>
+                          </div>
+                        </div>
                         <div className="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-3 dark:from-blue-950 dark:to-indigo-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             دمای هدف
@@ -692,6 +729,14 @@ export default function DeviceDetailPage() {
                           </span>
                         </div>
                         <div className="space-y-1 text-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 dark:text-gray-400">
+                              روزها:
+                            </span>
+                            <span className="font-bold text-gray-800 dark:text-gray-200">
+                              {getWeekdaysLabel(schedule.weekdays)}
+                            </span>
+                          </div>
                           <div className="flex items-center justify-between">
                             <span className="text-gray-600 dark:text-gray-400">
                               دما:

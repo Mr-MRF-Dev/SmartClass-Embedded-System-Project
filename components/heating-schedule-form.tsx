@@ -19,12 +19,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { IconTrash, IconCheck, IconTemperature } from "@tabler/icons-react";
+import {
+  IconTrash,
+  IconCheck,
+  IconTemperature,
+  IconCalendar,
+} from "@tabler/icons-react";
 
 interface HeatingSchedule {
   id: string;
   season: string;
   month: number | null;
+  weekdays: string;
   startTime: string;
   endTime: string;
   targetTemperature: number;
@@ -33,6 +39,7 @@ interface HeatingSchedule {
 
 interface HeatingScheduleFormProps {
   systemId: string;
+  onScheduleSaved?: () => void;
 }
 
 const SEASONS = [
@@ -58,7 +65,20 @@ const MONTHS = [
   { value: 12, label: "اسفند" },
 ];
 
-export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
+const WEEKDAYS = [
+  { value: 6, label: "شنبه", abbr: "ش" },
+  { value: 0, label: "یکشنبه", abbr: "ی" },
+  { value: 1, label: "دوشنبه", abbr: "د" },
+  { value: 2, label: "سه‌شنبه", abbr: "س" },
+  { value: 3, label: "چهارشنبه", abbr: "چ" },
+  { value: 4, label: "پنج‌شنبه", abbr: "پ" },
+  { value: 5, label: "جمعه", abbr: "ج" },
+];
+
+export function HeatingScheduleForm({
+  systemId,
+  onScheduleSaved,
+}: HeatingScheduleFormProps) {
   const [schedules, setSchedules] = useState<HeatingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -66,11 +86,16 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
   const [newSchedule, setNewSchedule] = useState({
     season: "spring",
     month: null as number | null,
+    weekdays: [0, 1, 2, 3, 4, 5, 6] as number[],
     startTime: "08:00",
     endTime: "18:00",
     targetTemperature: 22,
     enabled: true,
   });
+
+  useEffect(() => {
+    console.log("Schedule state updated:", newSchedule.weekdays);
+  }, [newSchedule.weekdays]);
 
   useEffect(() => {
     fetchSchedules();
@@ -96,6 +121,11 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
       return;
     }
 
+    if (newSchedule.weekdays.length === 0) {
+      setError("لطفا حداقل یک روز را انتخاب کنید");
+      return;
+    }
+
     if (!newSchedule.startTime || !newSchedule.endTime) {
       setError("لطفا زمان شروع و پایان را مشخص کنید");
       return;
@@ -113,13 +143,17 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
       const response = await fetch(`/api/systems/${systemId}/schedule`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newSchedule),
+        body: JSON.stringify({
+          ...newSchedule,
+          weekdays: newSchedule.weekdays.join(","),
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to save schedule");
 
       setNewSchedule({
         season: "spring",
+        weekdays: [0, 1, 2, 3, 4, 5, 6],
         month: null,
         startTime: "08:00",
         endTime: "18:00",
@@ -127,6 +161,9 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
         enabled: true,
       });
       await fetchSchedules();
+      if (onScheduleSaved) {
+        onScheduleSaved();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطا در ذخیره");
     } finally {
@@ -161,6 +198,33 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
 
   const getMonthLabel = (month: number | null) => {
     return MONTHS.find((m) => m.value === month)?.label || "نامشخص";
+  };
+
+  const getWeekdaysLabel = (weekdaysStr: string) => {
+    // Handle undefined or null weekdays (for old data)
+    if (!weekdaysStr) return "تمام روزهای هفته";
+
+    const days = weekdaysStr.split(",").map(Number);
+    if (days.length === 7) return "تمام روزهای هفته";
+    return WEEKDAYS.filter((w) => days.includes(w.value))
+      .map((w) => w.abbr)
+      .join("، ");
+  };
+
+  const toggleWeekday = (day: number) => {
+    console.log(
+      "Toggling day:",
+      day,
+      "Current weekdays:",
+      newSchedule.weekdays,
+    );
+    setNewSchedule((prev) => {
+      const weekdays = prev.weekdays.includes(day)
+        ? prev.weekdays.filter((d) => d !== day)
+        : [...prev.weekdays, day].sort();
+      console.log("New weekdays:", weekdays);
+      return { ...prev, weekdays };
+    });
   };
 
   if (isLoading) {
@@ -273,6 +337,40 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <Label>روزهای هفته *</Label>
+            <div className="flex flex-wrap gap-2">
+              {WEEKDAYS.map((day) => {
+                const isSelected = newSchedule.weekdays.includes(day.value);
+                return (
+                  <Button
+                    key={day.value}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleWeekday(day.value)}
+                    className={`min-w-[70px] transition-all ${
+                      isSelected
+                        ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600 dark:border-blue-600 dark:bg-blue-600"
+                        : "border-gray-300 hover:border-blue-400 dark:border-gray-600"
+                    }`}
+                  >
+                    <IconCalendar size={16} className="ml-1" />
+                    {day.label}
+                  </Button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              انتخاب شده:{" "}
+              {newSchedule.weekdays.length === 7
+                ? "تمام روزها"
+                : newSchedule.weekdays.length === 0
+                  ? "هیچ روزی"
+                  : `${newSchedule.weekdays.length} روز`}
+            </p>
+          </div>
+
           {error && (
             <div className="rounded-lg border-2 border-red-200 bg-red-50 p-4 text-sm font-medium text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
               {error}
@@ -343,6 +441,14 @@ export function HeatingScheduleForm({ systemId }: HeatingScheduleFormProps) {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-3 pt-6">
+                  <div className="flex items-center justify-between rounded-lg bg-green-50 p-3 dark:bg-green-950">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      روزهای هفته:
+                    </span>
+                    <span className="font-bold text-green-600 dark:text-green-400">
+                      {getWeekdaysLabel(schedule.weekdays)}
+                    </span>
+                  </div>
                   <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3 dark:bg-blue-950">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
                       بازه زمانی:

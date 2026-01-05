@@ -98,6 +98,7 @@ model HeatingSchedule {
   embeddedSystemId String
   season           String   // spring, summer, fall, winter
   month            Int?     // 1-12 (optional, for monthly override)
+  weekdays         String   @default("0,1,2,3,4,5,6") // Days of week: 0=Sunday, 1=Monday, ..., 6=Saturday
   startTime        String   // HH:mm format - زمان شروع
   endTime          String   // HH:mm format - زمان پایان
   targetTemperature Float   // دمای مطلوب
@@ -109,7 +110,6 @@ model HeatingSchedule {
   
   @@map("heating_schedules")
   @@index([embeddedSystemId, season, month])
-  @@unique([embeddedSystemId, season, month])
 }
 
 model AlarmHistory {
