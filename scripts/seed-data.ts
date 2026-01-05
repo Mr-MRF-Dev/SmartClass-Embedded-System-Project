@@ -18,13 +18,19 @@ async function seedData() {
 
     // Create user testing data
     console.log("👤 Creating user...");
-    const hashedPassword = await bcrypt.hash(
-      "019b8f15-44bc-73a3-be42-00da384f441b",
-      10,
-    );
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      throw new Error("ADMIN_PASSWORD not set");
+    }
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) {
+      throw new Error("ADMIN_EMAIL not set");
+    }
+
     const user = await prisma.user.create({
       data: {
-        email: "admin@smartclass.com",
+        email: adminEmail,
         password: hashedPassword,
         name: "Admin User",
         role: "admin",
@@ -278,7 +284,7 @@ async function seedData() {
 
     console.log("✅ Database seeding completed successfully!");
     console.log("📊 Summary:");
-    console.log("  • 1 User (admin@smartclass.com / admin123)");
+    console.log("  • 1 User");
     console.log("  • 3 Embedded Systems");
     console.log("  • 3 Power Usage Records");
     console.log("  • 3 Device Readings");
