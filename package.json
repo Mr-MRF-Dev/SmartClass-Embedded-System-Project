@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:prod": "prisma generate && prisma migrate deploy && prisma db push && next build",
+    "build:prod:clean": "prisma generate && prisma migrate deploy && prisma db push --accept-data-loss && prisma db seed && next build",
     "start": "next start",
     "lint": "eslint",
     "db:push": "prisma db push",
