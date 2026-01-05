@@ -39,6 +39,8 @@ interface EmbeddedSystem {
   status: string;
   deviceId?: string;
   lastSeen?: string;
+  alarmActive?: boolean;
+  alarmTriggeredAt?: string | null;
   createdAt: string;
   _count?: { heatingSchedules: number };
 }
@@ -78,11 +80,15 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-    // Refresh alarms every 5 seconds
+    // Refresh alarms and systems every 5 seconds
     const interval = setInterval(() => {
       fetch("/api/alarms")
         .then((res) => res.json())
         .then((data) => setAlarmInfo(data))
+        .catch(console.error);
+      fetch("/api/systems")
+        .then((res) => res.json())
+        .then((data) => setSystems(data))
         .catch(console.error);
     }, 5000);
     return () => clearInterval(interval);
@@ -360,122 +366,148 @@ export default function Dashboard() {
             </Card>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {systems.map((system, index) => (
-                <Card
-                  key={system.id}
-                  className="group animate-in fade-in slide-in-from-bottom relative cursor-pointer overflow-hidden border-2 border-gray-200 bg-white/80 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-blue-400 hover:shadow-2xl dark:border-gray-700 dark:bg-gray-800/80 dark:hover:border-blue-600"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                  onClick={() => router.push(`/devices/${system.id}`)}
-                >
-                  {/* Gradient Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 to-purple-500/0 transition-all duration-300 group-hover:from-blue-500/5 group-hover:to-purple-500/5"></div>
+              {systems.map((system, index) => {
+                // Check if this device has an active alarm from alarmInfo
+                const hasAlarm =
+                  alarmInfo?.alarms?.some((alarm) => alarm.id === system.id) ||
+                  false;
+                return (
+                  <Card
+                    key={system.id}
+                    className={`group animate-in fade-in slide-in-from-bottom relative cursor-pointer overflow-hidden border-2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-2xl ${
+                      hasAlarm
+                        ? "animate-pulse border-red-500 bg-gradient-to-br from-red-50/90 via-red-100/80 to-pink-50/90 dark:border-red-600 dark:from-red-950/90 dark:via-red-900/80 dark:to-pink-950/90"
+                        : "border-gray-200 bg-white/80 hover:border-blue-400 dark:border-gray-700 dark:bg-gray-800/80 dark:hover:border-blue-600"
+                    }`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                    onClick={() => router.push(`/devices/${system.id}`)}
+                  >
+                    {/* Gradient Overlay on Hover */}
+                    <div
+                      className={`absolute inset-0 transition-all duration-300 ${
+                        hasAlarm
+                          ? "bg-gradient-to-br from-red-500/10 to-pink-500/10 group-hover:from-red-500/15 group-hover:to-pink-500/15"
+                          : "bg-gradient-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5"
+                      }`}
+                    ></div>
 
-                  <CardHeader className="relative z-10 pb-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <CardTitle className="mb-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
-                          {system.name}
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-2 text-base text-gray-600 dark:text-gray-400">
-                          <IconMapPin size={16} />
-                          {system.location}
-                        </CardDescription>
-                        {system.deviceId && (
-                          <div className="mt-3 inline-block rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 font-mono text-xs font-medium text-gray-700 shadow-sm dark:from-gray-700 dark:to-gray-600 dark:text-gray-300">
-                            ID: {system.deviceId}
+                    {/* Alarm Indicator Badge */}
+                    {hasAlarm && (
+                      <div className="absolute top-2 left-2 z-20 rounded-full bg-red-600 p-1.5 shadow-lg">
+                        <IconAlertTriangle
+                          size={16}
+                          className="animate-bounce text-white"
+                        />
+                      </div>
+                    )}
+
+                    <CardHeader className="relative z-10 pb-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="mb-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-blue-600 dark:text-gray-100 dark:group-hover:text-blue-400">
+                            {system.name}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2 text-base text-gray-600 dark:text-gray-400">
+                            <IconMapPin size={16} />
+                            {system.location}
+                          </CardDescription>
+                          {system.deviceId && (
+                            <div className="mt-3 inline-block rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 font-mono text-xs font-medium text-gray-700 shadow-sm dark:from-gray-700 dark:to-gray-600 dark:text-gray-300">
+                              ID: {system.deviceId}
+                            </div>
+                          )}
+                        </div>
+                        <Badge
+                          className={`${getStatusColor(system.status)} shrink-0 px-3 py-1.5 text-xs font-bold text-white shadow-md transition-transform group-hover:scale-110`}
+                        >
+                          {system.status === "active"
+                            ? "فعال"
+                            : system.status === "inactive"
+                              ? "غیرفعال"
+                              : system.status === "maintenance"
+                                ? "تعمیر"
+                                : system.status}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="relative z-10 space-y-4">
+                      <p className="line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+                        {system.description || "بدون توضیحات اضافی"}
+                      </p>
+
+                      {/* Stats Bar */}
+                      <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+                        <div className="flex items-center gap-3">
+                          <div className="rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
+                            <IconSettings
+                              size={18}
+                              className="text-blue-600 dark:text-blue-400"
+                            />
+                          </div>
+                          <div>
+                            <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                              {system._count?.heatingSchedules || 0}
+                            </div>
+                            <div className="text-xs text-gray-600 dark:text-gray-400">
+                              برنامه فعال
+                            </div>
+                          </div>
+                        </div>
+                        {system.lastSeen && (
+                          <div className="text-left">
+                            <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                              آخرین بروزرسانی
+                            </div>
+                            <div className="text-xs font-bold text-gray-700 dark:text-gray-300">
+                              {new Date(system.lastSeen).toLocaleTimeString(
+                                "fa-IR",
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
-                      <Badge
-                        className={`${getStatusColor(system.status)} shrink-0 px-3 py-1.5 text-xs font-bold text-white shadow-md transition-transform group-hover:scale-110`}
-                      >
-                        {system.status === "active"
-                          ? "فعال"
-                          : system.status === "inactive"
-                            ? "غیرفعال"
-                            : system.status === "maintenance"
-                              ? "تعمیر"
-                              : system.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
 
-                  <CardContent className="relative z-10 space-y-4">
-                    <p className="line-clamp-2 min-h-[2.5rem] text-sm leading-relaxed text-gray-600 dark:text-gray-400">
-                      {system.description || "بدون توضیحات اضافی"}
-                    </p>
-
-                    {/* Stats Bar */}
-                    <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
-                      <div className="flex items-center gap-3">
-                        <div className="rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="group/btn flex-1 border-blue-200 bg-blue-50 font-semibold transition-all hover:border-blue-400 hover:bg-blue-100 hover:shadow-md dark:border-blue-800 dark:bg-blue-950 dark:hover:border-blue-600 dark:hover:bg-blue-900"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/devices/${system.id}`);
+                          }}
+                        >
                           <IconSettings
-                            size={18}
-                            className="text-blue-600 dark:text-blue-400"
+                            size={16}
+                            className="ml-2 transition-transform group-hover/btn:rotate-90"
                           />
-                        </div>
-                        <div>
-                          <div className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                            {system._count?.heatingSchedules || 0}
-                          </div>
-                          <div className="text-xs text-gray-600 dark:text-gray-400">
-                            برنامه فعال
-                          </div>
-                        </div>
+                          مدیریت
+                          <IconArrowRight
+                            size={16}
+                            className="mr-2 transition-transform group-hover/btn:-translate-x-1"
+                          />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="group/delete border-red-200 bg-red-50 text-red-600 transition-all hover:border-red-400 hover:bg-red-100 hover:shadow-md dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-900"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteDevice(system.id, system.name);
+                          }}
+                        >
+                          <IconTrash
+                            size={16}
+                            className="transition-transform group-hover/delete:scale-110"
+                          />
+                        </Button>
                       </div>
-                      {system.lastSeen && (
-                        <div className="text-left">
-                          <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                            آخرین بروزرسانی
-                          </div>
-                          <div className="text-xs font-bold text-gray-700 dark:text-gray-300">
-                            {new Date(system.lastSeen).toLocaleTimeString(
-                              "fa-IR",
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="group/btn flex-1 border-blue-200 bg-blue-50 font-semibold transition-all hover:border-blue-400 hover:bg-blue-100 hover:shadow-md dark:border-blue-800 dark:bg-blue-950 dark:hover:border-blue-600 dark:hover:bg-blue-900"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/devices/${system.id}`);
-                        }}
-                      >
-                        <IconSettings
-                          size={16}
-                          className="ml-2 transition-transform group-hover/btn:rotate-90"
-                        />
-                        مدیریت
-                        <IconArrowRight
-                          size={16}
-                          className="mr-2 transition-transform group-hover/btn:-translate-x-1"
-                        />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="group/delete border-red-200 bg-red-50 text-red-600 transition-all hover:border-red-400 hover:bg-red-100 hover:shadow-md dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:border-red-600 dark:hover:bg-red-900"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteDevice(system.id, system.name);
-                        }}
-                      >
-                        <IconTrash
-                          size={16}
-                          className="transition-transform group-hover/delete:scale-110"
-                        />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

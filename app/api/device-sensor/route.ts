@@ -50,12 +50,17 @@ export async function POST(request: Request) {
       (presence === 0 || presence === null) &&
       (currentConsumption === 0 || currentConsumption === null);
 
-    // Track alarm state changes
-    const wasAlarmActive = system.alarmActive || false;
+    // Check if there's an active alarm
+    const activeAlarm = await prisma.alarm.findFirst({
+      where: {
+        embeddedSystemId: system.id,
+        resolvedAt: null,
+      },
+    });
 
-    // If alarm just triggered, create alarm history record
-    if (isCritical && !wasAlarmActive) {
-      await prisma.alarmHistory.create({
+    // If alarm just triggered, create alarm record
+    if (isCritical && !activeAlarm) {
+      await prisma.alarm.create({
         data: {
           embeddedSystemId: system.id,
           triggeredAt: timestamp,
@@ -63,35 +68,19 @@ export async function POST(request: Request) {
       });
     }
 
-    // If alarm just resolved, update the latest unresolved alarm history
-    if (!isCritical && wasAlarmActive) {
-      const latestUnresolvedAlarm = await prisma.alarmHistory.findFirst({
-        where: {
-          embeddedSystemId: system.id,
-          resolvedAt: null,
-        },
-        orderBy: {
-          triggeredAt: "desc",
-        },
+    // If alarm just resolved, update the active alarm
+    if (!isCritical && activeAlarm) {
+      await prisma.alarm.update({
+        where: { id: activeAlarm.id },
+        data: { resolvedAt: timestamp },
       });
-
-      if (latestUnresolvedAlarm) {
-        await prisma.alarmHistory.update({
-          where: { id: latestUnresolvedAlarm.id },
-          data: { resolvedAt: timestamp },
-        });
-      }
     }
 
-    // Update last seen timestamp and alarm status
+    // Update last seen timestamp
     await prisma.embeddedSystem.update({
       where: { id: system.id },
       data: {
         lastSeen: timestamp,
-        alarmActive: isCritical,
-        alarmTriggeredAt: isCritical
-          ? timestamp
-          : (system.alarmTriggeredAt ?? null),
       },
     });
 

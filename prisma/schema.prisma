@@ -31,8 +31,6 @@ model EmbeddedSystem {
   macAddress  String?  @unique
   deviceId    String?  @unique
   lastSeen    DateTime?
-  alarmActive Boolean  @default(false)
-  alarmTriggeredAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -40,7 +38,7 @@ model EmbeddedSystem {
   powerUsage  PowerUsage[]
   commands    Command[]
   heatingSchedules HeatingSchedule[]
-  alarmHistory AlarmHistory[]
+  alarms Alarm[]
 
   @@map("embedded_systems")
 }
@@ -112,7 +110,7 @@ model HeatingSchedule {
   @@index([embeddedSystemId, season, month])
 }
 
-model AlarmHistory {
+model Alarm {
   id               String   @id @default(cuid())
   embeddedSystemId String
   triggeredAt      DateTime @default(now())
@@ -120,6 +118,7 @@ model AlarmHistory {
   
   embeddedSystem   EmbeddedSystem @relation(fields: [embeddedSystemId], references: [id], onDelete: Cascade)
   
-  @@map("alarm_history")
+  @@map("alarms")
   @@index([embeddedSystemId, triggeredAt(sort: Desc)])
+  @@index([embeddedSystemId, resolvedAt])
 }
