@@ -16,9 +16,12 @@ async function seedData() {
     await prisma.user.deleteMany();
     console.log("✓ Database cleared\n");
 
-    // Create user
+    // Create user testing data
     console.log("👤 Creating user...");
-    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const hashedPassword = await bcrypt.hash(
+      "019b8f15-44bc-73a3-be42-00da384f441b",
+      10,
+    );
     const user = await prisma.user.create({
       data: {
         email: "admin@smartclass.com",
