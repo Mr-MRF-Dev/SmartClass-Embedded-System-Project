@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 // List of public paths that don't require authentication
 const publicPaths = ["/login", "/api/auth/login"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public paths
@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configure which paths the middleware should run on
+// Configure which paths the proxy should run on
 export const config = {
   matcher: [
     /*
