@@ -128,32 +128,36 @@ export async function POST(request: Request) {
       },
     });
 
-    // Store all sensor readings
-    await prisma.deviceReading.create({
-      data: {
-        embeddedSystemId: system.id,
-        temperature: temp !== null && temp !== undefined ? temp : null,
-        humidity: humidity !== null && humidity !== undefined ? humidity : null,
-        light: light !== null && light !== undefined ? light : null,
-        presence: presence !== null && presence !== undefined ? presence : null,
-        currentConsumption:
-          currentConsumption !== null && currentConsumption !== undefined
-            ? currentConsumption
-            : null,
-        timestamp,
-      },
-    });
-
-    // Store power consumption data
-    if (currentConsumption !== null && currentConsumption !== undefined) {
-      await prisma.powerUsage.create({
+    // Store all sensor readings only if not in critical state
+    if (!isCritical) {
+      await prisma.deviceReading.create({
         data: {
           embeddedSystemId: system.id,
-          current: currentConsumption,
-          power: currentConsumption * 220, // Assuming 220V, calculate power
+          temperature: temp !== null && temp !== undefined ? temp : null,
+          humidity:
+            humidity !== null && humidity !== undefined ? humidity : null,
+          light: light !== null && light !== undefined ? light : null,
+          presence:
+            presence !== null && presence !== undefined ? presence : null,
+          currentConsumption:
+            currentConsumption !== null && currentConsumption !== undefined
+              ? currentConsumption
+              : null,
           timestamp,
         },
       });
+
+      // Store power consumption data
+      if (currentConsumption !== null && currentConsumption !== undefined) {
+        await prisma.powerUsage.create({
+          data: {
+            embeddedSystemId: system.id,
+            current: currentConsumption,
+            power: currentConsumption * 220, // Assuming 220V, calculate power
+            timestamp,
+          },
+        });
+      }
     }
 
     // Check if there's an active heating schedule
