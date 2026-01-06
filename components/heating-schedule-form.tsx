@@ -114,6 +114,52 @@ export function HeatingScheduleForm({
     }
   };
 
+  const checkOverlap = () => {
+    // Check if the new schedule overlaps with any existing schedules
+    const overlapping = schedules.find((existing) => {
+      // Skip if different month (unless one is null - meaning whole season)
+      if (
+        existing.month !== newSchedule.month &&
+        existing.month !== null &&
+        newSchedule.month !== null
+      ) {
+        return false;
+      }
+
+      // Skip if disabled
+      if (!existing.enabled) {
+        return false;
+      }
+
+      // Get days for both schedules
+      const existingDays = existing.weekdays.split(",").map(Number);
+      const newDays = newSchedule.weekdays;
+
+      // Find common days between the two schedules
+      const commonDays = existingDays.filter((day) => newDays.includes(day));
+
+      // If no common days, no overlap possible
+      if (commonDays.length === 0) {
+        return false;
+      }
+
+      // Check if times overlap on these common days
+      const existingStart = existing.startTime;
+      const existingEnd = existing.endTime;
+      const newStart = newSchedule.startTime;
+      const newEnd = newSchedule.endTime;
+
+      // Two time ranges overlap if:
+      // (StartA < EndB) and (EndA > StartB)
+      const timesOverlap = newStart < existingEnd && newEnd > existingStart;
+
+      // Only flag as overlap if both days AND times overlap
+      return timesOverlap;
+    });
+
+    return overlapping;
+  };
+
   const handleSave = async () => {
     if (!newSchedule.season) {
       setError("لطفا فصل را انتخاب کنید");
@@ -132,6 +178,31 @@ export function HeatingScheduleForm({
 
     if (newSchedule.startTime >= newSchedule.endTime) {
       setError("زمان شروع باید قبل از زمان پایان باشد");
+      return;
+    }
+
+    // Check for overlapping schedules
+    const overlappingSchedule = checkOverlap();
+    if (overlappingSchedule) {
+      const existingDays = overlappingSchedule.weekdays.split(",").map(Number);
+      const newDays = newSchedule.weekdays;
+      const commonDays = existingDays.filter((day) => newDays.includes(day));
+
+      const WEEKDAYS_MAP: Record<number, string> = {
+        0: "یکشنبه",
+        1: "دوشنبه",
+        2: "سه‌شنبه",
+        3: "چهارشنبه",
+        4: "پنج‌شنبه",
+        5: "جمعه",
+        6: "شنبه",
+      };
+
+      const dayNames = commonDays.map((d) => WEEKDAYS_MAP[d]).join("، ");
+
+      setError(
+        `تداخل زمانی در روزهای ${dayNames}: برنامه موجود ${overlappingSchedule.startTime}-${overlappingSchedule.endTime}`,
+      );
       return;
     }
 
