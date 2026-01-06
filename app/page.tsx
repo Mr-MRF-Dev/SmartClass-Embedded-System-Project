@@ -153,7 +153,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
       {/* Critical Alarm Banner - Sticky */}
       {alarmInfo?.hasAlarms && (
         <div className="sticky top-0 z-50 animate-pulse bg-linear-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
@@ -226,7 +226,7 @@ export default function Dashboard() {
 
         {/* Stats Cards Section */}
         <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-4">
-          <Card className="group relative overflow-hidden border-2 border-blue-200 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-blue-900 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+          <Card className="group relative overflow-hidden border-2 border-blue-200 bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-blue-900 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
             <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -249,7 +249,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-2 border-green-200 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-green-900 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
+          <Card className="group relative overflow-hidden border-2 border-green-200 bg-linear-to-br from-green-50 via-emerald-50 to-teal-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-green-900 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-green-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-green-800"></div>
             <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -276,7 +276,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-2 border-purple-200 bg-gradient-to-br from-purple-50 via-fuchsia-50 to-pink-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-purple-900 dark:from-purple-950 dark:via-fuchsia-950 dark:to-pink-950">
+          <Card className="group relative overflow-hidden border-2 border-purple-200 bg-linear-to-br from-purple-50 via-fuchsia-50 to-pink-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-purple-900 dark:from-purple-950 dark:via-fuchsia-950 dark:to-pink-950">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-purple-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
             <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -302,7 +302,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="group relative overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-amber-900 dark:from-amber-950 dark:via-orange-950 dark:to-yellow-950">
+          <Card className="group relative overflow-hidden border-2 border-amber-200 bg-linear-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:border-amber-900 dark:from-amber-950 dark:via-orange-950 dark:to-yellow-950">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-amber-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-amber-800"></div>
             <CardHeader className="relative z-10 flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -342,7 +342,7 @@ export default function Dashboard() {
           {systems.length === 0 ? (
             <Card className="border-2 border-dashed border-gray-300 bg-white/50 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
               <CardContent className="py-20 text-center">
-                <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
+                <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700">
                   <IconServer
                     size={48}
                     className="text-gray-400 dark:text-gray-500"
@@ -376,7 +376,7 @@ export default function Dashboard() {
                     key={system.id}
                     className={`group animate-in fade-in slide-in-from-bottom relative cursor-pointer overflow-hidden border-2 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:shadow-2xl ${
                       hasAlarm
-                        ? "animate-pulse border-red-500 bg-gradient-to-br from-red-50/90 via-red-100/80 to-pink-50/90 dark:border-red-600 dark:from-red-950/90 dark:via-red-900/80 dark:to-pink-950/90"
+                        ? "animate-pulse border-red-500 bg-linear-to-br from-red-50/90 via-red-100/80 to-pink-50/90 dark:border-red-600 dark:from-red-950/90 dark:via-red-900/80 dark:to-pink-950/90"
                         : "border-gray-200 bg-white/80 hover:border-blue-400 dark:border-gray-700 dark:bg-gray-800/80 dark:hover:border-blue-600"
                     }`}
                     style={{ animationDelay: `${index * 100}ms` }}
@@ -386,8 +386,8 @@ export default function Dashboard() {
                     <div
                       className={`absolute inset-0 transition-all duration-300 ${
                         hasAlarm
-                          ? "bg-gradient-to-br from-red-500/10 to-pink-500/10 group-hover:from-red-500/15 group-hover:to-pink-500/15"
-                          : "bg-gradient-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5"
+                          ? "bg-linear-to-br from-red-500/10 to-pink-500/10 group-hover:from-red-500/15 group-hover:to-pink-500/15"
+                          : "bg-linear-to-br from-blue-500/0 to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5"
                       }`}
                     ></div>
 
@@ -439,7 +439,7 @@ export default function Dashboard() {
                       {/* Stats Bar */}
                       <div className="flex items-center justify-between rounded-xl bg-linear-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
                         <div className="flex items-center gap-3">
-                          <div className="rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
+                          <div className="rounded-lg bg-linear-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
                             <IconSettings
                               size={18}
                               className="text-blue-600 dark:text-blue-400"

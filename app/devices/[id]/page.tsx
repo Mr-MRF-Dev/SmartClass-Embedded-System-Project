@@ -672,7 +672,7 @@ export default function DeviceDetailPage() {
           <CardHeader className="relative z-10 border-b-2 border-indigo-200 pb-4 dark:border-indigo-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 p-2.5 shadow-md dark:from-indigo-900 dark:to-purple-900">
+                <div className="rounded-xl bg-linear-to-br from-indigo-100 to-purple-100 p-2.5 shadow-md dark:from-indigo-900 dark:to-purple-900">
                   <IconTemperature
                     size={24}
                     className="text-indigo-600 dark:text-indigo-400"
@@ -725,7 +725,7 @@ export default function DeviceDetailPage() {
                         </div>
                       </div>
                       <div className="grid gap-4 md:grid-cols-4">
-                        <div className="rounded-lg bg-gradient-to-br from-white to-green-50 p-3 shadow-sm dark:from-gray-800 dark:to-green-950">
+                        <div className="rounded-lg bg-linear-to-br from-white to-green-50 p-3 shadow-sm dark:from-gray-800 dark:to-green-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             روزهای هفته
                           </div>
@@ -739,7 +739,7 @@ export default function DeviceDetailPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-white to-red-50 p-3 shadow-sm dark:from-gray-800 dark:to-red-950">
+                        <div className="rounded-lg bg-linear-to-br from-white to-red-50 p-3 shadow-sm dark:from-gray-800 dark:to-red-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             دمای هدف
                           </div>
@@ -753,7 +753,7 @@ export default function DeviceDetailPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-white to-blue-50 p-3 shadow-sm dark:from-gray-800 dark:to-blue-950">
+                        <div className="rounded-lg bg-linear-to-br from-white to-blue-50 p-3 shadow-sm dark:from-gray-800 dark:to-blue-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             زمان شروع
                           </div>
@@ -767,7 +767,7 @@ export default function DeviceDetailPage() {
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-white to-purple-50 p-3 shadow-sm dark:from-gray-800 dark:to-purple-950">
+                        <div className="rounded-lg bg-linear-to-br from-white to-purple-50 p-3 shadow-sm dark:from-gray-800 dark:to-purple-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             زمان پایان
                           </div>
@@ -816,7 +816,7 @@ export default function DeviceDetailPage() {
                               key={schedule.id}
                               className={`rounded-lg border-2 p-3 shadow-sm transition-all hover:shadow-md ${
                                 isActive
-                                  ? "border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 dark:border-green-600 dark:from-green-950 dark:to-emerald-950"
+                                  ? "border-green-400 bg-linear-to-br from-green-50 to-emerald-50 dark:border-green-600 dark:from-green-950 dark:to-emerald-950"
                                   : "border-indigo-200 bg-white dark:border-indigo-800 dark:bg-gray-800"
                               }`}
                             >
@@ -934,7 +934,7 @@ export default function DeviceDetailPage() {
               <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-red-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-red-800"></div>
               <CardHeader className="relative z-10 border-b-2 border-red-200 pb-4 dark:border-red-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-xl bg-gradient-to-br from-red-100 to-orange-100 p-2.5 shadow-md dark:from-red-900 dark:to-orange-900">
+                  <div className="rounded-xl bg-linear-to-br from-red-100 to-orange-100 p-2.5 shadow-md dark:from-red-900 dark:to-orange-900">
                     <IconTemperature
                       size={24}
                       className="text-red-600 dark:text-red-400"
@@ -980,7 +980,7 @@ export default function DeviceDetailPage() {
               <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
               <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-4 dark:border-blue-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 p-2.5 shadow-md dark:from-blue-900 dark:to-cyan-900">
+                  <div className="rounded-xl bg-linear-to-br from-blue-100 to-cyan-100 p-2.5 shadow-md dark:from-blue-900 dark:to-cyan-900">
                     <IconDroplet
                       size={24}
                       className="text-blue-600 dark:text-blue-400"
@@ -1026,7 +1026,7 @@ export default function DeviceDetailPage() {
               <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-yellow-800"></div>
               <CardHeader className="relative z-10 border-b-2 border-yellow-200 pb-4 dark:border-yellow-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-xl bg-gradient-to-br from-yellow-100 to-amber-100 p-2.5 shadow-md dark:from-yellow-900 dark:to-amber-900">
+                  <div className="rounded-xl bg-linear-to-br from-yellow-100 to-amber-100 p-2.5 shadow-md dark:from-yellow-900 dark:to-amber-900">
                     <IconSun
                       size={24}
                       className="text-yellow-600 dark:text-yellow-400"
@@ -1072,7 +1072,7 @@ export default function DeviceDetailPage() {
               <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-green-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-green-800"></div>
               <CardHeader className="relative z-10 border-b-2 border-green-200 pb-4 dark:border-green-800">
                 <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
-                  <div className="rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 p-2.5 shadow-md dark:from-green-900 dark:to-emerald-900">
+                  <div className="rounded-xl bg-linear-to-br from-green-100 to-emerald-100 p-2.5 shadow-md dark:from-green-900 dark:to-emerald-900">
                     <IconUser
                       size={24}
                       className="text-green-600 dark:text-green-400"
@@ -1119,7 +1119,7 @@ export default function DeviceDetailPage() {
             <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-purple-200 opacity-10 transition-transform group-hover:scale-150 dark:bg-purple-800"></div>
             <CardHeader className="relative z-10 border-b-2 border-purple-200 pb-4 dark:border-purple-800">
               <CardTitle className="flex items-center gap-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
-                <div className="rounded-xl bg-gradient-to-br from-purple-100 to-fuchsia-100 p-3 shadow-md dark:from-purple-900 dark:to-fuchsia-900">
+                <div className="rounded-xl bg-linear-to-br from-purple-100 to-fuchsia-100 p-3 shadow-md dark:from-purple-900 dark:to-fuchsia-900">
                   <IconBolt
                     size={28}
                     className="text-purple-600 dark:text-purple-400"

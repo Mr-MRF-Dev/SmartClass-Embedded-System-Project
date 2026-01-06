@@ -261,7 +261,7 @@ export default function DeviceSchedulePage() {
             </Button>
             <div className="flex-1">
               <div className="flex items-center gap-4">
-                <div className="rounded-2xl bg-gradient-to-br from-orange-100 via-red-100 to-pink-100 p-4 shadow-lg dark:from-orange-900 dark:via-red-900 dark:to-pink-900">
+                <div className="rounded-2xl bg-linear-to-br from-orange-100 via-red-100 to-pink-100 p-4 shadow-lg dark:from-orange-900 dark:via-red-900 dark:to-pink-900">
                   <IconTemperature
                     size={40}
                     className="text-red-600 dark:text-red-400"
@@ -327,7 +327,7 @@ export default function DeviceSchedulePage() {
           <Card className="group relative overflow-hidden border-2 border-blue-200 bg-white/80 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-blue-800 dark:bg-gray-800/80">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-blue-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-blue-800"></div>
             <CardContent className="relative z-10 py-6 text-center">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 shadow-md dark:from-blue-900 dark:to-cyan-900">
+              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-blue-100 to-cyan-100 shadow-md dark:from-blue-900 dark:to-cyan-900">
                 <IconSnowflake
                   size={32}
                   className="text-blue-600 dark:text-blue-400"
@@ -345,7 +345,7 @@ export default function DeviceSchedulePage() {
           <Card className="group relative overflow-hidden border-2 border-green-200 bg-white/80 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-green-800 dark:bg-gray-800/80">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-green-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-green-800"></div>
             <CardContent className="relative z-10 py-6 text-center">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-emerald-100 shadow-md dark:from-green-900 dark:to-emerald-900">
+              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-green-100 to-emerald-100 shadow-md dark:from-green-900 dark:to-emerald-900">
                 <IconFlower
                   size={32}
                   className="text-green-600 dark:text-green-400"
@@ -363,7 +363,7 @@ export default function DeviceSchedulePage() {
           <Card className="group relative overflow-hidden border-2 border-yellow-200 bg-white/80 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-yellow-800 dark:bg-gray-800/80">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-yellow-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-yellow-800"></div>
             <CardContent className="relative z-10 py-6 text-center">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-yellow-100 to-orange-100 shadow-md dark:from-yellow-900 dark:to-orange-900">
+              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-yellow-100 to-orange-100 shadow-md dark:from-yellow-900 dark:to-orange-900">
                 <IconSun
                   size={32}
                   className="text-yellow-600 dark:text-yellow-400"
@@ -381,7 +381,7 @@ export default function DeviceSchedulePage() {
           <Card className="group relative overflow-hidden border-2 border-orange-200 bg-white/80 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-orange-800 dark:bg-gray-800/80">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-orange-200 opacity-20 transition-transform group-hover:scale-150 dark:bg-orange-800"></div>
             <CardContent className="relative z-10 py-6 text-center">
-              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-red-100 shadow-md dark:from-orange-900 dark:to-red-900">
+              <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-orange-100 to-red-100 shadow-md dark:from-orange-900 dark:to-red-900">
                 <IconLeaf
                   size={32}
                   className="text-orange-600 dark:text-orange-400"
@@ -399,11 +399,11 @@ export default function DeviceSchedulePage() {
 
         {/* Main Schedule Form */}
         <Card className="group animate-in fade-in slide-in-from-bottom relative overflow-hidden border-2 border-blue-200 bg-white/80 shadow-2xl backdrop-blur-sm transition-all duration-700 dark:border-blue-800 dark:bg-gray-800/80">
-          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-gradient-to-br from-orange-200 to-pink-200 opacity-10 transition-transform group-hover:scale-125 dark:from-orange-800 dark:to-pink-800"></div>
+          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-linear-to-br from-orange-200 to-pink-200 opacity-10 transition-transform group-hover:scale-125 dark:from-orange-800 dark:to-pink-800"></div>
           <CardHeader className="relative z-10 border-b-2 border-blue-200 pb-6 dark:border-blue-800">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="rounded-2xl bg-gradient-to-br from-red-100 via-orange-100 to-pink-100 p-3 shadow-lg dark:from-red-900 dark:via-orange-900 dark:to-pink-900">
+                <div className="rounded-2xl bg-linear-to-br from-red-100 via-orange-100 to-pink-100 p-3 shadow-lg dark:from-red-900 dark:via-orange-900 dark:to-pink-900">
                   <IconClock
                     size={32}
                     className="text-red-600 dark:text-red-400"
