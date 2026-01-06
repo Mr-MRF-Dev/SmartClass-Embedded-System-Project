@@ -34,6 +34,7 @@ interface HeatingSchedule {
   startTime: string;
   endTime: string;
   targetTemperature: number;
+  targetLuminance: number;
   enabled: boolean;
 }
 
@@ -89,6 +90,7 @@ export function HeatingScheduleForm({
     startTime: "08:00",
     endTime: "18:00",
     targetTemperature: 22,
+    targetLuminance: 50,
     enabled: true,
   });
 
@@ -228,6 +230,7 @@ export function HeatingScheduleForm({
         startTime: "08:00",
         endTime: "18:00",
         targetTemperature: 22,
+        targetLuminance: 50,
         enabled: true,
       });
       await fetchSchedules();
@@ -415,6 +418,32 @@ export function HeatingScheduleForm({
                 }
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="targetLuminance">
+                سطح روشنایی مطلوب (0-100%) *
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="targetLuminance"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={newSchedule.targetLuminance}
+                  onChange={(e) =>
+                    setNewSchedule({
+                      ...newSchedule,
+                      targetLuminance: parseInt(e.target.value),
+                    })
+                  }
+                  className="flex-1"
+                />
+                <div className="w-16 rounded-lg bg-gray-100 px-3 py-2 text-center font-bold text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                  {newSchedule.targetLuminance}%
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -543,6 +572,14 @@ export function HeatingScheduleForm({
                     </span>
                     <span className="font-bold text-purple-600 dark:text-purple-400">
                       {schedule.targetTemperature}°C
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-yellow-50 p-3 dark:bg-yellow-950">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      سطح روشنایی:
+                    </span>
+                    <span className="font-bold text-yellow-600 dark:text-yellow-400">
+                      {schedule.targetLuminance}%
                     </span>
                   </div>
                 </CardContent>

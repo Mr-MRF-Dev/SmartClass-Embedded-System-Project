@@ -76,6 +76,7 @@ interface HeatingSchedule {
   startTime: string;
   endTime: string;
   targetTemperature: number;
+  targetLuminance: number;
   enabled: boolean;
 }
 
@@ -753,31 +754,28 @@ export default function DeviceDetailPage() {
                             </span>
                           </div>
                         </div>
+                        <div className="rounded-lg bg-linear-to-br from-white to-yellow-50 p-3 shadow-sm dark:from-gray-800 dark:to-yellow-950">
+                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
+                            روشنایی هدف
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl">💡</span>
+                            <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                              {activeNow.targetLuminance}%
+                            </span>
+                          </div>
+                        </div>
                         <div className="rounded-lg bg-linear-to-br from-white to-blue-50 p-3 shadow-sm dark:from-gray-800 dark:to-blue-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                            زمان شروع
+                            زمان شروع - پایان
                           </div>
                           <div className="flex items-center gap-2">
                             <IconClock
                               size={20}
                               className="text-blue-600 dark:text-blue-400"
                             />
-                            <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                              {activeNow.startTime}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="rounded-lg bg-linear-to-br from-white to-purple-50 p-3 shadow-sm dark:from-gray-800 dark:to-purple-950">
-                          <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
-                            زمان پایان
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <IconClock
-                              size={20}
-                              className="text-purple-600 dark:text-purple-400"
-                            />
-                            <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                              {activeNow.endTime}
+                            <span className="text-sm font-bold text-gray-800 dark:text-gray-100">
+                              {activeNow.startTime} - {activeNow.endTime}
                             </span>
                           </div>
                         </div>
@@ -857,6 +855,14 @@ export default function DeviceDetailPage() {
                                   </span>
                                   <span className="font-bold text-gray-800 dark:text-gray-200">
                                     {schedule.targetTemperature}°C
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">
+                                    روشنایی:
+                                  </span>
+                                  <span className="font-bold text-gray-800 dark:text-gray-200">
+                                    {schedule.targetLuminance}%
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between">

@@ -43,6 +43,7 @@ interface HeatingSchedule {
   startTime: string;
   endTime: string;
   targetTemperature: number;
+  targetLuminance: number;
   enabled: boolean;
 }
 
@@ -529,6 +530,15 @@ export default function DeviceSchedulePage() {
                                     <span className="flex items-center gap-1 font-bold text-red-600 dark:text-red-400">
                                       <IconTemperature size={14} />
                                       {schedule.targetTemperature}°C
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-semibold text-gray-600 dark:text-gray-400">
+                                      روشنایی:
+                                    </span>
+                                    <span className="flex items-center gap-1 font-bold text-yellow-600 dark:text-yellow-400">
+                                      <span>💡</span>
+                                      {schedule.targetLuminance}%
                                     </span>
                                   </div>
                                 </div>

@@ -40,6 +40,7 @@ export async function POST(
       startTime,
       endTime,
       targetTemperature,
+      targetLuminance,
       enabled,
     } = body;
 
@@ -48,12 +49,13 @@ export async function POST(
       !month ||
       !startTime ||
       !endTime ||
-      targetTemperature === undefined
+      targetTemperature === undefined ||
+      targetLuminance === undefined
     ) {
       return NextResponse.json(
         {
           error:
-            "Season, month, startTime, endTime, and targetTemperature are required",
+            "Season, month, startTime, endTime, targetTemperature, and targetLuminance are required",
         },
         { status: 400 },
       );
@@ -73,11 +75,12 @@ export async function POST(
 
     let schedule;
     if (existing) {
-      // Update existing schedule (only temperature and enabled status)
+      // Update existing schedule (temperature, luminance, and enabled status)
       schedule = await prisma.heatingSchedule.update({
         where: { id: existing.id },
         data: {
           targetTemperature,
+          targetLuminance,
           enabled: enabled !== undefined ? enabled : true,
         },
       });
@@ -92,6 +95,7 @@ export async function POST(
           startTime,
           endTime,
           targetTemperature,
+          targetLuminance,
           enabled: enabled !== undefined ? enabled : true,
         },
       });
@@ -109,6 +113,7 @@ export async function POST(
           startTime,
           endTime,
           targetTemperature,
+          targetLuminance,
           enabled,
         },
         status: "pending",

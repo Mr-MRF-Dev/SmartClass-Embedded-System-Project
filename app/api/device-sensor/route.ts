@@ -224,7 +224,7 @@ export async function POST(request: Request) {
       // Schedule is active or starting soon - device should turn on
       const responseBody = {
         target_temp: activeSchedule.targetTemperature,
-        target_luminance: light !== null && light !== undefined ? light : 0, // Use current light reading
+        target_luminance: activeSchedule.targetLuminance,
         status: 418,
       };
 

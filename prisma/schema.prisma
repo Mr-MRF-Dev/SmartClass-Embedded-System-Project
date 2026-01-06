@@ -106,6 +106,7 @@ model HeatingSchedule {
   startTime        String   // HH:mm format - زمان شروع
   endTime          String   // HH:mm format - زمان پایان
   targetTemperature Float   // دمای مطلوب
+  targetLuminance  Int      @default(50) // Target light level 0-100
   enabled          Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
