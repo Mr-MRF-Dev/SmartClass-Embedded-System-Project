@@ -268,7 +268,7 @@ export default function DeviceSchedulePage() {
                   />
                 </div>
                 <div>
-                  <h1 className="bg-gradient-to-r from-red-600 via-orange-600 to-pink-600 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-sm">
+                  <h1 className="bg-linear-to-r from-red-600 via-orange-600 to-pink-600 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-sm">
                     برنامه‌ریزی گرمایش
                   </h1>
                   <p className="mt-2 flex items-center gap-2 text-lg text-gray-600 dark:text-gray-300">
@@ -299,7 +299,7 @@ export default function DeviceSchedulePage() {
           </div>
 
           {/* Info Banner */}
-          <Card className="animate-in fade-in border-2 border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 shadow-lg duration-500 dark:border-blue-800 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+          <Card className="animate-in fade-in border-2 border-blue-200 bg-linear-to-r from-blue-50 via-indigo-50 to-purple-50 shadow-lg duration-500 dark:border-blue-800 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
             <CardContent className="py-4">
               <div className="flex items-center gap-4">
                 <div className="rounded-xl bg-blue-100 p-3 shadow-md dark:bg-blue-900">
@@ -427,7 +427,7 @@ export default function DeviceSchedulePage() {
                 className={
                   showForm
                     ? "border-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400"
-                    : "bg-gradient-to-r from-green-500 to-emerald-500 shadow-lg hover:shadow-xl"
+                    : "bg-linear-to-r from-green-500 to-emerald-500 shadow-lg hover:shadow-xl"
                 }
               >
                 {showForm ? "لغو" : "افزودن برنامه جدید"}
@@ -481,7 +481,7 @@ export default function DeviceSchedulePage() {
                             monthSchedules.map((schedule) => (
                               <div
                                 key={schedule.id}
-                                className="rounded-lg border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 shadow-sm dark:border-gray-700 dark:from-blue-950 dark:to-indigo-950"
+                                className="rounded-lg border-2 border-gray-200 bg-linear-to-r from-blue-50 to-indigo-50 p-3 shadow-sm dark:border-gray-700 dark:from-blue-950 dark:to-indigo-950"
                               >
                                 <div className="mb-2 flex items-center justify-between">
                                   <Badge
@@ -550,7 +550,7 @@ export default function DeviceSchedulePage() {
         </Card>
 
         {/* Tips Card */}
-        <Card className="animate-in fade-in slide-in-from-bottom border-2 border-green-200 bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 shadow-lg duration-700 dark:border-green-800 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
+        <Card className="animate-in fade-in slide-in-from-bottom border-2 border-green-200 bg-linear-to-r from-green-50 via-emerald-50 to-teal-50 shadow-lg duration-700 dark:border-green-800 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950">
           <CardHeader className="border-b-2 border-green-200 pb-4 dark:border-green-800">
             <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-100">
               <div className="rounded-xl bg-green-100 p-2 shadow-md dark:bg-green-900">

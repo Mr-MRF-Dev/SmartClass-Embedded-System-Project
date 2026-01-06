@@ -533,7 +533,7 @@ export default function DeviceDetailPage() {
                 </div>
               </div>
 
-              <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:from-green-950 dark:to-emerald-950">
+              <div className="group/item flex items-start gap-4 rounded-xl bg-linear-to-r from-green-50 to-emerald-50 p-4 transition-all hover:shadow-md dark:from-green-950 dark:to-emerald-950">
                 <div className="rounded-xl bg-green-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-green-900">
                   <IconMapPin
                     size={22}
@@ -556,7 +556,7 @@ export default function DeviceDetailPage() {
               </div>
 
               {device.description && (
-                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-purple-50 to-pink-50 p-4 transition-all hover:shadow-md dark:from-purple-950 dark:to-pink-950">
+                <div className="group/item flex items-start gap-4 rounded-xl bg-linear-to-r from-purple-50 to-pink-50 p-4 transition-all hover:shadow-md dark:from-purple-950 dark:to-pink-950">
                   <div className="flex-1">
                     <div className="mb-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
                       توضیحات
@@ -569,7 +569,7 @@ export default function DeviceDetailPage() {
               )}
 
               {device.lastSeen && (
-                <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-4 transition-all hover:shadow-md dark:from-amber-950 dark:to-orange-950">
+                <div className="group/item flex items-start gap-4 rounded-xl bg-linear-to-r from-amber-50 to-orange-50 p-4 transition-all hover:shadow-md dark:from-amber-950 dark:to-orange-950">
                   <div className="rounded-xl bg-amber-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-amber-900">
                     <IconClock
                       size={22}
@@ -588,7 +588,7 @@ export default function DeviceDetailPage() {
               )}
 
               {/* Alarm History Section */}
-              <div className="mt-6 rounded-xl border-2 border-red-200 bg-gradient-to-r from-red-50 to-pink-50 p-4 dark:border-red-800 dark:from-red-950 dark:to-pink-950">
+              <div className="mt-6 rounded-xl border-2 border-red-200 bg-linear-to-r from-red-50 to-pink-50 p-4 dark:border-red-800 dark:from-red-950 dark:to-pink-950">
                 <div className="mb-4 flex items-center gap-3">
                   <div className="rounded-xl bg-red-100 p-2 shadow-sm dark:bg-red-900">
                     <IconAlertTriangle
@@ -667,7 +667,7 @@ export default function DeviceDetailPage() {
         </Card>
 
         {/* Schedule Summary Section */}
-        <Card className="animate-in fade-in slide-in-from-bottom group relative overflow-hidden border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 shadow-xl transition-all duration-700 hover:shadow-2xl dark:border-indigo-800 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950">
+        <Card className="animate-in fade-in slide-in-from-bottom group relative overflow-hidden border-2 border-indigo-200 bg-linear-to-r from-indigo-50 via-purple-50 to-pink-50 shadow-xl transition-all duration-700 hover:shadow-2xl dark:border-indigo-800 dark:from-indigo-950 dark:via-purple-950 dark:to-pink-950">
           <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-indigo-300 opacity-20 transition-transform group-hover:scale-150 dark:bg-indigo-800"></div>
           <CardHeader className="relative z-10 border-b-2 border-indigo-200 pb-4 dark:border-indigo-800">
             <div className="flex items-center justify-between">
@@ -711,9 +711,9 @@ export default function DeviceDetailPage() {
                   );
 
                   return activeNow ? (
-                    <div className="mb-6 rounded-xl border-2 border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 p-4 shadow-lg dark:border-green-600 dark:from-green-950 dark:to-emerald-950">
+                    <div className="mb-6 rounded-xl border-2 border-green-400 bg-linear-to-r from-green-50 to-emerald-50 p-4 shadow-lg dark:border-green-600 dark:from-green-950 dark:to-emerald-950">
                       <div className="mb-3 flex items-center gap-2">
-                        <Badge className="animate-pulse bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1 text-white shadow-md">
+                        <Badge className="animate-pulse bg-linear-to-r from-green-500 to-emerald-500 px-3 py-1 text-white shadow-md">
                           🔥 در حال اجرا
                         </Badge>
                         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">

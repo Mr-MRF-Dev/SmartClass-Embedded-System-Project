@@ -460,7 +460,7 @@ export function HeatingScheduleForm({
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 py-6 font-semibold text-white shadow-lg transition-all hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
+            className="w-full bg-linear-to-r from-blue-600 to-purple-600 py-6 font-semibold text-white shadow-lg transition-all hover:from-blue-700 hover:to-purple-700 hover:shadow-xl"
           >
             {isSaving ? "در حال ذخیره..." : "ذخیره برنامه"}
           </Button>

@@ -156,7 +156,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
       {/* Critical Alarm Banner - Sticky */}
       {alarmInfo?.hasAlarms && (
-        <div className="sticky top-0 z-50 animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+        <div className="sticky top-0 z-50 animate-pulse bg-linear-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
           <div className="container mx-auto flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <IconAlertTriangle size={32} className="animate-bounce" />
@@ -189,7 +189,7 @@ export default function Dashboard() {
         {/* Header Section with Enhanced Animation */}
         <div className="animate-in fade-in slide-in-from-top flex flex-col gap-6 duration-700 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-3">
-            <h1 className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-sm">
+            <h1 className="bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-5xl font-extrabold text-transparent drop-shadow-sm">
               پنل مدیریت SmartClass
             </h1>
             <p className="flex items-center gap-2 text-xl text-gray-600 dark:text-gray-300">
@@ -213,7 +213,7 @@ export default function Dashboard() {
             <Button
               onClick={() => setShowSystemForm(true)}
               size="lg"
-              className="group bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl transition-all hover:scale-105 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 hover:shadow-2xl active:scale-95"
+              className="group bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 text-white shadow-xl transition-all hover:scale-105 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 hover:shadow-2xl active:scale-95"
             >
               <IconPlus
                 size={20}
@@ -357,7 +357,7 @@ export default function Dashboard() {
                 <Button
                   onClick={() => setShowSystemForm(true)}
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:from-blue-700 hover:to-purple-700"
+                  className="bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:from-blue-700 hover:to-purple-700"
                 >
                   <IconPlus size={20} className="ml-2" />
                   افزودن اولین دیوایس
@@ -412,7 +412,7 @@ export default function Dashboard() {
                             {system.location}
                           </CardDescription>
                           {system.deviceId && (
-                            <div className="mt-3 inline-block rounded-lg bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-1.5 font-mono text-xs font-medium text-gray-700 shadow-sm dark:from-gray-700 dark:to-gray-600 dark:text-gray-300">
+                            <div className="mt-3 inline-block rounded-lg bg-linear-to-r from-gray-100 to-gray-200 px-3 py-1.5 font-mono text-xs font-medium text-gray-700 shadow-sm dark:from-gray-700 dark:to-gray-600 dark:text-gray-300">
                               ID: {system.deviceId}
                             </div>
                           )}
@@ -437,7 +437,7 @@ export default function Dashboard() {
                       </p>
 
                       {/* Stats Bar */}
-                      <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
+                      <div className="flex items-center justify-between rounded-xl bg-linear-to-r from-blue-50 via-indigo-50 to-purple-50 p-4 shadow-sm dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950">
                         <div className="flex items-center gap-3">
                           <div className="rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 p-2.5 shadow-sm transition-transform group-hover:scale-110 dark:from-blue-900 dark:to-indigo-900">
                             <IconSettings
