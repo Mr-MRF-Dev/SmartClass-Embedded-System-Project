@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HeatingScheduleForm } from "@/components/heating-schedule-form";
+import { DeviceEditDialog } from "@/components/device-edit-dialog";
 import {
   IconArrowLeft,
   IconDeviceDesktop,
@@ -25,6 +25,7 @@ import {
   IconBolt,
   IconAlertTriangle,
   IconCalendar,
+  IconEdit,
 } from "@tabler/icons-react";
 import {
   LineChart,
@@ -87,6 +88,7 @@ export default function DeviceDetailPage() {
   const [schedules, setSchedules] = useState<HeatingSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -235,13 +237,13 @@ export default function DeviceDetailPage() {
     const gd = gregorianDay;
 
     const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-    let jy: number;
+    // let jy: number;
 
     if (gy > 1600) {
-      jy = 979;
+      // jy = 979;
       gy -= 1600;
     } else {
-      jy = 0;
+      // jy = 0;
       gy -= 621;
     }
 
@@ -255,13 +257,13 @@ export default function DeviceDetailPage() {
       gd +
       g_d_m[gm - 1];
 
-    jy += 33 * Math.floor(days / 12053);
+    // jy += 33 * Math.floor(days / 12053);
     days %= 12053;
-    jy += 4 * Math.floor(days / 1461);
+    // jy += 4 * Math.floor(days / 1461);
     days %= 1461;
 
     if (days > 365) {
-      jy += Math.floor((days - 1) / 365);
+      // jy += Math.floor((days - 1) / 365);
       days = (days - 1) % 365;
     }
 
@@ -271,13 +273,6 @@ export default function DeviceDetailPage() {
         : 7 + Math.floor((days - 186) / 30);
 
     return jm;
-  };
-
-  const getCurrentMonthSchedule = () => {
-    const currentMonth = getPersianMonth();
-    return schedules.find(
-      (s) => s.enabled && (s.month === currentMonth || s.month === null),
-    );
   };
 
   const getCurrentMonthSchedules = () => {
@@ -347,6 +342,19 @@ export default function DeviceDetailPage() {
     return colors[status] || "bg-gray-500";
   };
 
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      active: "فعال",
+      inactive: "غیرفعال",
+      maintenance: "در تعمیر",
+    };
+    return labels[status] || status;
+  };
+
+  const handleEditSave = () => {
+    fetchDevice();
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
@@ -395,7 +403,7 @@ export default function DeviceDetailPage() {
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
       {/* Critical Alarm Banner - Sticky */}
       {device?.alarmActive && (
-        <div className="sticky top-0 z-50 animate-pulse bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
+        <div className="sticky top-0 z-50 animate-pulse bg-linear-to-r from-red-600 via-red-700 to-red-800 text-white shadow-2xl">
           <div className="container mx-auto flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <IconAlertTriangle size={32} className="animate-bounce" />
@@ -445,7 +453,7 @@ export default function DeviceDetailPage() {
                   />
                 </div>
                 <div>
-                  <h1 className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-sm">
+                  <h1 className="bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-4xl font-extrabold text-transparent drop-shadow-sm">
                     {device.name}
                   </h1>
                   <p className="mt-2 flex items-center gap-2 text-lg text-gray-600 dark:text-gray-300">
@@ -460,14 +468,20 @@ export default function DeviceDetailPage() {
             <Badge
               className={`${getStatusColor(device.status)} px-5 py-2.5 text-sm font-bold text-white shadow-md transition-transform hover:scale-105`}
             >
-              {device.status === "active"
-                ? "فعال"
-                : device.status === "inactive"
-                  ? "غیرفعال"
-                  : device.status === "maintenance"
-                    ? "تعمیر"
-                    : device.status}
+              {getStatusLabel(device.status)}
             </Badge>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => setIsEditDialogOpen(true)}
+              className="group border-2 border-blue-200 bg-blue-50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-100 hover:shadow-md dark:border-blue-800 dark:bg-blue-950 dark:text-blue-400 dark:hover:border-blue-600 dark:hover:bg-blue-900"
+            >
+              <IconEdit
+                size={20}
+                className="ml-2 transition-transform group-hover:scale-110"
+              />
+              ویرایش دیوایس
+            </Button>
             <Button
               variant="outline"
               size="lg"
@@ -502,7 +516,7 @@ export default function DeviceDetailPage() {
           </CardHeader>
           <CardContent className="relative z-10 space-y-4 pt-6">
             <div className="space-y-4">
-              <div className="group/item flex items-start gap-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all hover:shadow-md dark:from-blue-950 dark:to-indigo-950">
+              <div className="group/item flex items-start gap-4 rounded-xl bg-linear-to-r from-blue-50 to-indigo-50 p-4 transition-all hover:shadow-md dark:from-blue-950 dark:to-indigo-950">
                 <div className="rounded-xl bg-blue-100 p-2.5 shadow-sm transition-transform group-hover/item:rotate-12 dark:bg-blue-900">
                   <IconDeviceDesktop
                     size={22}
@@ -1147,6 +1161,16 @@ export default function DeviceDetailPage() {
           </Card>
         </div>
       </div>
+
+      {/* Device Edit Dialog */}
+      {device && (
+        <DeviceEditDialog
+          device={device}
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          onSave={handleEditSave}
+        />
+      )}
     </div>
   );
 }

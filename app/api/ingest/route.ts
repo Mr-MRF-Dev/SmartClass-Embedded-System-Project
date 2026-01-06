@@ -21,6 +21,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "System not found" }, { status: 404 });
     }
 
+    // Check if device status is active
+    if (system.status !== "active") {
+      return NextResponse.json(
+        {
+          error: `Device is ${system.status}. Data ingestion is only allowed for active devices.`,
+        },
+        { status: 403 },
+      );
+    }
+
     await prisma.embeddedSystem.update({
       where: { id: system.id },
       data: { lastSeen: new Date() },

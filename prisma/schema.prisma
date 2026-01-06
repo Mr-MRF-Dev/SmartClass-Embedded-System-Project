@@ -8,6 +8,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum DeviceStatus {
+  active
+  inactive
+  maintenance
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -26,7 +32,7 @@ model EmbeddedSystem {
   location    String
   classroom   String?
   description String?
-  status      String   @default("active")
+  status      DeviceStatus @default(active)
   ipAddress   String?
   macAddress  String?  @unique
   deviceId    String?  @unique

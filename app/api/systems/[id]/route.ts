@@ -82,6 +82,39 @@ export async function PUT(
   }
 }
 
+// PATCH update system (partial update)
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const { name, location, classroom, description, status, ipAddress } = body;
+
+    const updateData: Record<string, unknown> = {};
+    if (name !== undefined) updateData.name = name;
+    if (location !== undefined) updateData.location = location;
+    if (classroom !== undefined) updateData.classroom = classroom;
+    if (description !== undefined) updateData.description = description;
+    if (status !== undefined) updateData.status = status;
+    if (ipAddress !== undefined) updateData.ipAddress = ipAddress;
+
+    const system = await prisma.embeddedSystem.update({
+      where: { id },
+      data: updateData,
+    });
+
+    return NextResponse.json(system);
+  } catch (error) {
+    console.error("Error updating system:", error);
+    return NextResponse.json(
+      { error: "Failed to update system" },
+      { status: 500 },
+    );
+  }
+}
+
 // DELETE system
 export async function DELETE(
   request: Request,

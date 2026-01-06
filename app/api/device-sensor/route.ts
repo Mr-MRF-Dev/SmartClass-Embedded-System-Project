@@ -40,6 +40,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Device not found" }, { status: 404 });
     }
 
+    if (system.status !== "active") {
+      return NextResponse.json(
+        {
+          error: `Device is ${system.status}. Data ingestion is only allowed for active devices.`,
+        },
+        { status: 403 },
+      );
+    }
+
     const timestamp = new Date();
 
     // Check if all sensor values are 0 (critical situation)
