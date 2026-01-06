@@ -59,24 +59,24 @@ export async function POST(
       );
     }
 
-    // Check if schedule already exists
+    // Check if schedule already exists with the same configuration
     const existing = await prisma.heatingSchedule.findFirst({
       where: {
         embeddedSystemId: id,
         season,
         month: month,
+        weekdays: weekdays || "0,1,2,3,4,5,6",
+        startTime,
+        endTime,
       },
     });
 
     let schedule;
     if (existing) {
-      // Update existing schedule
+      // Update existing schedule (only temperature and enabled status)
       schedule = await prisma.heatingSchedule.update({
         where: { id: existing.id },
         data: {
-          weekdays: weekdays || "0,1,2,3,4,5,6",
-          startTime,
-          endTime,
           targetTemperature,
           enabled: enabled !== undefined ? enabled : true,
         },

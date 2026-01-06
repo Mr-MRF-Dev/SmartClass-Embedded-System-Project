@@ -287,6 +287,21 @@ export default function DeviceDetailPage() {
     );
   };
 
+  const isScheduleActiveNow = (schedule: HeatingSchedule) => {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+
+    // Check if today is in the schedule's weekdays
+    const scheduleDays = schedule.weekdays.split(",").map(Number);
+    if (!scheduleDays.includes(currentDay)) {
+      return false;
+    }
+
+    // Check if current time is within the schedule's time range
+    return currentTime >= schedule.startTime && currentTime <= schedule.endTime;
+  };
+
   const chartData = readings.map((reading) => ({
     time: formatTime(reading.timestamp),
     timestamp: reading.timestamp,
@@ -674,21 +689,29 @@ export default function DeviceDetailPage() {
           <CardContent className="relative z-10 pt-6">
             {schedules.length > 0 ? (
               <div>
-                {/* Current Month Schedule */}
+                {/* Currently Active Schedule */}
                 {(() => {
-                  const currentSchedule = getCurrentMonthSchedule();
-                  return currentSchedule ? (
-                    <div className="mb-6 rounded-xl border-2 border-indigo-300 bg-white/90 p-4 shadow-lg dark:border-indigo-700 dark:bg-gray-800/90">
+                  const currentMonthSchedules = getCurrentMonthSchedules();
+                  const activeNow = currentMonthSchedules.find((s) =>
+                    isScheduleActiveNow(s),
+                  );
+
+                  return activeNow ? (
+                    <div className="mb-6 rounded-xl border-2 border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 p-4 shadow-lg dark:border-green-600 dark:from-green-950 dark:to-emerald-950">
                       <div className="mb-3 flex items-center gap-2">
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1 text-white shadow-md">
-                          برنامه فعال فعلی
+                        <Badge className="animate-pulse bg-gradient-to-r from-green-500 to-emerald-500 px-3 py-1 text-white shadow-md">
+                          🔥 در حال اجرا
                         </Badge>
                         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          {getMonthLabel(currentSchedule.month)}
+                          {getMonthLabel(activeNow.month)}
                         </span>
+                        <div className="mr-auto flex items-center gap-1 text-xs font-bold text-green-700 dark:text-green-300">
+                          <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+                          فعال الان
+                        </div>
                       </div>
                       <div className="grid gap-4 md:grid-cols-4">
-                        <div className="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-3 dark:from-green-950 dark:to-emerald-950">
+                        <div className="rounded-lg bg-gradient-to-br from-white to-green-50 p-3 shadow-sm dark:from-gray-800 dark:to-green-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             روزهای هفته
                           </div>
@@ -698,11 +721,11 @@ export default function DeviceDetailPage() {
                               className="text-green-600 dark:text-green-400"
                             />
                             <span className="text-sm font-bold text-gray-800 dark:text-gray-100">
-                              {getWeekdaysLabel(currentSchedule.weekdays)}
+                              {getWeekdaysLabel(activeNow.weekdays)}
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-3 dark:from-blue-950 dark:to-indigo-950">
+                        <div className="rounded-lg bg-gradient-to-br from-white to-red-50 p-3 shadow-sm dark:from-gray-800 dark:to-red-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             دمای هدف
                           </div>
@@ -712,25 +735,25 @@ export default function DeviceDetailPage() {
                               className="text-red-600 dark:text-red-400"
                             />
                             <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                              {currentSchedule.targetTemperature}°C
+                              {activeNow.targetTemperature}°C
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-3 dark:from-green-950 dark:to-emerald-950">
+                        <div className="rounded-lg bg-gradient-to-br from-white to-blue-50 p-3 shadow-sm dark:from-gray-800 dark:to-blue-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             زمان شروع
                           </div>
                           <div className="flex items-center gap-2">
                             <IconClock
                               size={20}
-                              className="text-green-600 dark:text-green-400"
+                              className="text-blue-600 dark:text-blue-400"
                             />
                             <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                              {currentSchedule.startTime}
+                              {activeNow.startTime}
                             </span>
                           </div>
                         </div>
-                        <div className="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-3 dark:from-purple-950 dark:to-pink-950">
+                        <div className="rounded-lg bg-gradient-to-br from-white to-purple-50 p-3 shadow-sm dark:from-gray-800 dark:to-purple-950">
                           <div className="mb-1 text-xs font-semibold text-gray-600 dark:text-gray-400">
                             زمان پایان
                           </div>
@@ -740,78 +763,109 @@ export default function DeviceDetailPage() {
                               className="text-purple-600 dark:text-purple-400"
                             />
                             <span className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                              {currentSchedule.endTime}
+                              {activeNow.endTime}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="mb-6 rounded-xl border-2 border-yellow-300 bg-yellow-50 p-4 dark:border-yellow-700 dark:bg-yellow-950">
-                      <div className="flex items-center gap-2 text-yellow-800 dark:text-yellow-200">
-                        <IconAlertTriangle size={20} />
+                    <div className="mb-6 rounded-xl border-2 border-blue-300 bg-blue-50 p-4 dark:border-blue-700 dark:bg-blue-950">
+                      <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                        <IconClock size={20} />
                         <span className="font-semibold">
-                          هیچ برنامه فعالی برای ماه جاری تعریف نشده است
+                          در حال حاضر هیچ برنامه‌ای در حال اجرا نیست
                         </span>
                       </div>
                     </div>
                   );
                 })()}
 
-                {/* Current Month Active Schedules */}
+                {/* All Schedules for Current Month */}
                 {(() => {
                   const currentMonthSchedules = getCurrentMonthSchedules();
-                  return currentMonthSchedules.length > 1 ? (
+                  return currentMonthSchedules.length > 0 ? (
                     <div className="space-y-3">
-                      <h4 className="mb-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        برنامه‌های فعال ماه جاری ({currentMonthSchedules.length}
-                        )
-                      </h4>
+                      <div className="mb-4 flex items-center justify-between">
+                        <h4 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                          تمام برنامه‌های ماه جاری
+                        </h4>
+                        <Badge className="bg-indigo-500 text-white">
+                          {currentMonthSchedules.length} برنامه
+                        </Badge>
+                      </div>
                       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                        {currentMonthSchedules.map((schedule) => (
-                          <div
-                            key={schedule.id}
-                            className="rounded-lg border-2 border-green-200 bg-white p-3 shadow-sm transition-all hover:shadow-md dark:border-green-800 dark:bg-gray-800"
-                          >
-                            <div className="mb-2 flex items-center justify-between">
-                              <Badge className="bg-green-500 text-xs">
-                                {getSeasonLabel(schedule.season)}
-                              </Badge>
-                              <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
-                                {getMonthLabel(schedule.month)}
-                              </span>
+                        {currentMonthSchedules.map((schedule) => {
+                          const isActive = isScheduleActiveNow(schedule);
+                          return (
+                            <div
+                              key={schedule.id}
+                              className={`rounded-lg border-2 p-3 shadow-sm transition-all hover:shadow-md ${
+                                isActive
+                                  ? "border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 dark:border-green-600 dark:from-green-950 dark:to-emerald-950"
+                                  : "border-indigo-200 bg-white dark:border-indigo-800 dark:bg-gray-800"
+                              }`}
+                            >
+                              <div className="mb-2 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Badge
+                                    className={`text-xs ${
+                                      isActive
+                                        ? "animate-pulse bg-green-500"
+                                        : "bg-indigo-500"
+                                    }`}
+                                  >
+                                    {getSeasonLabel(schedule.season)}
+                                  </Badge>
+                                  {isActive && (
+                                    <span className="flex items-center gap-1 text-xs font-bold text-green-700 dark:text-green-300">
+                                      <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
+                                      فعال
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                                  {getMonthLabel(schedule.month)}
+                                </span>
+                              </div>
+                              <div className="space-y-1 text-sm">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">
+                                    روزها:
+                                  </span>
+                                  <span className="font-bold text-gray-800 dark:text-gray-200">
+                                    {getWeekdaysLabel(schedule.weekdays)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">
+                                    دما:
+                                  </span>
+                                  <span className="font-bold text-gray-800 dark:text-gray-200">
+                                    {schedule.targetTemperature}°C
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">
+                                    زمان:
+                                  </span>
+                                  <span className="font-bold text-gray-800 dark:text-gray-200">
+                                    {schedule.startTime} - {schedule.endTime}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 dark:text-gray-400">
-                                  روزها:
-                                </span>
-                                <span className="font-bold text-gray-800 dark:text-gray-200">
-                                  {getWeekdaysLabel(schedule.weekdays)}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 dark:text-gray-400">
-                                  دما:
-                                </span>
-                                <span className="font-bold text-gray-800 dark:text-gray-200">
-                                  {schedule.targetTemperature}°C
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 dark:text-gray-400">
-                                  زمان:
-                                </span>
-                                <span className="font-bold text-gray-800 dark:text-gray-200">
-                                  {schedule.startTime} - {schedule.endTime}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
-                  ) : null;
+                  ) : (
+                    <div className="py-4 text-center">
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
+                        هیچ برنامه فعالی برای ماه جاری تعریف نشده است
+                      </div>
+                    </div>
+                  );
                 })()}
               </div>
             ) : (
