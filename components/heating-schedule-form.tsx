@@ -423,22 +423,48 @@ export function HeatingScheduleForm({
               <Label htmlFor="targetLuminance">
                 سطح روشنایی مطلوب (0-100%) *
               </Label>
-              <div className="flex gap-2">
-                <Input
-                  id="targetLuminance"
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  value={newSchedule.targetLuminance}
-                  onChange={(e) =>
-                    setNewSchedule({
-                      ...newSchedule,
-                      targetLuminance: parseInt(e.target.value),
-                    })
-                  }
-                  className="flex-1"
-                />
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1" dir="rtl">
+                  <input
+                    id="targetLuminance"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={newSchedule.targetLuminance}
+                    onChange={(e) =>
+                      setNewSchedule({
+                        ...newSchedule,
+                        targetLuminance: parseInt(e.target.value),
+                      })
+                    }
+                    className="h-2 w-full cursor-pointer appearance-none rounded-lg"
+                    style={{
+                      background: `linear-gradient(to left, #fbbf24 0%, #fbbf24 ${newSchedule.targetLuminance}%, #e5e7eb ${newSchedule.targetLuminance}%, #e5e7eb 100%)`,
+                    }}
+                  />
+                  <style jsx>{`
+                    input[type="range"]::-webkit-slider-thumb {
+                      appearance: none;
+                      width: 20px;
+                      height: 20px;
+                      border-radius: 50%;
+                      background: #f59e0b;
+                      cursor: pointer;
+                      border: 2px solid white;
+                      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                    }
+                    input[type="range"]::-moz-range-thumb {
+                      width: 20px;
+                      height: 20px;
+                      border-radius: 50%;
+                      background: #f59e0b;
+                      cursor: pointer;
+                      border: 2px solid white;
+                      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                    }
+                  `}</style>
+                </div>
                 <div className="w-16 rounded-lg bg-gray-100 px-3 py-2 text-center font-bold text-gray-800 dark:bg-gray-700 dark:text-gray-100">
                   {newSchedule.targetLuminance}%
                 </div>
