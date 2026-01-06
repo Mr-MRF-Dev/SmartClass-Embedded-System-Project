@@ -223,9 +223,66 @@ export default function DeviceDetailPage() {
       .join("، ");
   };
 
+  // Convert Gregorian date to Persian/Jalali calendar month
+  const getPersianMonth = (date: Date = new Date()) => {
+    const gregorianYear = date.getFullYear();
+    const gregorianMonth = date.getMonth() + 1;
+    const gregorianDay = date.getDate();
+
+    // Simple Gregorian to Jalali conversion
+    let gy = gregorianYear;
+    const gm = gregorianMonth;
+    const gd = gregorianDay;
+
+    const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    let jy: number;
+
+    if (gy > 1600) {
+      jy = 979;
+      gy -= 1600;
+    } else {
+      jy = 0;
+      gy -= 621;
+    }
+
+    const gy2 = gm > 2 ? gy + 1 : gy;
+    let days =
+      365 * gy +
+      Math.floor((gy2 + 3) / 4) -
+      Math.floor((gy2 + 99) / 100) +
+      Math.floor((gy2 + 399) / 400) -
+      80 +
+      gd +
+      g_d_m[gm - 1];
+
+    jy += 33 * Math.floor(days / 12053);
+    days %= 12053;
+    jy += 4 * Math.floor(days / 1461);
+    days %= 1461;
+
+    if (days > 365) {
+      jy += Math.floor((days - 1) / 365);
+      days = (days - 1) % 365;
+    }
+
+    const jm =
+      days < 186
+        ? 1 + Math.floor(days / 31)
+        : 7 + Math.floor((days - 186) / 30);
+
+    return jm;
+  };
+
   const getCurrentMonthSchedule = () => {
-    const currentMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+    const currentMonth = getPersianMonth();
     return schedules.find(
+      (s) => s.enabled && (s.month === currentMonth || s.month === null),
+    );
+  };
+
+  const getCurrentMonthSchedules = () => {
+    const currentMonth = getPersianMonth();
+    return schedules.filter(
       (s) => s.enabled && (s.month === currentMonth || s.month === null),
     );
   };
@@ -598,7 +655,7 @@ export default function DeviceDetailPage() {
                   </CardTitle>
                   <CardDescription className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     {schedules.length > 0
-                      ? `${schedules.filter((s) => s.enabled).length} برنامه فعال از ${schedules.length} برنامه`
+                      ? `${getCurrentMonthSchedules().length} برنامه فعال در ماه جاری`
                       : "هیچ برنامه‌ای تعریف نشده"}
                   </CardDescription>
                 </div>
@@ -701,63 +758,61 @@ export default function DeviceDetailPage() {
                   );
                 })()}
 
-                {/* All Schedules */}
-                <div className="space-y-3">
-                  <h4 className="mb-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                    تمام برنامه‌های تعریف شده ({schedules.length})
-                  </h4>
-                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    {schedules.map((schedule) => (
-                      <div
-                        key={schedule.id}
-                        className={`rounded-lg border-2 p-3 shadow-sm transition-all hover:shadow-md ${
-                          schedule.enabled
-                            ? "border-green-200 bg-white dark:border-green-800 dark:bg-gray-800"
-                            : "border-gray-200 bg-gray-50 opacity-60 dark:border-gray-700 dark:bg-gray-900"
-                        }`}
-                      >
-                        <div className="mb-2 flex items-center justify-between">
-                          <Badge
-                            className={`text-xs ${
-                              schedule.enabled ? "bg-green-500" : "bg-gray-400"
-                            }`}
+                {/* Current Month Active Schedules */}
+                {(() => {
+                  const currentMonthSchedules = getCurrentMonthSchedules();
+                  return currentMonthSchedules.length > 1 ? (
+                    <div className="space-y-3">
+                      <h4 className="mb-3 text-sm font-bold text-gray-700 dark:text-gray-300">
+                        برنامه‌های فعال ماه جاری ({currentMonthSchedules.length}
+                        )
+                      </h4>
+                      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                        {currentMonthSchedules.map((schedule) => (
+                          <div
+                            key={schedule.id}
+                            className="rounded-lg border-2 border-green-200 bg-white p-3 shadow-sm transition-all hover:shadow-md dark:border-green-800 dark:bg-gray-800"
                           >
-                            {getSeasonLabel(schedule.season)}
-                          </Badge>
-                          <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
-                            {getMonthLabel(schedule.month)}
-                          </span>
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              روزها:
-                            </span>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">
-                              {getWeekdaysLabel(schedule.weekdays)}
-                            </span>
+                            <div className="mb-2 flex items-center justify-between">
+                              <Badge className="bg-green-500 text-xs">
+                                {getSeasonLabel(schedule.season)}
+                              </Badge>
+                              <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
+                                {getMonthLabel(schedule.month)}
+                              </span>
+                            </div>
+                            <div className="space-y-1 text-sm">
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-600 dark:text-gray-400">
+                                  روزها:
+                                </span>
+                                <span className="font-bold text-gray-800 dark:text-gray-200">
+                                  {getWeekdaysLabel(schedule.weekdays)}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-600 dark:text-gray-400">
+                                  دما:
+                                </span>
+                                <span className="font-bold text-gray-800 dark:text-gray-200">
+                                  {schedule.targetTemperature}°C
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-gray-600 dark:text-gray-400">
+                                  زمان:
+                                </span>
+                                <span className="font-bold text-gray-800 dark:text-gray-200">
+                                  {schedule.startTime} - {schedule.endTime}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              دما:
-                            </span>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">
-                              {schedule.targetTemperature}°C
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 dark:text-gray-400">
-                              زمان:
-                            </span>
-                            <span className="font-bold text-gray-800 dark:text-gray-200">
-                              {schedule.startTime} - {schedule.endTime}
-                            </span>
-                          </div>
-                        </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
+                  ) : null;
+                })()}
               </div>
             ) : (
               <div className="py-8 text-center">
@@ -776,7 +831,7 @@ export default function DeviceDetailPage() {
                 </p>
                 <Button
                   onClick={() => router.push(`/devices/${device.id}/schedule`)}
-                  className="bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg transition-all hover:scale-105 hover:shadow-xl"
+                  className="bg-linear-to-r from-indigo-500 to-purple-500 shadow-lg transition-all hover:scale-105 hover:shadow-xl"
                 >
                   <IconClock size={18} className="ml-2" />
                   ایجاد برنامه جدید
