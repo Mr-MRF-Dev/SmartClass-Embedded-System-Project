@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "bun run db:reset && next build",
+    "build": "npm run db:reset && next build",
     "build:next": "next build",
     "build:prod": "prisma generate && prisma migrate deploy && prisma db push && next build",
     "build:prod:clean": "bun run db:reset && next build",
