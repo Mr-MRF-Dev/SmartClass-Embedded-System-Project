@@ -20,8 +20,16 @@ A Next.js dashboard for monitoring and managing classroom embedded systems with 
    bun install
    ```
 
+   and create docker compose file (postgres and pgAdmin4):
+
+   ```bash
+   docker compose up --build -d
+   ```
+
 2. **Configure database:**
-   Edit `.env` and set your PostgreSQL connection:
+
+   copy `.env.example` to `.env` file.
+   Edit `.env` and set your PostgreSQL connection (if you using the docker compose, don't change DATABASE_URL):
 
    ```text
    DATABASE_URL="postgresql://user:password@localhost:5432/smartclass_db"
@@ -32,6 +40,12 @@ A Next.js dashboard for monitoring and managing classroom embedded systems with 
    ```bash
    bun run db:push
    bun run db:generate
+   ```
+
+   or using all-in-one database reset command:
+
+   ```bash
+   bun run db:reset
    ```
 
 4. **Start development server:**
