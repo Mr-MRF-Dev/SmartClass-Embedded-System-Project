@@ -1,10 +1,10 @@
-# SmartClass Embedded System Project
+# 🌡️ SmartClass Embedded System Project
 
 A web-app dashboard for monitoring and managing classroom embedded systems with real-time sensor data, power usage tracking, and remote control capabilities.
 
 This software is the full-stack web application for the SmartClass Embedded System Project. It is built using Next.js, Prisma, TypeScript, and modern UI components. The app provides a user interface for interacting with the SmartClass system, which may include features such as class management, device control, and real-time data visualization.
 
-## How It Works
+## 🏛️ How It Works
 
 - **Frontend Framework:** The app uses Next.js for server-side rendering and routing, providing fast and SEO-friendly pages.
 - **Component-Based:** UI is built with reusable React components located in the `components/` directory, including a set of UI primitives in `components/ui/`.
@@ -13,7 +13,7 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 - **Utilities:** Common utility functions are in `lib/utils.ts`.
 - **Public Assets:** Static files (images, icons, etc.) are in the `public/` directory.
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Next.js 16** - React framework
 - **TypeScript** - Type safety
@@ -23,7 +23,7 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 - **Tabler Icons** - Icon library
 - **Bun** - Fast package manager & runtime
 
-## Getting Started
+## 📥 Getting Started
 
 To set up the development environment for the SmartClass Embedded System Project, follow these steps:
 
@@ -80,7 +80,7 @@ To set up the development environment for the SmartClass Embedded System Project
    bun start
    ```
 
-## Features
+## ✨ Features
 
 ### Dashboard
 
@@ -96,7 +96,7 @@ To set up the development environment for the SmartClass Embedded System Project
 - Monitor connection status (last seen)
 - MAC address and IP tracking
 
-## Scripts
+## 📜 Scripts
 
 - `bun run dev` - Development server
 - `bun run build` - Production build
@@ -106,7 +106,7 @@ To set up the development environment for the SmartClass Embedded System Project
 - `bun run db:studio` - Open Prisma Studio
 - `bun run db:generate` - Generate Prisma Client
 
-## Project Structure
+## 📁 Project Structure
 
 - `app/` - Main application pages, layouts, and global styles
 - `components/` - Reusable React components
