@@ -20,8 +20,12 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 # Add build-time environment variables
-ARG BACKEND_API_URL
-ENV BACKEND_API_URL=${BACKEND_API_URL:-http://localhost:5000}
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL:-"postgresql://postgres:postgres@localhost:5432/smartclassdb?schema=public"}
+ARG ADMIN_EMAIL
+ENV ADMIN_EMAIL=${ADMIN_EMAIL:-"admin@smartclass.com"}
+ARG ADMIN_PASSWORD
+ENV ADMIN_PASSWORD=${ADMIN_PASSWORD:-"secure@Password123"}
 
 RUN bun run build
 # </builder>
