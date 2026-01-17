@@ -37,6 +37,12 @@ To set up the development environment for the SmartClass Embedded System Project
 
    This will start a Postgres 18 database on port 5432 with default credentials (see `docker-compose.yml`).
 
+   to stop docker compose use:
+
+   ```bash
+   docker compose down
+   ```
+
 2. **Configure database:**
 
    copy `.env.example` to `.env` file.
