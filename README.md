@@ -179,12 +179,10 @@ To set up the development environment for the SmartClass Embedded System Project
 - `public/` - Static assets
 - `*.config.*` - Configuration files
 
-## Example: Adding a New Component
+## 🤝 Contributing
 
-1. Create a new file in `components/`, e.g., `my-component.tsx`.
-2. Export your React component.
-3. Import and use it in a page or another component.
+We welcome any contributions you may have. If you're interested in helping out, fork the repository and create an [Issue](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/issues) or [PR](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/pulls).
 
-## Support
+## 📄 License
 
-For questions or issues, please open an issue in the repository or contact the maintainers.
+This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
