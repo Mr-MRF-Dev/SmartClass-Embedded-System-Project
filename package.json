@@ -2,15 +2,25 @@
   "name": "smart-class-embedded-system-project",
   "version": "1.0.0",
   "private": true,
+  "author": "Mr-Mrf-Dev",
+  "homepage": "https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/issues"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
+    "start": "next start",
+    "lint": "eslint",
     "build": "npm run db:reset && next build",
     "build:next": "next build",
     "build:generic": "prisma generate && next build",
     "build:prod": "prisma generate && prisma migrate deploy && prisma db push && next build",
     "build:prod:clean": "bun run db:reset && next build",
-    "start": "next start",
-    "lint": "eslint",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
