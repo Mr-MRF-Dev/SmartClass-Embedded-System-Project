@@ -14,3 +14,15 @@ export type CreateSystemInput = {
 };
 
 export type UpdateSystemInput = Partial<CreateSystemInput>;
+
+// Schedule interface for AI-generated and manual schedules
+export interface Schedule {
+  season: string;
+  month: number;
+  weekdays: string;
+  startTime: string;
+  endTime: string;
+  targetTemperature: number;
+  targetLuminance: number;
+  enabled: boolean;
+}

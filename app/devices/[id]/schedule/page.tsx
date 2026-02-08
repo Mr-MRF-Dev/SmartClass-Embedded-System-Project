@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HeatingScheduleForm } from "@/components/heating-schedule-form";
+import { AIScheduleAssistant } from "@/components/ai-schedule-assistant";
 import {
   IconArrowLeft,
   IconTemperature,
@@ -183,6 +184,28 @@ export default function DeviceSchedulePage() {
       await fetchSchedules();
     } catch (err) {
       console.error("Error deleting schedule:", err);
+    }
+  };
+
+  const handleAISchedulesGenerated = async (generatedSchedules: any[]) => {
+    try {
+      // Save all generated schedules
+      for (const schedule of generatedSchedules) {
+        await fetch(`/api/systems/${params.id}/schedule`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(schedule),
+        });
+      }
+
+      // Refresh the schedules list
+      await fetchSchedules();
+      alert(`${generatedSchedules.length} برنامه با موفقیت ایجاد شد!`);
+    } catch (err) {
+      console.error("Error saving AI-generated schedules:", err);
+      alert("خطا در ذخیره برنامه‌ها");
     }
   };
 
@@ -421,18 +444,27 @@ export default function DeviceSchedulePage() {
                   </CardDescription>
                 </div>
               </div>
-              <Button
-                onClick={() => setShowForm(!showForm)}
-                size="lg"
-                variant={showForm ? "outline" : "default"}
-                className={
-                  showForm
-                    ? "border-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400"
-                    : "bg-linear-to-r from-green-500 to-emerald-500 shadow-lg hover:shadow-xl"
-                }
-              >
-                {showForm ? "لغو" : "افزودن برنامه جدید"}
-              </Button>
+              <div className="flex gap-3">
+                <AIScheduleAssistant
+                  systemId={device.id}
+                  classroom={device.classroom}
+                  location={device.location}
+                  existingSchedules={schedules}
+                  onSchedulesGenerated={handleAISchedulesGenerated}
+                />
+                <Button
+                  onClick={() => setShowForm(!showForm)}
+                  size="lg"
+                  variant={showForm ? "outline" : "default"}
+                  className={
+                    showForm
+                      ? "border-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400"
+                      : "bg-linear-to-r from-green-500 to-emerald-500 shadow-lg hover:shadow-xl"
+                  }
+                >
+                  {showForm ? "لغو" : "افزودن برنامه جدید"}
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="relative z-10 pt-6">
