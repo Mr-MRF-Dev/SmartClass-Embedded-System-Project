@@ -102,6 +102,17 @@ To set up the development environment for the SmartClass Embedded System Project
 - Monitor connection status (last seen)
 - MAC address and IP tracking
 
+### 🤖 AI Schedule Assistant
+
+- **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
+- **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
+- **Flexible Planning**: Create schedules for a month, season, or entire year
+- **Energy Optimization**: AI considers energy efficiency and student comfort
+- **Customizable**: Add your specific preferences and requirements
+- **Persian Calendar Support**: Full support for Persian months and seasons
+
+📖 **[View AI Assistant Documentation](./docs/AI_ASSISTANT.md)** for setup and usage instructions.
+
 ## 📜 Scripts
 
 - `bun run dev` - Development server
