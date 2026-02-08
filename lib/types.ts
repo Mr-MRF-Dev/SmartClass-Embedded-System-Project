@@ -18,7 +18,7 @@ export type UpdateSystemInput = Partial<CreateSystemInput>;
 // Schedule interface for AI-generated and manual schedules
 export interface Schedule {
   season: string;
-  month: number;
+  month: number | null;
   weekdays: string;
   startTime: string;
   endTime: string;

@@ -143,7 +143,8 @@ export function AIScheduleAssistant({
     setPreferences("");
   };
 
-  const getMonthLabel = (month: number) => {
+  const getMonthLabel = (month: number | null) => {
+    if (!month) return "کل فصل";
     return MONTHS.find((m) => m.value === month)?.label || `ماه ${month}`;
   };
 
