@@ -2,9 +2,14 @@ import { NextResponse } from "next/server";
 import { Ollama } from "ollama";
 import { Schedule } from "@/lib/types";
 
-// Initialize Ollama client
+// Initialize Ollama client with timeout configuration
 const ollama = new Ollama({
   host: process.env.OLLAMA_HOST || "http://localhost:11434",
+  fetch: (url, options) =>
+    fetch(url, {
+      ...options,
+      signal: AbortSignal.timeout(120000), // 2 minute timeout
+    }),
 });
 
 export async function POST(request: Request) {
@@ -117,6 +122,19 @@ Consider:
     });
   } catch (error) {
     console.error("Error in AI schedule planner:", error);
+
+    // Check if it's a timeout error
+    if (error instanceof Error && error.name === "TimeoutError") {
+      return NextResponse.json(
+        {
+          error:
+            "AI request timed out. The model may be taking too long to respond.",
+          details:
+            "Try using a faster model or ensure Ollama is running properly.",
+        },
+        { status: 504 },
+      );
+    }
 
     // Check if it's an Ollama connection error
     if (error instanceof Error && error.message.includes("ECONNREFUSED")) {
