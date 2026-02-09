@@ -176,13 +176,16 @@ export function AIScheduleAssistant({
       </Button>
 
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+        <AlertDialogContent
+          className="max-h-[90vh] max-w-4xl overflow-y-auto"
+          dir="rtl"
+        >
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-xl">
               <IconRobot className="text-primary h-6 w-6" />
               دستیار هوشمند برنامه‌ریزی دما و نور
             </AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-right" dir="rtl">
               از هوش مصنوعی برای ایجاد برنامه بهینه دما و نور کلاس درس خود
               استفاده کنید
             </AlertDialogDescription>
@@ -226,7 +229,7 @@ export function AIScheduleAssistant({
 
               {/* Info Card */}
               <Card className="border-blue-200 bg-blue-50/50 dark:border-blue-900 dark:bg-blue-950/20">
-                <CardContent className="pt-6">
+                <CardContent>
                   <div className="flex gap-3">
                     <IconSparkles className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
                     <div className="space-y-2 text-sm text-blue-900 dark:text-blue-100">
@@ -249,7 +252,7 @@ export function AIScheduleAssistant({
               {/* Error Message */}
               {error && (
                 <Card className="border-red-200 bg-red-50/50 dark:border-red-900 dark:bg-red-950/20">
-                  <CardContent className="pt-6">
+                  <CardContent>
                     <div className="flex gap-3">
                       <IconX className="h-5 w-5 flex-shrink-0 text-red-600 dark:text-red-400" />
                       <div className="text-sm text-red-900 dark:text-red-100">
@@ -297,7 +300,7 @@ export function AIScheduleAssistant({
                       key={index}
                       className="hover:bg-accent/50 transition-colors"
                     >
-                      <CardContent className="pt-6">
+                      <CardContent>
                         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                           <div>
                             <div className="text-muted-foreground mb-1 text-xs">
