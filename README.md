@@ -43,14 +43,31 @@ To set up the development environment for the SmartClass Embedded System Project
    docker compose down
    ```
 
-2. **Configure database:**
+2. **Configure Environment Variables:**
 
-   copy `.env.example` to `.env` file.
-   Edit `.env` and set your PostgreSQL connection (if you using the docker compose, don't change DATABASE_URL):
+   Copy `.env.example` to `.env` file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit `.env` and configure the following:
+
+   **Database Configuration:**
 
    ```text
-   DATABASE_URL="postgresql://user:password@localhost:5432/smartclass_db"
+   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/smartclassdb?schema=public"
    ```
+
+   **AI Assistant Configuration (Optional):**
+
+   ```text
+   OLLAMA_HOST="http://localhost:11434"
+   OLLAMA_MODEL="llama3.2"
+   ```
+
+   > **Note:** If you're using the Docker Compose setup, the default `DATABASE_URL` should work without changes.
+   > ّ
 
 3. **Install Dependencies:**
 
@@ -110,6 +127,41 @@ To set up the development environment for the SmartClass Embedded System Project
 - **Energy Optimization**: AI considers energy efficiency and student comfort
 - **Customizable**: Add your specific preferences and requirements
 - **Persian Calendar Support**: Full support for Persian months and seasons
+
+### Setting Up AI Assistant
+
+To enable the AI Schedule Assistant feature, you need to install and configure Ollama:
+
+1. **Install Ollama:**
+
+   Download and install Ollama from [https://ollama.ai](https://ollama.ai)
+
+2. **Pull the AI Model:**
+
+   After installing Ollama, pull the required model:
+
+   ```bash
+   ollama pull llama3.2
+   ```
+
+3. **Configure Environment Variables:**
+
+   Add the following to your `.env` file:
+
+   ```text
+   OLLAMA_HOST="http://localhost:11434"
+   OLLAMA_MODEL="llama3.2"
+   ```
+
+4. **Verify Ollama is Running:**
+
+   Make sure Ollama service is running. You can test it by visiting:
+
+   ```url
+   http://localhost:11434
+   ```
+
+> **Note:** The AI Assistant is optional. If not configured, the application will work without AI-powered schedule generation features.
 
 ## 📜 Scripts
 
