@@ -111,8 +111,6 @@ To set up the development environment for the SmartClass Embedded System Project
 - **Customizable**: Add your specific preferences and requirements
 - **Persian Calendar Support**: Full support for Persian months and seasons
 
-📖 **[View AI Assistant Documentation](./docs/AI_ASSISTANT.md)** for setup and usage instructions.
-
 ## 📜 Scripts
 
 - `bun run dev` - Development server
