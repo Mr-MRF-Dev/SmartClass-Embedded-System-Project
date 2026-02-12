@@ -39,11 +39,11 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 ## 🛠️ Tech Stack
 
 - **Next.js 16** - React framework
-- **TypeScript** - Type safety
 - **Prisma 7** - ORM with PostgreSQL
 - **Tailwind CSS** - Styling
 - **shadcn/ui** - UI components
 - **Tabler Icons** - Icon library
+- **TypeScript** - Type safety
 - **Bun** - Fast package manager & runtime
 
 ## 📁 Project Structure
@@ -182,7 +182,7 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
 
 ## 🤝 Contributing
 
-We welcome any contributions you may have. If you're interested in helping out, fork the repository and create an [Issue](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/issues) or [PR](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/pulls).
+We welcome any contributions you may have. If you're interested in helping out, please fork the repository and create an [Issue](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/issues) or [PR](https://github.com/Mr-MRF-Dev/SmartClass-Embedded-System-Project/pulls). We'll be happy to review your contributions.
 
 ## 📄 License
 
