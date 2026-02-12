@@ -6,6 +6,31 @@ A web-app dashboard for monitoring and managing classroom embedded systems with 
 
 This software is the full-stack web application for the SmartClass Embedded System Project. It is built using Next.js, Prisma, TypeScript, and modern UI components. The app provides a user interface for interacting with the SmartClass system, which may include features such as class management, device control, and real-time data visualization.
 
+## ✨ Features
+
+### Dashboard
+
+- Real-time monitoring of embedded systems
+- Sensor data visualization
+- Power usage tracking
+- System status indicators
+
+### Embedded Systems
+
+- Register and manage classroom devices
+- Track location and classroom assignment
+- Monitor connection status (last seen)
+- MAC address and IP tracking
+
+### 🤖 AI Schedule Assistant
+
+- **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
+- **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
+- **Flexible Planning**: Create schedules for a month, season, or entire year
+- **Energy Optimization**: AI considers energy efficiency and student comfort
+- **Customizable**: Add your specific preferences and requirements
+- **Persian Calendar Support**: Full support for Persian months and seasons
+
 ## 🛠️ Tech Stack
 
 - **Next.js 16** - React framework
@@ -15,6 +40,15 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 - **shadcn/ui** - UI components
 - **Tabler Icons** - Icon library
 - **Bun** - Fast package manager & runtime
+
+## 📁 Project Structure
+
+- `app/` - Main application pages, layouts, and global styles
+- `components/` - Reusable React components
+- `components/ui/` - UI primitives (buttons, cards, dialogs, etc.)
+- `lib/` - Utility functions
+- `public/` - Static assets
+- `*.config.*` - Configuration files
 
 ## 📥 Getting Started
 
@@ -131,31 +165,6 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
 
 > **Note:** The AI Assistant is optional. If not configured, the application will work without AI-powered schedule generation features.
 
-## ✨ Features
-
-### Dashboard
-
-- Real-time monitoring of embedded systems
-- Sensor data visualization
-- Power usage tracking
-- System status indicators
-
-### Embedded Systems
-
-- Register and manage classroom devices
-- Track location and classroom assignment
-- Monitor connection status (last seen)
-- MAC address and IP tracking
-
-### 🤖 AI Schedule Assistant
-
-- **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
-- **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
-- **Flexible Planning**: Create schedules for a month, season, or entire year
-- **Energy Optimization**: AI considers energy efficiency and student comfort
-- **Customizable**: Add your specific preferences and requirements
-- **Persian Calendar Support**: Full support for Persian months and seasons
-
 ## 📜 Scripts
 
 - `bun run dev` - Development server
@@ -165,15 +174,6 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
 - `bun run db:reset` - force reset database and push schema
 - `bun run db:studio` - Open Prisma Studio
 - `bun run db:generate` - Generate Prisma Client
-
-## 📁 Project Structure
-
-- `app/` - Main application pages, layouts, and global styles
-- `components/` - Reusable React components
-- `components/ui/` - UI primitives (buttons, cards, dialogs, etc.)
-- `lib/` - Utility functions
-- `public/` - Static assets
-- `*.config.*` - Configuration files
 
 ## 🤝 Contributing
 
