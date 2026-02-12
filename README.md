@@ -1,5 +1,10 @@
 # 🌡️ SmartClass Embedded System Project
 
+![GitHub repo size](https://img.shields.io/github/repo-size/mr-mrf-dev/SmartClass-Embedded-System-Project)
+[![GitHub package.json nextjs version](https://img.shields.io/github/package-json/dependency-version/mr-mrf-dev/SmartClass-Embedded-System-Project/next)](https://nextjs.org/)
+[![GitHub package.json react version](https://img.shields.io/github/package-json/dependency-version/mr-mrf-dev/SmartClass-Embedded-System-Project/dev/react)](https://reactjs.org/)
+[![GitHub License](https://img.shields.io/github/license/mr-mrf-dev/SmartClass-Embedded-System-Project)](/LICENSE)
+
 ![home page](images/homepage.png)
 
 A web-app dashboard for monitoring and managing classroom embedded systems with real-time sensor data, power usage tracking, and remote control capabilities.
