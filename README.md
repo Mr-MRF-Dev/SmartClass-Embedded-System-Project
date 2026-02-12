@@ -1,17 +1,10 @@
 # 🌡️ SmartClass Embedded System Project
 
+![home page](images/homepage.png)
+
 A web-app dashboard for monitoring and managing classroom embedded systems with real-time sensor data, power usage tracking, and remote control capabilities.
 
 This software is the full-stack web application for the SmartClass Embedded System Project. It is built using Next.js, Prisma, TypeScript, and modern UI components. The app provides a user interface for interacting with the SmartClass system, which may include features such as class management, device control, and real-time data visualization.
-
-## 🏛️ How It Works
-
-- **Frontend Framework:** The app uses Next.js for server-side rendering and routing, providing fast and SEO-friendly pages.
-- **Component-Based:** UI is built with reusable React components located in the `components/` directory, including a set of UI primitives in `components/ui/`.
-- **Styling:** Global styles are defined in `app/globals.css`. Component-level styles may be included within each component.
-- **Configuration:** Project configuration files include `tsconfig.json` (TypeScript), `next.config.ts` (Next.js), and `eslint.config.mjs` (linting).
-- **Utilities:** Common utility functions are in `lib/utils.ts`.
-- **Public Assets:** Static files (images, icons, etc.) are in the `public/` directory.
 
 ## 🛠️ Tech Stack
 
@@ -59,7 +52,7 @@ To set up the development environment for the SmartClass Embedded System Project
    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/smartclassdb?schema=public"
    ```
 
-   **AI Assistant Configuration (Optional):**
+   [AI Assistant Configuration (Optional):](#-setting-up-ai-assistant)
 
    ```text
    OLLAMA_HOST="http://localhost:11434"
@@ -103,32 +96,7 @@ To set up the development environment for the SmartClass Embedded System Project
    bun start
    ```
 
-## ✨ Features
-
-### Dashboard
-
-- Real-time monitoring of embedded systems
-- Sensor data visualization
-- Power usage tracking
-- System status indicators
-
-### Embedded Systems
-
-- Register and manage classroom devices
-- Track location and classroom assignment
-- Monitor connection status (last seen)
-- MAC address and IP tracking
-
-### 🤖 AI Schedule Assistant
-
-- **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
-- **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
-- **Flexible Planning**: Create schedules for a month, season, or entire year
-- **Energy Optimization**: AI considers energy efficiency and student comfort
-- **Customizable**: Add your specific preferences and requirements
-- **Persian Calendar Support**: Full support for Persian months and seasons
-
-### Setting Up AI Assistant
+## 🤖 Setting Up AI Assistant
 
 To enable the AI Schedule Assistant feature, you need to install and configure Ollama:
 
@@ -162,6 +130,31 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
    ```
 
 > **Note:** The AI Assistant is optional. If not configured, the application will work without AI-powered schedule generation features.
+
+## ✨ Features
+
+### Dashboard
+
+- Real-time monitoring of embedded systems
+- Sensor data visualization
+- Power usage tracking
+- System status indicators
+
+### Embedded Systems
+
+- Register and manage classroom devices
+- Track location and classroom assignment
+- Monitor connection status (last seen)
+- MAC address and IP tracking
+
+### 🤖 AI Schedule Assistant
+
+- **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
+- **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
+- **Flexible Planning**: Create schedules for a month, season, or entire year
+- **Energy Optimization**: AI considers energy efficiency and student comfort
+- **Customizable**: Add your specific preferences and requirements
+- **Persian Calendar Support**: Full support for Persian months and seasons
 
 ## 📜 Scripts
 
