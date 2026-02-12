@@ -57,22 +57,50 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 
 ## 📥 Getting Started
 
-To set up the development environment for the SmartClass Embedded System Project, follow these steps:
+### 🐳 Quick Start with Docker (Recommended)
+
+The easiest way to get started is using Docker Compose, which sets up everything you need:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+This will automatically:
+
+- Start PostgreSQL database
+- Start pgAdmin (database management UI)
+- Start Ollama (AI assistant)
+- Start the Next.js application
+- Set up the database schema
+
+**Access your services:**
+
+- **Web Application**: <http://localhost:3000>
+- **pgAdmin**: <http://localhost:5050> (<admin@smartclass.com> / admin)
+- **Ollama API**: <http://localhost:11434>
+
+### 📝 Manual Setup (Alternative)
+
+To set up the development environment manually without Docker, follow these steps:
 
 1. **Start the Development Database (Postgres):**
 
    The project uses a local Postgres database for development, managed via Docker Compose. Make sure you have [Docker](https://www.docker.com/products/docker-desktop/) installed.
 
    ```bash
-   docker compose up --build -d
+   docker compose -f docker-compose.dev.yml up -d
    ```
 
-   This will start a Postgres 18 database on port 5432 with default credentials (see `docker-compose.yml`).
+   This will start:
+   - Postgres 18 database on port 5432
+   - pgAdmin on port 5050
+   - Ollama (AI) on port 11434
+   - Next.js app on port 3000
 
-   to stop docker compose use:
+   To stop all services:
 
    ```bash
-   docker compose down
+   docker compose -f docker-compose.dev.yml down
    ```
 
 2. **Configure Environment Variables:**
@@ -137,7 +165,11 @@ To set up the development environment for the SmartClass Embedded System Project
 
 ## 🤖 Setting Up AI Assistant
 
-To enable the AI Schedule Assistant feature, you need to install and configure Ollama:
+> **Note:** If you're using the Docker setup, Ollama is already configured and the llama3.2 model will be **automatically pulled** on first startup! No manual steps needed.
+
+### Manual Ollama Setup
+
+To enable the AI Schedule Assistant feature manually (without Docker), you need to install and configure Ollama:
 
 1. **Install Ollama:**
 
@@ -172,6 +204,8 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
 
 ## 📜 Scripts
 
+### NPM/Bun Scripts
+
 - `bun run dev` - Development server
 - `bun run build` - Production build
 - `bun run start` - Production server
@@ -179,6 +213,22 @@ To enable the AI Schedule Assistant feature, you need to install and configure O
 - `bun run db:reset` - force reset database and push schema
 - `bun run db:studio` - Open Prisma Studio
 - `bun run db:generate` - Generate Prisma Client
+
+### Docker Commands
+
+```bash
+# Start all services
+docker compose -f docker-compose.dev.yml up -d
+
+# View logs
+docker compose -f docker-compose.dev.yml logs -f
+
+# Stop all services
+docker compose -f docker-compose.dev.yml down
+
+# Restart a service
+docker compose -f docker-compose.dev.yml restart nextjs
+```
 
 ## 🤝 Contributing
 
