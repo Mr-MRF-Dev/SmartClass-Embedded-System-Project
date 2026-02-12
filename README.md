@@ -62,8 +62,18 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 The easiest way to get started is using Docker Compose, which sets up everything you need:
 
 ```bash
+# Optional: Copy .env.example to .env to customize settings
+cp .env.example .env
+
+# Start all services
 docker compose -f docker-compose.dev.yml up -d
 ```
+
+**Customizable settings in `.env` file:**
+
+- `ADMIN_EMAIL` - Default admin email (default: <admin@smartclass.com>)
+- `ADMIN_PASSWORD` - Default admin password (default: secure@Password123)
+- `OLLAMA_MODEL` - AI model to use (default: llama3.2)
 
 This will automatically:
 

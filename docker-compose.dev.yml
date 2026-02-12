@@ -49,6 +49,8 @@ services:
       - ollama_data:/root/.ollama
     networks:
       - smartclass-network
+    environment:
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
     entrypoint: ["/bin/sh", "-c"]
     command:
       - |
@@ -62,12 +64,13 @@ services:
         done
 
         # Pull the model if not already present
-        echo "Checking for llama3.2 model..."
-        if ! /bin/ollama list | grep -q llama3.2; then
-          echo "Pulling llama3.2 model..."
-          /bin/ollama pull llama3.2
+        MODEL=$${OLLAMA_MODEL:-llama3.2}
+        echo "Checking for $$MODEL model..."
+        if ! /bin/ollama list | grep -q $$MODEL; then
+          echo "Pulling $$MODEL model..."
+          /bin/ollama pull $$MODEL
         else
-          echo "llama3.2 model already exists"
+          echo "$$MODEL model already exists"
         fi
 
         # Keep the container running
@@ -89,10 +92,10 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/smartclassdb?schema=public
-      - ADMIN_EMAIL=admin@smartclass.com
-      - ADMIN_PASSWORD=secure@Password123
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@smartclass.com}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-secure@Password123}
       - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_MODEL=llama3.2
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
       - NEXT_TELEMETRY_DISABLED=1
     ports:
       - "3000:3000"
