@@ -2,7 +2,7 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/mr-mrf-dev/SmartClass-Embedded-System-Project)
 [![GitHub package.json nextjs version](https://img.shields.io/github/package-json/dependency-version/mr-mrf-dev/SmartClass-Embedded-System-Project/next)](https://nextjs.org/)
-[![GitHub package.json react version](https://img.shields.io/github/package-json/dependency-version/mr-mrf-dev/SmartClass-Embedded-System-Project/dev/react)](https://reactjs.org/)
+[![GitHub package.json react version](https://img.shields.io/github/package-json/dependency-version/mr-mrf-dev/SmartClass-Embedded-System-Project/react)](https://reactjs.org/)
 [![GitHub License](https://img.shields.io/github/license/mr-mrf-dev/SmartClass-Embedded-System-Project)](/LICENSE)
 
 ![home page](images/homepage.png)
