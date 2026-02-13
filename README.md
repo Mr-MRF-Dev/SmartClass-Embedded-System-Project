@@ -59,7 +59,7 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 
 ## 📥 Getting Started
 
-### 🐳 Quick Start with Docker (Recommended)
+### 🐳 Quick Start with Docker
 
 The easiest way to get started is using Docker Compose, which sets up everything you need:
 
@@ -90,90 +90,6 @@ This will automatically:
 - **Web Application**: <http://localhost:3000>
 - **pgAdmin**: <http://localhost:5050> (<admin@smartclass.com> / admin)
 - **Ollama API**: <http://localhost:11434>
-
-### 📝 Manual Setup (Alternative)
-
-To set up the development environment manually without Docker, follow these steps:
-
-1. **Start the Development Database (Postgres):**
-
-   The project uses a local Postgres database for development, managed via Docker Compose. Make sure you have [Docker](https://www.docker.com/products/docker-desktop/) installed.
-
-   ```bash
-   docker compose up -d
-   ```
-
-   This will start:
-   - Postgres 18 database on port 5432
-   - pgAdmin on port 5050
-   - Ollama (AI) on port 11434
-   - Next.js app on port 3000
-
-   To stop all services:
-
-   ```bash
-   docker compose down
-   ```
-
-2. **Configure Environment Variables:**
-
-   Copy `.env.example` to `.env` file:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Edit `.env` and configure the following:
-
-   **Database Configuration:**
-
-   ```text
-   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/smartclassdb?schema=public"
-   ```
-
-   [AI Assistant Configuration (Optional):](#-setting-up-ai-assistant)
-
-   ```text
-   OLLAMA_HOST="http://localhost:11434"
-   OLLAMA_MODEL="llama3.2"
-   ```
-
-   > **Note:** If you're using the Docker Compose setup, the default `DATABASE_URL` should work without changes.
-   > ّ
-
-3. **Install Dependencies:**
-
-   ```bash
-   bun install
-   ```
-
-4. **Setup database:**
-
-   ```bash
-   bun run db:push
-   bun run db:generate
-   ```
-
-   or using all-in-one database reset command:
-
-   ```bash
-   bun run db:reset
-   ```
-
-5. **Run the Development Server:**
-
-   ```bash
-   bun dev
-   ```
-
-   The app will be available at `http://localhost:3000`.
-
-6. **Build for Production:**
-
-   ```bash
-   bun run build
-   bun start
-   ```
 
 ## 🤖 Setting Up AI Assistant
 
