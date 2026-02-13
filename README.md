@@ -66,7 +66,7 @@ The easiest way to get started is using Docker Compose, which sets up everything
 cp .env.example .env
 
 # Start all services
-docker compose -f docker-compose.dev.yml up -d
+docker compose up -d
 ```
 
 **Customizable settings in `.env` file:**
@@ -98,7 +98,7 @@ To set up the development environment manually without Docker, follow these step
    The project uses a local Postgres database for development, managed via Docker Compose. Make sure you have [Docker](https://www.docker.com/products/docker-desktop/) installed.
 
    ```bash
-   docker compose -f docker-compose.dev.yml up -d
+   docker compose up -d
    ```
 
    This will start:
@@ -110,7 +110,7 @@ To set up the development environment manually without Docker, follow these step
    To stop all services:
 
    ```bash
-   docker compose -f docker-compose.dev.yml down
+   docker compose down
    ```
 
 2. **Configure Environment Variables:**
@@ -228,16 +228,16 @@ To enable the AI Schedule Assistant feature manually (without Docker), you need 
 
 ```bash
 # Start all services
-docker compose -f docker-compose.dev.yml up -d
+docker compose up -d
 
 # View logs
-docker compose -f docker-compose.dev.yml logs -f
+docker compose logs -f
 
 # Stop all services
-docker compose -f docker-compose.dev.yml down
+docker compose down
 
 # Restart a service
-docker compose -f docker-compose.dev.yml restart nextjs
+docker compose restart nextjs
 ```
 
 ## 🤝 Contributing
