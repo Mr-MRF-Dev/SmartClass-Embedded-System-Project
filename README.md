@@ -11,6 +11,8 @@ A web-app dashboard for monitoring and managing classroom embedded systems with 
 
 This software is the full-stack web application for the SmartClass Embedded System Project. It is built using Next.js, Prisma, TypeScript, and modern UI components. The app provides a user interface for interacting with the SmartClass system, which may include features such as class management, device control, and real-time data visualization.
 
+> **⚠️ Warning:** This project is designed for development and educational purposes only. It is **NOT recommended for production use** without proper security hardening, authentication improvements, and deployment configurations.
+
 ## ✨ Features
 
 ### Dashboard
@@ -27,7 +29,7 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 - Monitor connection status (last seen)
 - MAC address and IP tracking
 
-### 🤖 AI Schedule Assistant
+### AI Schedule Assistant
 
 - **Intelligent Schedule Planning**: Use AI to automatically generate optimized temperature and lighting schedules
 - **Powered by Ollama**: Runs locally using Ollama LLM (no cloud dependency)
