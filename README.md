@@ -64,14 +64,14 @@ This software is the full-stack web application for the SmartClass Embedded Syst
 The easiest way to get started is using Docker Compose, which sets up everything you need:
 
 ```bash
-# Optional: Copy .env.example to .env to customize settings
-cp .env.example .env
+# Optional: Copy .env.local.example to .env to customize settings
+cp .env.local.example .env.local
 
 # Start all services
 docker compose up -d
 ```
 
-**Customizable settings in `.env` file:**
+**Customizable settings in `.env.local` file:**
 
 - `ADMIN_EMAIL` - Default admin email (default: <admin@smartclass.com>)
 - `ADMIN_PASSWORD` - Default admin password (default: secure@Password123)
@@ -108,10 +108,10 @@ If you prefer not to use Docker, follow these steps to set up the project manual
    Copy the example environment file and customize it:
 
    ```bash
-   cp .env.example .env
+   cp .env.local.example .env.local
    ```
 
-   Edit `.env` and set the following required variables:
+   Edit `.env.local` and set the following required variables:
 
    ```text
    # Database connection string
