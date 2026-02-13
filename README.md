@@ -91,44 +91,86 @@ This will automatically:
 - **pgAdmin**: <http://localhost:5050> (<admin@smartclass.com> / admin)
 - **Ollama API**: <http://localhost:11434>
 
-## 🤖 Setting Up AI Assistant
+### 🛠️ Manual Setup (Without Docker)
 
-> **Note:** If you're using the Docker setup, Ollama is already configured and the llama3.2 model will be **automatically pulled** on first startup! No manual steps needed.
+If you prefer not to use Docker, follow these steps to set up the project manually:
 
-### Manual Ollama Setup
+#### Prerequisites
 
-To enable the AI Schedule Assistant feature manually (without Docker), you need to install and configure Ollama:
+- [Bun](https://bun.sh/) installed on your system
+- [PostgreSQL 14+](https://www.postgresql.org/download/) database server running
+- [Ollama](https://ollama.ai) (optional, for AI features)
 
-1. **Install Ollama:**
+#### Installation Steps
 
-   Download and install Ollama from [https://ollama.ai](https://ollama.ai)
+1. **Configure Environment Variables:**
 
-2. **Pull the AI Model:**
-
-   After installing Ollama, pull the required model:
+   Copy the example environment file and customize it:
 
    ```bash
-   ollama pull llama3.2
+   cp .env.example .env
    ```
 
-3. **Configure Environment Variables:**
-
-   Add the following to your `.env` file:
+   Edit `.env` and set the following required variables:
 
    ```text
+   # Database connection string
+   DATABASE_URL="postgresql://username:password@localhost:5432/smartclassdb?schema=public"
+
+   # Admin credentials (for first login)
+   ADMIN_EMAIL="admin@smartclass.com"
+   ADMIN_PASSWORD="secure@Password123"
+
+   # AI Assistant Configuration (optional)
    OLLAMA_HOST="http://localhost:11434"
    OLLAMA_MODEL="llama3.2"
    ```
 
-4. **Verify Ollama is Running:**
+2. **Install Dependencies:**
 
-   Make sure Ollama service is running. You can test it by visiting:
-
-   ```url
-   http://localhost:11434
+   ```bash
+   bun install
    ```
 
-> **Note:** The AI Assistant is optional. If not configured, the application will work without AI-powered schedule generation features.
+3. **Set Up the Database:**
+
+   Initialize the database schema and seed data:
+
+   ```bash
+   # Push schema to database
+   bun run db:push
+
+   # Generate Prisma client
+   bun run db:generate
+   ```
+
+   Or use the all-in-one reset command:
+
+   ```bash
+   bun run db:reset
+   ```
+
+4. **Start the Development Server:**
+
+   ```bash
+   bun dev
+   ```
+
+   The application will be available at <http://localhost:3000>
+
+5. **Set Up AI Assistant (Optional):**
+
+   If you want to use the AI Schedule Planning feature:
+   - Install Ollama from [https://ollama.ai](https://ollama.ai)
+   - Pull the AI model:
+
+     ```bash
+     ollama pull llama3.2
+     ```
+
+   - Verify Ollama is running by visiting <http://localhost:11434>
+
+   > **Note:** AI features are optional. The application will work without them.
 
 ## 📜 Scripts
 
